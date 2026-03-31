@@ -14,10 +14,10 @@ export const packages: CreditPackage[] = [
 ];
 
 export const paymentMethods = [
-  { id: "bkash", name: "bKash", number: "01XXXXXXXXX", color: "hsl(340, 80%, 55%)", type: "manual" as const },
-  { id: "nagad", name: "Nagad", number: "01XXXXXXXXX", color: "hsl(25, 90%, 55%)", type: "manual" as const },
-  { id: "rocket", name: "Rocket", number: "01XXXXXXXXX", color: "hsl(270, 60%, 50%)", type: "manual" as const },
-  { id: "crypto", name: "Crypto (USDT)", number: "", color: "hsl(145, 70%, 50%)", type: "crypto" as const },
+  { id: "bkash", name: "bKash", color: "hsl(340, 80%, 55%)", type: "auto" as const },
+  { id: "nagad", name: "Nagad", color: "hsl(25, 90%, 55%)", type: "auto" as const },
+  { id: "rocket", name: "Rocket", color: "hsl(270, 60%, 50%)", type: "auto" as const },
+  { id: "crypto", name: "Crypto (USDT)", color: "hsl(145, 70%, 50%)", type: "crypto" as const },
 ] as const;
 
 export const cryptoTokens = [

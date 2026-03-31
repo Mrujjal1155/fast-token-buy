@@ -18,13 +18,12 @@ import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
-import AdminAjkerPay from "@/components/AdminAjkerPay";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "ajkerpay" | "payments">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -114,7 +113,7 @@ const AdminDashboard = () => {
       o.transaction_id.toLowerCase().includes(search.toLowerCase());
     const matchesPayment =
       paymentFilter === "all" ||
-      (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method === paymentFilter);
+      (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method.includes(paymentFilter));
     const matchesStatus = statusFilter === "all" || o.status === statusFilter;
     return matchesSearch && matchesPayment && matchesStatus;
   });
@@ -158,7 +157,6 @@ const AdminDashboard = () => {
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
             { id: "payments" as const, label: "Payments", icon: Wallet },
-            { id: "ajkerpay" as const, label: "AjkerPay", icon: CreditCard },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -311,10 +309,8 @@ const AdminDashboard = () => {
           <AdminReserves />
         ) : activeTab === "notifications" ? (
           <AdminNotifications />
-        ) : activeTab === "payments" ? (
-          <AdminPaymentMethods />
         ) : (
-          <AdminAjkerPay />
+          <AdminPaymentMethods />
         )}
       </div>
     </div>
