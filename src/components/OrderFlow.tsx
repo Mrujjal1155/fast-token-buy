@@ -303,7 +303,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                   onClick={handleApplyCoupon}
                   disabled={validatingCoupon || !couponCode.trim()}
                 >
-                  {validatingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
+                  {validatingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : "প্রয়োগ"}
                 </Button>
               </div>
               {couponMessage && !couponApplied && (
