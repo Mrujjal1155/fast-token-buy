@@ -40,7 +40,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
   const isCrypto = currentPayment.type === "crypto";
-  const finalPrice = Math.max(chosenPackage!.price - couponDiscount, 0);
+  const finalPrice = chosenPackage ? Math.max(chosenPackage.price - couponDiscount, 0) : 0;
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
