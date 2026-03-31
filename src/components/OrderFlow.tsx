@@ -403,7 +403,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               {submitting ? (
                 <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং...</>
               ) : (
-                <>Pay with {selectedCrypto.label}</>
+                <>{selectedCrypto.label} দিয়ে পে করুন</>
               )}
             </Button>
           </div>
