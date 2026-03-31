@@ -25,7 +25,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [submitting, setSubmitting] = useState(false);
 
   // Crypto state
-  const [selectedCrypto, setSelectedCrypto] = useState(cryptoTokens[0]);
+  const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
 
   // Coupon state
   const [couponCode, setCouponCode] = useState("");
