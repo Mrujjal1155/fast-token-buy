@@ -51,7 +51,7 @@ serve(async (req) => {
       });
     }
 
-    console.log(`Order ${orderId} marked as completed`);
+    console.log(`Order ${orderId} marked as processing`);
     return new Response(JSON.stringify({ received: true }), {
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -54,8 +54,8 @@ serve(async (req) => {
     if (order_id) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
       
-      const status = data.status === "COMPLETED" ? "completed" 
-        : data.status === "PENDING" ? "processing" 
+      const status = data.status === "COMPLETED" ? "processing" 
+        : data.status === "PENDING" ? "pending" 
         : "failed";
 
       await supabase
