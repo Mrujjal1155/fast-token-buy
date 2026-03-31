@@ -8,7 +8,7 @@ import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type Step = "email" | "summary" | "payment" | "success";
+type Step = "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
 interface OrderFlowProps {
   selectedPackage: CreditPackage;
@@ -23,6 +23,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
@@ -143,8 +144,14 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       return;
     }
 
-    // Redirect to BlinkPay checkout
-    window.location.href = paymentData.payment_url;
+    // Store payment URL and show checkout step
+    setOrderId(orderData.order_id);
+    setCryptoPaymentUrl(paymentData.payment_url);
+    setStep("crypto-checkout");
+    setSubmitting(false);
+
+    // Also try to open in new tab
+    window.open(paymentData.payment_url, "_blank");
   };
 
   const handleSubmitOrder = async () => {
@@ -408,15 +415,46 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
         </Button>
       </div>
     ),
+    "crypto-checkout": (
+      <div className="space-y-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+          <Coins className="w-8 h-8 text-primary" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট করুন</h2>
+        <p className="text-muted-foreground">
+          নিচের বাটনে ক্লিক করে BlinkPay চেকআউট পেজে যান এবং পেমেন্ট সম্পন্ন করুন।
+        </p>
+        <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
+          <p className="text-sm text-muted-foreground mb-1">Order ID</p>
+          <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
+        </div>
+        <a
+          href={cryptoPaymentUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+        >
+          <Button variant="hero" size="lg" className="w-full py-6">
+            🔗 BlinkPay এ পেমেন্ট করুন
+          </Button>
+        </a>
+        <p className="text-xs text-muted-foreground">
+          পেমেন্ট সম্পন্ন হলে অটোমেটিক আপডেট হবে। অর্ডার ট্র্যাক করতে Order ID সেভ করুন।
+        </p>
+        <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
+          হোমে ফিরুন
+        </Button>
+      </div>
+    ),
   };
 
-  const steps: Step[] = ["email", "summary", "payment", "success"];
+  const steps: Step[] = ["email", "summary", "payment", "crypto-checkout", "success"];
   const currentStepIndex = steps.indexOf(step);
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {step !== "success" && (
+        {step !== "success" && step !== "crypto-checkout" && (
           <button
             onClick={step === "email" ? onBack : () => setStep(steps[currentStepIndex - 1])}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-6"
@@ -425,7 +463,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           </button>
         )}
 
-        {step !== "success" && (
+        {step !== "success" && step !== "crypto-checkout" && (
           <div className="flex gap-2 mb-8">
             {["email", "summary", "payment"].map((s, i) => (
               <div
