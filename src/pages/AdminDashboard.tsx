@@ -113,7 +113,7 @@ const AdminDashboard = () => {
       o.transaction_id.toLowerCase().includes(search.toLowerCase());
     const matchesPayment =
       paymentFilter === "all" ||
-      (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method === paymentFilter);
+      (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method.includes(paymentFilter));
     const matchesStatus = statusFilter === "all" || o.status === statusFilter;
     return matchesSearch && matchesPayment && matchesStatus;
   });
