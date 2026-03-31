@@ -48,15 +48,12 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         .or("key.like.payment_method_%,key.eq.ajkerpay_enabled");
 
       if (data) {
-        let ajkerEnabled = false;
         const enabledMap: Record<string, boolean> = {};
         const numberMap: Record<string, string> = {};
         const iconMap: Record<string, string> = {};
 
         data.forEach((s) => {
-          if (s.key === "ajkerpay_enabled") {
-            ajkerEnabled = s.value === "true";
-          } else if (s.key.endsWith("_enabled")) {
+          if (s.key.endsWith("_enabled") && s.key !== "ajkerpay_enabled") {
             const id = s.key.replace("payment_method_", "").replace("_enabled", "");
             enabledMap[id] = s.value === "true";
           } else if (s.key.endsWith("_number")) {
@@ -67,8 +64,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             iconMap[id] = s.value;
           }
         });
-
-        setAjkerpayEnabled(ajkerEnabled);
 
         const filtered = paymentMethods
           .filter((m) => enabledMap[m.id] !== false) // default to enabled if no setting
