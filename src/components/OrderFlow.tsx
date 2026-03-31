@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { type CreditPackage } from "@/lib/packages";
+import { type CreditPackage, packages as allPackages } from "@/lib/packages";
 import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type Step = "email" | "summary" | "payment" | "crypto-checkout" | "success";
+type Step = "package" | "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
 interface OrderFlowProps {
-  selectedPackage: CreditPackage;
+  selectedPackage?: CreditPackage | null;
   onBack: () => void;
 }
 
