@@ -348,9 +348,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             {isCrypto ? <Coins className="w-7 h-7 text-primary" /> : <CreditCard className="w-7 h-7 text-primary" />}
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Complete Payment</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">পেমেন্ট সম্পন্ন করুন</h2>
           <p className="text-muted-foreground">
-            {isCrypto ? "ক্রিপ্টো দিয়ে পেমেন্ট করুন" : `Send ৳${finalPrice} to complete your order`}
+            {isCrypto ? "ক্রিপ্টো দিয়ে পেমেন্ট করুন" : `অর্ডার সম্পন্ন করতে ৳${finalPrice} পাঠান`}
           </p>
         </div>
 
