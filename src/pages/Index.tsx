@@ -27,8 +27,8 @@ const Index = () => {
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
       <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
-      <Footer />
       <RecentPurchases />
+      <Footer />
     </div>
   );
 };
