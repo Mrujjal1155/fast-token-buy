@@ -152,6 +152,7 @@ const AdminDashboard = () => {
           {[
             { id: "orders" as const, label: "Orders", icon: Package },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
+            { id: "packages" as const, label: "Packages", icon: Package },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
           ].map((tab) => (
