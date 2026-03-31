@@ -61,7 +61,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     });
 
     if (error || !data || data.length === 0) {
-      setCouponMessage("Failed to validate coupon");
+      setCouponMessage("কুপন যাচাই করা যায়নি");
       setValidatingCoupon(false);
       return;
     }
