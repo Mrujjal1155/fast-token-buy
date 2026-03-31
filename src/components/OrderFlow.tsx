@@ -171,9 +171,79 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     window.open(paymentData.payment_url, "_blank");
   };
 
+  const handleAjkerPayPayment = async () => {
+    setSubmitting(true);
+
+    if (couponApplied && couponCode) {
+      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
+    }
+
+    // Create order first
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        email,
+        package_id: chosenPackage?.id,
+        credits: chosenPackage?.credits,
+        amount: finalPrice,
+        currency: chosenPackage?.currency,
+        payment_method: `ajkerpay-${selectedPayment}`,
+        transaction_id: "pending-ajkerpay",
+        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
+        discount_amount: couponDiscount,
+      })
+      .select("order_id")
+      .single();
+
+    if (orderError || !orderData) {
+      toast({ title: "অর্ডার তৈরি করা যায়নি", description: orderError?.message, variant: "destructive" });
+      setSubmitting(false);
+      return;
+    }
+
+    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}`;
+    const cancelUrl = `${window.location.origin}/?cancelled=true`;
+
+    const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+      "create-ajkerpay-payment",
+      {
+        body: {
+          amount: finalPrice,
+          order_id: orderData.order_id,
+          customer_email: email,
+          customer_name: "Customer",
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+        },
+      }
+    );
+
+    if (paymentError || !paymentData?.payment_url) {
+      toast({
+        title: "পেমেন্ট তৈরি করা যায়নি",
+        description: paymentError?.message || paymentData?.error || "AjkerPay error",
+        variant: "destructive",
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // Redirect to AjkerPay payment page
+    setOrderId(orderData.order_id);
+    setCryptoPaymentUrl(paymentData.payment_url);
+    setStep("crypto-checkout");
+    setSubmitting(false);
+    window.open(paymentData.payment_url, "_blank");
+  };
+
   const handleSubmitOrder = async () => {
     if (isCrypto) {
       return handleCryptoPayment();
+    }
+
+    // If AjkerPay enabled for manual methods, use auto payment
+    if (ajkerpayEnabled && !isCrypto) {
+      return handleAjkerPayPayment();
     }
 
     if (!transactionId.trim()) {
