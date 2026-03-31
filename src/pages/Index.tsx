@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
 import PricingSection from "@/components/PricingSection";
 import Testimonials from "@/components/Testimonials";
+import OurReserves from "@/components/OurReserves";
 import RecentPurchases from "@/components/RecentPurchases";
 import Footer from "@/components/Footer";
 import OrderFlow from "@/components/OrderFlow";
