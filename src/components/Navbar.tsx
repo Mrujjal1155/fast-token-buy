@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import OperatorStatus from "@/components/OperatorStatus";
 import HeaderNotice from "@/components/HeaderNotice";
 
@@ -12,8 +13,9 @@ const Navbar = () => (
       <div className="hidden md:flex flex-1 justify-center">
         <OperatorStatus />
       </div>
-      {/* Empty div to balance flex layout */}
-      <div className="hidden md:block w-[200px]" />
+      <Button variant="outline" size="sm" asChild>
+        <Link to="/track">📦 Track Order</Link>
+      </Button>
     </div>
     <HeaderNotice />
   </header>
