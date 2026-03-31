@@ -15,8 +15,9 @@ interface OrderFlowProps {
   onBack: () => void;
 }
 
-const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
-  const [step, setStep] = useState<Step>("email");
+const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) => {
+  const [chosenPackage, setChosenPackage] = useState<CreditPackage | null>(initialPackage || null);
+  const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<string>(paymentMethods[0].id);
   const [transactionId, setTransactionId] = useState("");
