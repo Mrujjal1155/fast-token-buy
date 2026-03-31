@@ -217,7 +217,9 @@ const AdminDashboard = () => {
                     ) : (
                       filtered.map((order) => (
                         <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
-                          <td className="p-4 font-mono text-xs text-foreground">{order.order_id}</td>
+                          <td className="p-4 font-mono text-xs text-foreground">
+                            <button onClick={() => { navigator.clipboard.writeText(order.order_id); }} className="hover:text-primary transition" title="Copy">{order.order_id}</button>
+                          </td>
                           <td className="p-4 text-foreground">{order.email}</td>
                           <td className="p-4 text-foreground">{order.credits}</td>
                           <td className="p-4 text-foreground">৳{order.amount}</td>
