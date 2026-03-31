@@ -102,7 +102,7 @@ const TrackOrder = () => {
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className="h-12 bg-secondary border-border/50"
             />
-            <Button variant="hero" size="lg" onClick={handleSearch} disabled={loading}>
+            <Button variant="hero" size="lg" onClick={() => handleSearch()} disabled={loading}>
               <Search className="w-5 h-5" />
             </Button>
           </div>
