@@ -76,12 +76,17 @@ const AdminDashboard = () => {
     navigate("/admin");
   };
 
-  const filtered = orders.filter(
-    (o) =>
+  const filtered = orders.filter((o) => {
+    const matchesSearch =
       o.order_id.toLowerCase().includes(search.toLowerCase()) ||
       o.email.toLowerCase().includes(search.toLowerCase()) ||
-      o.transaction_id.toLowerCase().includes(search.toLowerCase())
-  );
+      o.transaction_id.toLowerCase().includes(search.toLowerCase());
+    const matchesPayment =
+      paymentFilter === "all" ||
+      (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method === paymentFilter);
+    const matchesStatus = statusFilter === "all" || o.status === statusFilter;
+    return matchesSearch && matchesPayment && matchesStatus;
+  });
 
   const stats = {
     total: orders.length,
