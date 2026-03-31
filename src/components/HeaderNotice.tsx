@@ -7,13 +7,15 @@ const HeaderNotice = () => {
   if (!visible) return null;
 
   return (
-    <div className="bg-primary/10 border-b border-primary/20 text-primary text-center text-sm py-2 px-4 relative">
-      <span className="font-medium">
-        🎉 Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে।
-      </span>
+    <div className="bg-primary/80 text-primary-foreground py-2 px-4 relative overflow-hidden">
+      <div className="animate-marquee whitespace-nowrap font-medium text-sm">
+        🎉 Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! 🎉
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        🎉 Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! 🎉
+      </div>
       <button
         onClick={() => setVisible(false)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/60 hover:text-primary transition"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-foreground/70 hover:text-primary-foreground transition z-10"
       >
         <X className="w-4 h-4" />
       </button>
