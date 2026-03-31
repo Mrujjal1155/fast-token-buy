@@ -144,8 +144,14 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       return;
     }
 
-    // Redirect to BlinkPay checkout
-    window.location.href = paymentData.payment_url;
+    // Store payment URL and show checkout step
+    setOrderId(orderData.order_id);
+    setCryptoPaymentUrl(paymentData.payment_url);
+    setStep("crypto-checkout");
+    setSubmitting(false);
+
+    // Also try to open in new tab
+    window.open(paymentData.payment_url, "_blank");
   };
 
   const handleSubmitOrder = async () => {
