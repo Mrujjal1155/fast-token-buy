@@ -23,6 +23,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
