@@ -278,7 +278,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span className="text-muted-foreground text-sm">{email}</span>
           </div>
           <div className="flex justify-between text-foreground">
-            <span>Subtotal</span>
+            <span>সাবটোটাল</span>
             <span>৳{chosenPackage?.price}</span>
           </div>
 
