@@ -505,7 +505,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             onClick={step === "package" ? onBack : () => setStep(steps[currentStepIndex - 1])}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-4 md:mb-6 text-sm"
           >
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> পেছনে
           </button>
         )}
 
