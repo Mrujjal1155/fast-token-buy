@@ -10,7 +10,6 @@ interface PricingSectionProps {
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
-      {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#7B61FF]/5 blur-[150px] pointer-events-none" />
 
       <div className="container px-4 relative z-10">
@@ -21,9 +20,9 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
           className="text-center mb-10 md:mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            Choose Your <span className="text-gradient-primary">Package</span>
+            আপনার <span className="text-gradient-primary">প্যাকেজ</span> বাছাই করুন
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">Simple pricing. No hidden fees.</p>
+          <p className="text-muted-foreground text-base md:text-lg">সহজ মূল্য। কোনো গোপন চার্জ নেই।</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
@@ -44,7 +43,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
               {pkg.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                   <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold shadow-glow">
-                    <Star className="w-3 h-3" /> Most Popular
+                    <Star className="w-3 h-3" /> সবচেয়ে জনপ্রিয়
                   </div>
                 </div>
               )}
@@ -58,19 +57,19 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
 
                 <div className="mb-4 md:mb-6">
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-1">
-                    {pkg.credits} Credits
+                    {pkg.credits} ক্রেডিট
                   </h3>
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl md:text-4xl font-bold text-gradient-primary">৳{pkg.price}</span>
-                    <span className="text-muted-foreground text-sm">BDT</span>
+                    <span className="text-muted-foreground text-sm">টাকা</span>
                   </div>
                   <p className="text-muted-foreground text-xs md:text-sm mt-1">
-                    ৳{(pkg.price / pkg.credits).toFixed(2)} per credit
+                    প্রতি ক্রেডিট ৳{(pkg.price / pkg.credits).toFixed(2)}
                   </p>
                 </div>
 
                 <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
-                  {["Instant delivery", "24/7 support", "Secure payment"].map((f) => (
+                  {["তাৎক্ষণিক ডেলিভারি", "২৪/৭ সহায়তা", "নিরাপদ পেমেন্ট"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
                       <Check className="w-4 h-4 text-[#4D8DFF] shrink-0" />
                       {f}
@@ -84,7 +83,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                   className="w-full"
                   onClick={() => onSelectPackage(pkg)}
                 >
-                  Buy Now
+                  এখনই কিনুন
                 </Button>
               </div>
             </motion.div>

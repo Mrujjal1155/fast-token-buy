@@ -11,10 +11,10 @@ import type { Tables } from "@/integrations/supabase/types";
 type Order = Tables<"orders">;
 
 const statusConfig: Record<string, { icon: React.ElementType; label: string; className: string }> = {
-  pending: { icon: Clock, label: "Pending", className: "text-yellow-400 bg-yellow-400/10" },
-  processing: { icon: Loader2, label: "Processing", className: "text-blue-400 bg-blue-400/10" },
-  completed: { icon: CheckCircle, label: "Completed", className: "text-primary bg-primary/10" },
-  failed: { icon: AlertCircle, label: "Failed", className: "text-destructive bg-destructive/10" },
+  pending: { icon: Clock, label: "অপেক্ষমাণ", className: "text-yellow-400 bg-yellow-400/10" },
+  processing: { icon: Loader2, label: "প্রক্রিয়াধীন", className: "text-blue-400 bg-blue-400/10" },
+  completed: { icon: CheckCircle, label: "সম্পন্ন", className: "text-primary bg-primary/10" },
+  failed: { icon: AlertCircle, label: "ব্যর্থ", className: "text-destructive bg-destructive/10" },
 };
 
 const TrackOrder = () => {
@@ -50,7 +50,6 @@ const TrackOrder = () => {
     setLoading(false);
   }, [query]);
 
-  // Realtime subscription for the tracked order
   useEffect(() => {
     if (!order) return;
 
@@ -78,7 +77,7 @@ const TrackOrder = () => {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-3 md:p-4">
       <div className="w-full max-w-md">
         <Link to="/" className="text-muted-foreground hover:text-foreground text-sm mb-6 block">
-          ← Back to Home
+          ← হোমে ফিরুন
         </Link>
 
         <motion.div
@@ -90,13 +89,13 @@ const TrackOrder = () => {
             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Search className="w-7 h-7 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Track Your Order</h2>
-            <p className="text-muted-foreground">Enter your Order ID or email address</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">অর্ডার ট্র্যাক করুন</h2>
+            <p className="text-muted-foreground">আপনার অর্ডার আইডি বা ইমেইল লিখুন</p>
           </div>
 
           <div className="flex gap-2 mb-6">
             <Input
-              placeholder="Order ID or Email"
+              placeholder="অর্ডার আইডি বা ইমেইল"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -110,37 +109,37 @@ const TrackOrder = () => {
           {searched && !order && (
             <div className="text-center py-6">
               <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground">No order found. Check your Order ID or email.</p>
+              <p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি। অর্ডার আইডি বা ইমেইল যাচাই করুন।</p>
             </div>
           )}
 
           {order && status && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Order</span>
+                <span className="text-sm text-muted-foreground">অর্ডার</span>
                 <div className="flex items-center gap-1.5">
                   <span className="font-mono font-bold text-foreground">{order.order_id}</span>
                   <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!" }); }} className="p-1 rounded hover:bg-secondary transition"><Copy className="w-3.5 h-3.5 text-muted-foreground" /></button>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
+                <span className="text-sm text-muted-foreground">স্ট্যাটাস</span>
                 <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>
                   <status.icon className="w-4 h-4" />
                   {status.label}
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Package</span>
-                <span className="text-foreground">{order.credits} Credits</span>
+                <span className="text-sm text-muted-foreground">প্যাকেজ</span>
+                <span className="text-foreground">{order.credits} ক্রেডিট</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Amount</span>
+                <span className="text-sm text-muted-foreground">মূল্য</span>
                 <span className="text-foreground">৳{order.amount}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Date</span>
-                <span className="text-foreground text-sm">{new Date(order.created_at).toLocaleDateString()}</span>
+                <span className="text-sm text-muted-foreground">তারিখ</span>
+                <span className="text-foreground text-sm">{new Date(order.created_at).toLocaleDateString("bn-BD")}</span>
               </div>
             </motion.div>
           )}

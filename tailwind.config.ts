@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Poppins"', 'sans-serif'],
-        body: ['"Inter"', 'sans-serif'],
+        display: ['"Noto Sans Bengali"', '"Hind Siliguri"', '"Poppins"', 'sans-serif'],
+        body: ['"Hind Siliguri"', '"Noto Sans Bengali"', '"Inter"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

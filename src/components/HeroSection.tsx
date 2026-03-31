@@ -29,25 +29,25 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
             className="inline-flex items-center gap-2 px-4 md:px-5 py-2 rounded-full glass mb-6 md:mb-8 animate-pulse-glow"
           >
             <Zap className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#FF7A18]" />
-            <span className="text-xs md:text-sm font-medium text-gradient-primary">Limited Time Offer — Save 24%</span>
+            <span className="text-xs md:text-sm font-medium text-gradient-primary">সীমিত সময়ের অফার — ২৪% ছাড়</span>
           </motion.div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-4 md:mb-6 leading-tight">
-            Get <span className="text-gradient-primary">105 Credits</span>
+            পান <span className="text-gradient-primary">১০৫ ক্রেডিট</span>
             <br />
-            for just <span className="text-gradient-primary">৳80</span>
+            মাত্র <span className="text-gradient-primary">৳৮০</span> তে
           </h1>
 
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto mb-8 md:mb-10 px-2">
-            Power up your Lovable projects with credits. Instant delivery, secure payments, and 24/7 support.
+            আপনার Lovable প্রজেক্টে ক্রেডিট যোগ করুন। তাৎক্ষণিক ডেলিভারি, নিরাপদ পেমেন্ট এবং ২৪/৭ সহায়তা।
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
             <Button variant="hero" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-[14px]" onClick={onBuyNow}>
-              Buy Now <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1" />
+              এখনই কিনুন <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1" />
             </Button>
             <Button variant="outline" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-[14px] border-border/50 hover:border-[#7B61FF]/50 transition-all duration-300" onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}>
-              View Packages
+              প্যাকেজ দেখুন
             </Button>
           </div>
         </motion.div>
