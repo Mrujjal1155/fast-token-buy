@@ -35,7 +35,6 @@ const RecentPurchases = () => {
     };
     fetchOrders();
 
-    // Realtime subscription
     const channel = supabase
       .channel("recent-orders")
       .on(
@@ -59,13 +58,13 @@ const RecentPurchases = () => {
   if (loading || orders.length === 0) return null;
 
   return (
-    <section className="py-16 bg-secondary/20">
-      <div className="container">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+    <section className="py-10 md:py-16 bg-secondary/20">
+      <div className="container px-4">
+        <div className="text-center mb-8 md:mb-10">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
             সাম্প্রতিক <span className="text-gradient-primary">অর্ডারসমূহ</span>
           </h2>
-          <p className="text-muted-foreground">রিয়েলটাইম অর্ডার আপডেট</p>
+          <p className="text-muted-foreground text-sm md:text-base">রিয়েলটাইম অর্ডার আপডেট</p>
         </div>
 
         <div className="max-w-2xl mx-auto space-y-2">
@@ -80,22 +79,22 @@ const RecentPurchases = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="flex items-center justify-between gap-3 bg-card border border-border/20 rounded-xl px-4 py-3"
+                  className="flex items-center justify-between gap-2 md:gap-3 bg-card border border-border/20 rounded-xl px-3 md:px-4 py-2.5 md:py-3"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Package className="w-4 h-4 text-primary" />
+                  <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                    <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Package className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
+                      <p className="text-xs md:text-sm font-medium text-foreground truncate">
                         {maskEmail(order.email)} — {order.credits} Credits
                       </p>
-                      <p className="text-xs text-muted-foreground font-mono">{order.order_id}</p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground font-mono truncate">{order.order_id}</p>
                     </div>
                   </div>
-                  <div className={`flex items-center gap-1.5 shrink-0 ${st.className}`}>
-                    <StatusIcon className={`w-4 h-4 ${order.status === "processing" ? "animate-spin" : ""}`} />
-                    <span className="text-xs font-medium">{st.label}</span>
+                  <div className={`flex items-center gap-1 md:gap-1.5 shrink-0 ${st.className}`}>
+                    <StatusIcon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${order.status === "processing" ? "animate-spin" : ""}`} />
+                    <span className="text-[10px] md:text-xs font-medium">{st.label}</span>
                   </div>
                 </motion.div>
               );

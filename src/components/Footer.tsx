@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
 const Footer = () => (
-  <footer className="border-t border-border/30 py-12">
-    <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
+  <footer className="border-t border-border/30 py-8 md:py-12">
+    <div className="container px-4 flex flex-col md:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-2">
         <img src="/logo-icon.png" alt="Lovable Credits" className="w-6 h-6" />
         <span className="font-display font-bold text-foreground">Lovable Credits</span>
