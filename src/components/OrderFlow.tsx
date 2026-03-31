@@ -572,7 +572,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         </div>
         <h2 className="text-2xl font-bold text-foreground">পেমেন্ট সম্পন্ন করুন 🔐</h2>
         <p className="text-muted-foreground">
-          নিচের বাটনে ক্লিক করুন এবং সিকিউর BlinkPay পেজে পেমেন্ট করুন। সব নিরাপদ!
+          নিচের বাটনে ক্লিক করুন এবং সিকিউর পেমেন্ট পেজে পেমেন্ট করুন। সব নিরাপদ!
         </p>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
           <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
