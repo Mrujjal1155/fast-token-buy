@@ -424,7 +424,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             </div>
 
             <Input
-              placeholder="Enter Transaction ID"
+              placeholder="ট্রানজেকশন আইডি লিখুন"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
               className="h-12 bg-secondary border-border/50 text-center"
