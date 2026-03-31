@@ -6,11 +6,11 @@ import type { Tables } from "@/integrations/supabase/types";
 
 type Order = Tables<"orders">;
 
-const statusConfig: Record<string, { icon: typeof Clock; label: string; className: string }> = {
-  pending: { icon: Clock, label: "Pending", className: "text-yellow-500" },
-  processing: { icon: Loader2, label: "Processing", className: "text-blue-400" },
-  completed: { icon: CheckCircle, label: "Completed", className: "text-emerald-500" },
-  failed: { icon: AlertCircle, label: "Failed", className: "text-red-500" },
+const statusConfig: Record<string, { icon: typeof Clock; label: string; color: string; bgColor: string }> = {
+  pending: { icon: Clock, label: "Pending", color: "text-yellow-400", bgColor: "bg-yellow-400/10" },
+  processing: { icon: Loader2, label: "Processing", color: "text-blue-400", bgColor: "bg-blue-400/10" },
+  completed: { icon: CheckCircle, label: "Completed", color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
+  failed: { icon: AlertCircle, label: "Failed", color: "text-red-400", bgColor: "bg-red-400/10" },
 };
 
 const maskEmail = (email: string) => {
@@ -58,8 +58,11 @@ const RecentPurchases = () => {
   if (loading || orders.length === 0) return null;
 
   return (
-    <section className="py-10 md:py-16 bg-secondary/20">
-      <div className="container px-4">
+    <section className="py-10 md:py-16 relative">
+      {/* Subtle glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-[#FF3CAC]/5 blur-[120px] pointer-events-none" />
+
+      <div className="container px-4 relative z-10">
         <div className="text-center mb-8 md:mb-10">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
             সাম্প্রতিক <span className="text-gradient-primary">অর্ডারসমূহ</span>
@@ -79,11 +82,11 @@ const RecentPurchases = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="flex items-center justify-between gap-2 md:gap-3 bg-card border border-border/20 rounded-xl px-3 md:px-4 py-2.5 md:py-3"
+                  className="flex items-center justify-between gap-2 md:gap-3 glass rounded-xl px-3 md:px-4 py-2.5 md:py-3 transition-all duration-300 hover:border-border/40"
                 >
                   <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                    <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Package className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
+                    <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#7B61FF]/10 flex items-center justify-center shrink-0">
+                      <Package className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#7B61FF]" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs md:text-sm font-medium text-foreground truncate">
@@ -92,7 +95,7 @@ const RecentPurchases = () => {
                       <p className="text-[10px] md:text-xs text-muted-foreground font-mono truncate">{order.order_id}</p>
                     </div>
                   </div>
-                  <div className={`flex items-center gap-1 md:gap-1.5 shrink-0 ${st.className}`}>
+                  <div className={`flex items-center gap-1 md:gap-1.5 shrink-0 px-2.5 py-1 rounded-full ${st.color} ${st.bgColor}`}>
                     <StatusIcon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${order.status === "processing" ? "animate-spin" : ""}`} />
                     <span className="text-[10px] md:text-xs font-medium">{st.label}</span>
                   </div>

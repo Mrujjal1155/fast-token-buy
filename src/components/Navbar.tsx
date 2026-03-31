@@ -5,9 +5,8 @@ import OperatorStatus from "@/components/OperatorStatus";
 import HeaderNotice from "@/components/HeaderNotice";
 
 const Navbar = () => {
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20">
+    <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
       {/* Top bar */}
       <div className="container flex items-center justify-between py-2.5 md:py-4">
         <Link to="/" className="flex items-center gap-2 md:gap-3">
