@@ -13,7 +13,7 @@ const OperatorStatus = () => {
   });
 
   return (
-    <div className="flex flex-col items-center gap-1.5 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm w-full md:w-auto">
+    <div className="flex flex-col items-center gap-1 px-3 md:px-6 py-2 md:py-3 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm w-full md:w-auto">
       <div className="flex items-center gap-2">
         <UserCircle className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground" />
         <span className="text-xs md:text-sm text-muted-foreground">Operator:</span>
