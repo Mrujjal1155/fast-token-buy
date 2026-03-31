@@ -247,8 +247,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Mail className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Enter Your Email</h2>
-          <p className="text-muted-foreground">Credits will be delivered to this email</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার ইমেইল লিখুন</h2>
+          <p className="text-muted-foreground">এই ইমেইলে ক্রেডিট পাঠানো হবে</p>
         </div>
         <Input
           type="email"
