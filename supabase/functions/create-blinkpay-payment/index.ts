@@ -40,6 +40,12 @@ serve(async (req) => {
 
     const { amount, order_id, token, network, customer_email, return_url } = parsed.data;
 
+    // Convert BDT to USD (1 USD = 130 BDT)
+    const BDT_TO_USD_RATE = 130;
+    const amountInUSD = parseFloat((amount / BDT_TO_USD_RATE).toFixed(2));
+
+    console.log(`Converting: ৳${amount} BDT → $${amountInUSD} USD (rate: 1 USD = ${BDT_TO_USD_RATE} BDT)`);
+
     // Build callback URL pointing to our webhook edge function
     const callback_url = `${SUPABASE_URL}/functions/v1/blinkpay-webhook`;
 
@@ -51,7 +57,7 @@ serve(async (req) => {
         'x-api-secret': BLINKPAY_API_SECRET,
       },
       body: JSON.stringify({
-        amount,
+        amount: amountInUSD,
         token,
         network,
         order_id,
