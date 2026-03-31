@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
@@ -7,16 +6,17 @@ import PricingSection from "@/components/PricingSection";
 import RecentPurchases from "@/components/RecentPurchases";
 import Footer from "@/components/Footer";
 import OrderFlow from "@/components/OrderFlow";
-import { type CreditPackage, packages } from "@/lib/packages";
+import { type CreditPackage } from "@/lib/packages";
 
 const Index = () => {
+  const [showOrderFlow, setShowOrderFlow] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null);
 
-  if (selectedPackage) {
+  if (showOrderFlow) {
     return (
       <OrderFlow
         selectedPackage={selectedPackage}
-        onBack={() => setSelectedPackage(null)}
+        onBack={() => { setShowOrderFlow(false); setSelectedPackage(null); }}
       />
     );
   }
@@ -24,9 +24,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection onBuyNow={() => setSelectedPackage(packages[1])} />
+      <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
-      <PricingSection onSelectPackage={setSelectedPackage} />
+      <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
       <Footer />
       <RecentPurchases />
     </div>
