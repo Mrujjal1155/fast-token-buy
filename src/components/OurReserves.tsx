@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Coins, CheckCircle, Users, Clock, ShieldCheck, TrendingUp } from "lucide-react";
+import { Package, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Reserve {
@@ -10,24 +10,6 @@ interface Reserve {
   icon: string;
   sort_order: number;
 }
-
-const iconMap: Record<string, React.ElementType> = {
-  coins: Coins,
-  "check-circle": CheckCircle,
-  users: Users,
-  clock: Clock,
-  shield: ShieldCheck,
-  trending: TrendingUp,
-};
-
-const colorMap: Record<string, string> = {
-  coins: "#FF7A18",
-  "check-circle": "#4D8DFF",
-  users: "#FF3CAC",
-  clock: "#7B61FF",
-  shield: "#4D8DFF",
-  trending: "#FF7A18",
-};
 
 const OurReserves = () => {
   const [reserves, setReserves] = useState<Reserve[]>([]);
@@ -57,37 +39,47 @@ const OurReserves = () => {
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-14"
         >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-4">
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400">লাইভ স্টক আপডেট</span>
+          </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            কেন আমাদের <span className="text-gradient-primary">বিশ্বাস</span> করবেন?
+            আমাদের <span className="text-gradient-primary">স্টক রিজার্ভ</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">সংখ্যাই বলে দিচ্ছে — আমরা কথা রাখি</p>
+          <p className="text-muted-foreground text-base md:text-lg">প্রতিটি প্যাকেজে পর্যাপ্ত স্টক — দেরি না করে অর্ডার করুন!</p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
-          {reserves.map((r, i) => {
-            const Icon = iconMap[r.icon] || Coins;
-            const color = colorMap[r.icon] || "#FF7A18";
-            return (
-              <motion.div
-                key={r.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="glass rounded-2xl p-5 md:p-6 text-center hover:shadow-glow transition-shadow duration-300"
-              >
-                <div
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4"
-                  style={{ backgroundColor: `${color}15` }}
-                >
-                  <Icon className="w-6 h-6 md:w-7 md:h-7" style={{ color }} />
-                </div>
-                <p className="text-2xl md:text-3xl font-bold text-foreground mb-1">{r.amount}</p>
-                <p className="text-xs md:text-sm text-muted-foreground">{r.label}</p>
-              </motion.div>
-            );
-          })}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
+          {reserves.map((r, i) => (
+            <motion.div
+              key={r.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.12, duration: 0.5 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="glass rounded-2xl p-5 md:p-6 text-center hover:shadow-glow transition-shadow duration-300 relative overflow-hidden"
+            >
+              {/* Background glow */}
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
+
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 bg-primary/10">
+                <Package className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+              </div>
+
+              <p className="text-lg md:text-xl font-bold text-foreground mb-1">{r.label}</p>
+
+              <div className="flex items-center justify-center gap-1.5 mb-2">
+                <span className="text-3xl md:text-4xl font-bold text-gradient-primary">{r.amount}</span>
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">প্যাকেজ এভেইলেবল</p>
+
+              {/* Stock indicator bar */}
+              <div className="mt-3 w-full h-1.5 rounded-full bg-border/30 overflow-hidden">
+                <div className="h-full rounded-full bg-emerald-400 animate-pulse" style={{ width: `${Math.min(Number(r.amount) > 0 ? 70 + Math.random() * 30 : 0, 100)}%` }} />
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
