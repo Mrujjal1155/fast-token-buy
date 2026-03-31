@@ -83,6 +83,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding-top: 0.1em;
+    line-height: 1.4;
   }
 
   .bg-gradient-primary {
