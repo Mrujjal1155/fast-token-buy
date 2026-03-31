@@ -289,7 +289,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <div className="relative flex-1">
                   <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    placeholder="Coupon code"
+                    placeholder="কুপন কোড"
                     value={couponCode}
                     onChange={(e) => { setCouponCode(e.target.value); setCouponMessage(""); }}
                     className="h-10 bg-background border-border/50 pl-9 uppercase"
