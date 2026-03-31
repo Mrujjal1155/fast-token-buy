@@ -266,7 +266,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     summary: (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Order Summary</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">অর্ডার সারাংশ</h2>
         </div>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
