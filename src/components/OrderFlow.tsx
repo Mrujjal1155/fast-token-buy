@@ -225,10 +225,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-foreground text-lg">{pkg.credits} Credits</span>
+                    <span className="font-bold text-foreground text-lg">{pkg.credits} ক্রেডিট</span>
                     {pkg.popular && (
                       <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                        <Star className="w-3 h-3" /> Popular
+                        <Star className="w-3 h-3" /> জনপ্রিয়
                       </span>
                     )}
                   </div>
