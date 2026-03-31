@@ -309,10 +309,8 @@ const AdminDashboard = () => {
           <AdminReserves />
         ) : activeTab === "notifications" ? (
           <AdminNotifications />
-        ) : activeTab === "payments" ? (
-          <AdminPaymentMethods />
         ) : (
-          <AdminAjkerPay />
+          <AdminPaymentMethods />
         )}
       </div>
     </div>
