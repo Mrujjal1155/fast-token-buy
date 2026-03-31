@@ -54,6 +54,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         let ajkerEnabled = false;
         const enabledMap: Record<string, boolean> = {};
         const numberMap: Record<string, string> = {};
+        const iconMap: Record<string, string> = {};
 
         data.forEach((s) => {
           if (s.key === "ajkerpay_enabled") {
@@ -64,6 +65,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           } else if (s.key.endsWith("_number")) {
             const id = s.key.replace("payment_method_", "").replace("_number", "");
             numberMap[id] = s.value;
+          } else if (s.key.endsWith("_icon") && s.value) {
+            const id = s.key.replace("payment_method_", "").replace("_icon", "");
+            iconMap[id] = s.value;
           }
         });
 
