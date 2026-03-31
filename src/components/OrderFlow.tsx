@@ -444,7 +444,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <h2 className="text-2xl font-bold text-foreground">অর্ডার জমা হয়েছে!</h2>
         <p className="text-muted-foreground">আপনার অর্ডার প্রক্রিয়াধীন। ক্রেডিট <span className="text-foreground font-medium">{email}</span> এ পাঠানো হবে</p>
         <div className="bg-secondary/50 rounded-xl p-6">
-          <p className="text-sm text-muted-foreground mb-1">Your Order ID</p>
+          <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-2xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
