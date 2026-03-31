@@ -107,6 +107,39 @@ export type Database = {
         }
         Relationships: []
       }
+      reserves: {
+        Row: {
+          amount: string
+          created_at: string
+          icon: string
+          id: string
+          is_visible: boolean
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          amount: string
+          created_at?: string
+          icon?: string
+          id?: string
+          is_visible?: boolean
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          is_visible?: boolean
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
