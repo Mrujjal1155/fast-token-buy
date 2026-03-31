@@ -204,6 +204,43 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   };
 
   const stepContent: Record<Step, React.ReactNode> = {
+    package: (
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Package className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">প্যাকেজ বাছাই করুন</h2>
+          <p className="text-muted-foreground">আপনার পছন্দের প্যাকেজ সিলেক্ট করুন</p>
+        </div>
+        <div className="space-y-3">
+          {allPackages.map((pkg) => (
+            <button
+              key={pkg.id}
+              onClick={() => { setChosenPackage(pkg); setStep("email"); }}
+              className={`w-full text-left rounded-xl border p-4 transition-all hover:border-primary/50 hover:bg-secondary/50 ${
+                chosenPackage?.id === pkg.id ? "border-primary bg-primary/5" : "border-border/30 bg-secondary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-foreground text-lg">{pkg.credits} Credits</span>
+                    {pkg.popular && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
+                        <Star className="w-3 h-3" /> Popular
+                      </span>
+                    )}
+                  </div>
+                  {pkg.savings && <span className="text-xs text-primary font-medium">{pkg.savings}</span>}
+                </div>
+                <span className="text-2xl font-bold text-gradient-primary">৳{pkg.price}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    ),
     email: (
       <div className="space-y-6">
         <div className="text-center">
