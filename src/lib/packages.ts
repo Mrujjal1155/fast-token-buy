@@ -8,9 +8,9 @@ export interface CreditPackage {
 }
 
 export const packages: CreditPackage[] = [
-  { id: "pkg-50", credits: 50, price: 40, currency: "BDT" },
-  { id: "pkg-105", credits: 105, price: 80, currency: "BDT", popular: true, savings: "২৪% সাশ্রয়" },
-  { id: "pkg-300", credits: 300, price: 200, currency: "BDT", savings: "৩৩% সাশ্রয়" },
+  { id: "pkg-50", credits: 50, price: 40, currency: "BDT", savings: "শুরু করুন এখানে" },
+  { id: "pkg-105", credits: 105, price: 80, currency: "BDT", popular: true, savings: "২৪% সাশ্রয় — সেরা ডিল!" },
+  { id: "pkg-300", credits: 300, price: 200, currency: "BDT", savings: "৩৩% সাশ্রয় — ম্যাক্স ভ্যালু!" },
 ];
 
 export const paymentMethods = [

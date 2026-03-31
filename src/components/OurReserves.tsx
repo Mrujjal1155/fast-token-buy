@@ -58,9 +58,9 @@ const OurReserves = () => {
           className="text-center mb-10 md:mb-14"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            আমাদের <span className="text-gradient-primary">রিজার্ভ</span>
+            কেন আমাদের <span className="text-gradient-primary">বিশ্বাস</span> করবেন?
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">আমাদের সক্ষমতা ও বিশ্বস্ততার প্রমাণ</p>
+          <p className="text-muted-foreground text-base md:text-lg">সংখ্যাই বলে দিচ্ছে — আমরা কথা রাখি</p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">

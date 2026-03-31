@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Star } from "lucide-react";
+import { Check, Star, Flame, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { packages, type CreditPackage } from "@/lib/packages";
 
@@ -20,9 +20,9 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
           className="text-center mb-10 md:mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            আপনার <span className="text-gradient-primary">প্যাকেজ</span> বাছাই করুন
+            কম খরচে <span className="text-gradient-primary">বেশি ক্রেডিট</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">সহজ মূল্য। কোনো গোপন চার্জ নেই।</p>
+          <p className="text-muted-foreground text-base md:text-lg">স্মার্ট ইউজাররা সেরা ডিলটা বেছে নিচ্ছে — আপনিও নিন!</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
@@ -43,15 +43,15 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
               {pkg.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                   <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold shadow-glow">
-                    <Star className="w-3 h-3" /> সবচেয়ে জনপ্রিয়
+                    <Flame className="w-3 h-3" /> সবাই এটাই নিচ্ছে!
                   </div>
                 </div>
               )}
 
               <div className="rounded-2xl bg-card p-6 md:p-8 h-full flex flex-col">
                 {pkg.savings && (
-                  <span className="text-xs font-medium text-[#FF7A18] bg-[#FF7A18]/10 px-2 py-0.5 rounded-full w-fit mb-3">
-                    {pkg.savings}
+                  <span className="text-xs font-medium text-[#FF7A18] bg-[#FF7A18]/10 px-2 py-0.5 rounded-full w-fit mb-3 flex items-center gap-1">
+                    <Zap className="w-3 h-3" /> {pkg.savings}
                   </span>
                 )}
 
@@ -64,14 +64,18 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                     <span className="text-muted-foreground text-sm">টাকা</span>
                   </div>
                   <p className="text-muted-foreground text-xs md:text-sm mt-1">
-                    প্রতি ক্রেডিট ৳{(pkg.price / pkg.credits).toFixed(2)}
+                    প্রতি ক্রেডিট মাত্র ৳{(pkg.price / pkg.credits).toFixed(2)}
                   </p>
                 </div>
 
                 <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
-                  {["তাৎক্ষণিক ডেলিভারি", "২৪/৭ সহায়তা", "নিরাপদ পেমেন্ট"].map((f) => (
+                  {[
+                    "৫ মিনিটে ডেলিভারি গ্যারান্টি",
+                    "২৪/৭ লাইভ সাপোর্ট",
+                    "১০০% নিরাপদ পেমেন্ট",
+                  ].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
-                      <Check className="w-4 h-4 text-[#4D8DFF] shrink-0" />
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -83,7 +87,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                   className="w-full"
                   onClick={() => onSelectPackage(pkg)}
                 >
-                  এখনই কিনুন
+                  {pkg.popular ? "এখনই অর্ডার করুন" : "এখনই নিন"}
                 </Button>
               </div>
             </motion.div>

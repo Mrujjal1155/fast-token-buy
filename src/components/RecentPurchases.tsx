@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Clock, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { Package, Clock, CheckCircle, Loader2, AlertCircle, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -63,10 +63,14 @@ const RecentPurchases = () => {
 
       <div className="container px-4 relative z-10">
         <div className="text-center mb-8 md:mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-4 animate-pulse-glow">
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400">লাইভ অর্ডার চলছে</span>
+          </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-            সাম্প্রতিক <span className="text-gradient-primary">অর্ডারসমূহ</span>
+            এইমাত্র <span className="text-gradient-primary">অর্ডার হচ্ছে</span>
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base">রিয়েলটাইম অর্ডার আপডেট</p>
+          <p className="text-muted-foreground text-sm md:text-base">অন্যরা নিচ্ছে — আপনি কি পিছিয়ে থাকবেন?</p>
         </div>
 
         <div className="max-w-2xl mx-auto space-y-2">
@@ -89,7 +93,7 @@ const RecentPurchases = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs md:text-sm font-medium text-foreground truncate">
-                        {maskEmail(order.email)} — {order.credits} ক্রেডিট
+                        {maskEmail(order.email)} — {order.credits} ক্রেডিট নিয়েছে
                       </p>
                       <p className="text-[10px] md:text-xs text-muted-foreground font-mono truncate">{order.order_id}</p>
                     </div>

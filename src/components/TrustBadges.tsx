@@ -2,9 +2,9 @@ import { Shield, Zap, Headphones } from "lucide-react";
 import { motion } from "framer-motion";
 
 const badges = [
-  { icon: Zap, title: "তাৎক্ষণিক ডেলিভারি", desc: "মিনিটের মধ্যে ক্রেডিট পৌঁছে যাবে", color: "#FF7A18" },
-  { icon: Shield, title: "নিরাপদ পেমেন্ট", desc: "১০০% নিরাপদ লেনদেন", color: "#7B61FF" },
-  { icon: Headphones, title: "২৪/৭ সহায়তা", desc: "সবসময় আপনার পাশে", color: "#4D8DFF" },
+  { icon: Zap, title: "৫ মিনিটে ডেলিভারি", desc: "অর্ডার দিন, মিনিটে পান — গ্যারান্টি!", color: "#FF7A18" },
+  { icon: Shield, title: "১০০% নিরাপদ", desc: "আপনার টাকা ও তথ্য সম্পূর্ণ সুরক্ষিত", color: "#7B61FF" },
+  { icon: Headphones, title: "২৪/৭ লাইভ সাপোর্ট", desc: "যেকোনো সমস্যায় আমরা পাশে আছি", color: "#4D8DFF" },
 ];
 
 const TrustBadges = () => {
