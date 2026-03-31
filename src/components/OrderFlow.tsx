@@ -259,7 +259,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
         />
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleEmailSubmit}>
-          Continue
+          পরবর্তী
         </Button>
       </div>
     ),
