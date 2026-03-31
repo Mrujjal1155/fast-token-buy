@@ -136,9 +136,16 @@ const AdminDashboard = () => {
       <header className="border-b border-border/30 bg-card">
         <div className="container flex items-center justify-between h-16">
           <h1 className="text-xl font-bold text-foreground">Admin Dashboard</h1>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Power className={`w-4 h-4 ${operatorOnline ? "text-green-400" : "text-red-400"}`} />
+              <span className="text-sm text-muted-foreground hidden sm:inline">অপারেটর</span>
+              <Switch checked={operatorOnline} onCheckedChange={toggleOperator} />
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" /> Logout
+            </Button>
+          </div>
         </div>
         <div className="container flex gap-1 -mb-px">
           {[
