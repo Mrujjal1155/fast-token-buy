@@ -78,6 +78,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           .map((m) => ({
             ...m,
             number: numberMap[m.id] || m.number,
+            iconUrl: iconMap[m.id] || undefined,
           }));
 
         setActivePaymentMethods(filtered);
