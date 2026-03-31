@@ -1,16 +1,38 @@
+import { useEffect, useState } from "react";
 import { Clock, UserCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const OperatorStatus = () => {
-  const now = new Date();
-  const hour = now.getHours();
-  const isOnline = hour >= 9 && hour < 24;
+  const [isOnline, setIsOnline] = useState(true);
 
-  const bengaliDate = now.toLocaleDateString("bn-BD", {
+  const bengaliDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "operator_status")
+        .maybeSingle();
+      if (data) setIsOnline(data.value === "online");
+    };
+    fetch();
+
+    const channel = supabase
+      .channel("operator-status")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "site_settings" }, (payload) => {
+        const row = payload.new as { key: string; value: string };
+        if (row.key === "operator_status") setIsOnline(row.value === "online");
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-1 px-3 md:px-6 py-2 md:py-3 rounded-xl glass w-full md:w-auto">
