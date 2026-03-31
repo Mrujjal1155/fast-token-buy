@@ -270,8 +270,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         </div>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
-            <span>Package</span>
-            <span className="font-semibold">{chosenPackage?.credits} Credits</span>
+            <span>প্যাকেজ</span>
+            <span className="font-semibold">{chosenPackage?.credits} ক্রেডিট</span>
           </div>
           <div className="flex justify-between text-foreground">
             <span>Email</span>
