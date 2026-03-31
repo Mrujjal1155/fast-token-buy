@@ -106,6 +106,25 @@ const AdminDashboard = () => {
             <LogOut className="w-4 h-4 mr-2" /> Logout
           </Button>
         </div>
+        <div className="container flex gap-1 -mb-px">
+          {[
+            { id: "orders" as const, label: "Orders", icon: Package },
+            { id: "coupons" as const, label: "Coupons", icon: Tag },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${
+                activeTab === tab.id
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </header>
 
       <div className="container py-8 space-y-8">
