@@ -429,7 +429,10 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
         </p>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
           <p className="text-sm text-muted-foreground mb-1">Order ID</p>
-          <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
+          <div className="flex items-center justify-center gap-2">
+            <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
+            <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
+          </div>
         </div>
         <a
           href={cryptoPaymentUrl}
