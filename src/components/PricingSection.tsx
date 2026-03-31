@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Check, Star, Flame, Zap } from "lucide-react";
+import { Check, Star, Flame, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { packages, type CreditPackage } from "@/lib/packages";
+import { type CreditPackage } from "@/lib/packages";
+import { usePackages } from "@/hooks/usePackages";
 
 interface PricingSectionProps {
   onSelectPackage: (pkg: CreditPackage) => void;
