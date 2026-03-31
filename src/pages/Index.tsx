@@ -24,6 +24,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <HeaderNotice />
       <Navbar />
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
