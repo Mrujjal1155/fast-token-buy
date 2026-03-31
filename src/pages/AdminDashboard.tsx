@@ -262,8 +262,10 @@ const AdminDashboard = () => {
               </div>
             </div>
           </>
-        ) : (
+        ) : activeTab === "coupons" ? (
           <AdminCoupons />
+        ) : (
+          <AdminReserves />
         )}
       </div>
     </div>
