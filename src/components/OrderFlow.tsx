@@ -37,8 +37,22 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [ajkerpayEnabled, setAjkerpayEnabled] = useState(false);
 
   const { toast } = useToast();
+
+  // Check if AjkerPay is enabled
+  useEffect(() => {
+    const checkAjkerPay = async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "ajkerpay_enabled")
+        .maybeSingle();
+      if (data) setAjkerpayEnabled(data.value === "true");
+    };
+    checkAjkerPay();
+  }, []);
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
   const isCrypto = currentPayment.type === "crypto";
