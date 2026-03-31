@@ -21,6 +21,8 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "coupons">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
+  const [paymentFilter, setPaymentFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
