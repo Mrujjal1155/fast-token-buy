@@ -9,8 +9,11 @@ interface PricingSectionProps {
 
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   return (
-    <section id="pricing" className="py-16 md:py-24">
-      <div className="container px-4">
+    <section id="pricing" className="py-16 md:py-24 relative">
+      {/* Subtle background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#7B61FF]/5 blur-[150px] pointer-events-none" />
+
+      <div className="container px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,13 +34,16 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.12, duration: 0.5 }}
-              className={`relative rounded-2xl p-[1px] ${
-                pkg.popular ? "bg-gradient-primary shadow-glow" : "bg-border/40"
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className={`relative rounded-2xl p-[1px] transition-shadow duration-300 ${
+                pkg.popular
+                  ? "bg-gradient-primary shadow-glow scale-[1.02]"
+                  : "bg-border/40 hover:shadow-glow-purple"
               }`}
             >
               {pkg.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold shadow-glow">
                     <Star className="w-3 h-3" /> Most Popular
                   </div>
                 </div>
@@ -45,7 +51,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
 
               <div className="rounded-2xl bg-card p-6 md:p-8 h-full flex flex-col">
                 {pkg.savings && (
-                  <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full w-fit mb-3">
+                  <span className="text-xs font-medium text-[#FF7A18] bg-[#FF7A18]/10 px-2 py-0.5 rounded-full w-fit mb-3">
                     {pkg.savings}
                   </span>
                 )}
@@ -66,7 +72,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                 <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
                   {["Instant delivery", "24/7 support", "Secure payment"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
-                      <Check className="w-4 h-4 text-primary shrink-0" />
+                      <Check className="w-4 h-4 text-[#4D8DFF] shrink-0" />
                       {f}
                     </li>
                   ))}
