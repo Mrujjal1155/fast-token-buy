@@ -247,8 +247,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Mail className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার ইমেইল লিখুন</h2>
-          <p className="text-muted-foreground">এই ইমেইলে ক্রেডিট পাঠানো হবে</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">কোথায় ক্রেডিট পাঠাবো? 📧</h2>
+          <p className="text-muted-foreground">যে Lovable অ্যাকাউন্টে ক্রেডিট চান, সেই ইমেইল দিন</p>
         </div>
         <Input
           type="email"
@@ -259,7 +259,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
         />
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleEmailSubmit}>
-          পরবর্তী
+          এগিয়ে যান — প্রায় শেষ! 🚀
         </Button>
       </div>
     ),
