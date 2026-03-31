@@ -8,7 +8,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   return (
-    <section className="relative min-h-[80vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-36 md:pt-20">
+    <section className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20">
       {/* Animated gradient orbs */}
       <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#FF7A18]/10 blur-[100px] md:blur-[150px] pointer-events-none animate-float-slow" />
       <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] rounded-full bg-[#FF3CAC]/8 blur-[80px] md:blur-[120px] pointer-events-none animate-float-slow" style={{ animationDelay: '-3s' }} />
