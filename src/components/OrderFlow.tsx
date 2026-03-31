@@ -419,7 +419,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Send exactly ৳{finalPrice} via {currentPayment.name} &quot;Send Money&quot; option. Then paste your Transaction ID below.
+                {currentPayment.name} এর &quot;Send Money&quot; অপশন দিয়ে ঠিক ৳{finalPrice} পাঠান। তারপর নিচে ট্রানজেকশন আইডি দিন।
               </p>
             </div>
 
