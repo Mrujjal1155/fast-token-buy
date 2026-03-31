@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, Save, Eye, EyeOff, GripVertical } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, Package } from "lucide-react";
 
 interface Reserve {
   id: string;
@@ -13,15 +13,6 @@ interface Reserve {
   sort_order: number;
   is_visible: boolean;
 }
-
-const iconOptions = [
-  { value: "coins", label: "কয়েন" },
-  { value: "check-circle", label: "চেকমার্ক" },
-  { value: "users", label: "ইউজার" },
-  { value: "clock", label: "ঘড়ি" },
-  { value: "shield", label: "শিল্ড" },
-  { value: "trending", label: "ট্রেন্ডিং" },
-];
 
 const AdminReserves = () => {
   const [reserves, setReserves] = useState<Reserve[]>([]);
@@ -55,14 +46,14 @@ const AdminReserves = () => {
     const maxOrder = reserves.length > 0 ? Math.max(...reserves.map((r) => r.sort_order)) : 0;
     const { data, error } = await supabase
       .from("reserves")
-      .insert({ label: "নতুন আইটেম", amount: "০", icon: "coins", sort_order: maxOrder + 1 })
+      .insert({ label: "50 ক্রেডিট", amount: "100", icon: "coins", sort_order: maxOrder + 1 })
       .select()
       .single();
     if (error) {
       toast({ title: "যোগ করা যায়নি", variant: "destructive" });
     } else if (data) {
       setReserves((prev) => [...prev, data as Reserve]);
-      toast({ title: "নতুন আইটেম যোগ হয়েছে" });
+      toast({ title: "নতুন প্যাকেজ স্টক যোগ হয়েছে" });
     }
   };
 
@@ -81,48 +72,50 @@ const AdminReserves = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-foreground">রিজার্ভ আইটেম</h2>
+        <div>
+          <h2 className="text-lg font-bold text-foreground">প্যাকেজ স্টক ম্যানেজমেন্ট</h2>
+          <p className="text-sm text-muted-foreground">প্রতিটি প্যাকেজে কতটি এভেইলেবল আছে সেট করুন</p>
+        </div>
         <Button variant="outline" size="sm" onClick={handleAdd}>
-          <Plus className="w-4 h-4 mr-1" /> নতুন যোগ
+          <Plus className="w-4 h-4 mr-1" /> নতুন প্যাকেজ
         </Button>
       </div>
 
       <div className="space-y-3">
         {reserves.map((r) => (
           <div key={r.id} className="bg-card border border-border/30 rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            <GripVertical className="w-4 h-4 text-muted-foreground shrink-0 hidden sm:block" />
+            <Package className="w-5 h-5 text-primary shrink-0 hidden sm:block" />
 
-            <Input
-              defaultValue={r.label}
-              placeholder="লেবেল"
-              className="h-9 bg-secondary border-border/30 text-sm flex-1"
-              onBlur={(e) => handleUpdate(r.id, "label", e.target.value)}
-            />
+            <div className="flex-1 w-full sm:w-auto">
+              <label className="text-xs text-muted-foreground mb-1 block sm:hidden">প্যাকেজ নাম</label>
+              <Input
+                defaultValue={r.label}
+                placeholder="যেমন: 50 ক্রেডিট"
+                className="h-9 bg-secondary border-border/30 text-sm"
+                onBlur={(e) => handleUpdate(r.id, "label", e.target.value)}
+              />
+            </div>
 
-            <Input
-              defaultValue={r.amount}
-              placeholder="পরিমাণ"
-              className="h-9 bg-secondary border-border/30 text-sm w-full sm:w-32"
-              onBlur={(e) => handleUpdate(r.id, "amount", e.target.value)}
-            />
+            <div className="w-full sm:w-36">
+              <label className="text-xs text-muted-foreground mb-1 block sm:hidden">এভেইলেবল সংখ্যা</label>
+              <Input
+                defaultValue={r.amount}
+                placeholder="এভেইলেবল সংখ্যা"
+                className="h-9 bg-secondary border-border/30 text-sm"
+                onBlur={(e) => handleUpdate(r.id, "amount", e.target.value)}
+              />
+            </div>
 
-            <select
-              defaultValue={r.icon}
-              onChange={(e) => handleUpdate(r.id, "icon", e.target.value)}
-              className="h-9 bg-secondary border border-border/30 rounded-md text-sm px-2 text-foreground w-full sm:w-28"
-            >
-              {iconOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-
-            <Input
-              type="number"
-              defaultValue={r.sort_order}
-              placeholder="ক্রম"
-              className="h-9 bg-secondary border-border/30 text-sm w-full sm:w-20"
-              onBlur={(e) => handleUpdate(r.id, "sort_order", parseInt(e.target.value) || 0)}
-            />
+            <div className="w-full sm:w-20">
+              <label className="text-xs text-muted-foreground mb-1 block sm:hidden">ক্রম</label>
+              <Input
+                type="number"
+                defaultValue={r.sort_order}
+                placeholder="ক্রম"
+                className="h-9 bg-secondary border-border/30 text-sm"
+                onBlur={(e) => handleUpdate(r.id, "sort_order", parseInt(e.target.value) || 0)}
+              />
+            </div>
 
             <div className="flex gap-1.5 shrink-0">
               <button
@@ -145,7 +138,7 @@ const AdminReserves = () => {
       </div>
 
       {reserves.length === 0 && (
-        <p className="text-center text-muted-foreground py-6">কোনো রিজার্ভ আইটেম নেই। উপরের বাটন দিয়ে যোগ করুন।</p>
+        <p className="text-center text-muted-foreground py-6">কোনো প্যাকেজ স্টক নেই। উপরের বাটন দিয়ে যোগ করুন।</p>
       )}
     </div>
   );
