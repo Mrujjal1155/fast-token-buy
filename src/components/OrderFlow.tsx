@@ -483,12 +483,15 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
-              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
                 selectedPayment === m.id
                   ? "bg-primary/10 border-2 border-primary text-primary"
                   : "bg-secondary border-2 border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
+              {m.iconUrl ? (
+                <img src={m.iconUrl} alt={m.name} className="w-5 h-5 rounded object-contain" />
+              ) : null}
               {m.name}
             </button>
           ))}
