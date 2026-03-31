@@ -14,13 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: Database["public"]["Enums"]["discount_type"]
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_amount: number | null
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: Database["public"]["Enums"]["discount_type"]
+          discount_value: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_amount?: number | null
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: Database["public"]["Enums"]["discount_type"]
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_amount?: number | null
+          used_count?: number
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           admin_notes: string | null
           amount: number
+          coupon_code: string | null
           created_at: string
           credits: number
           currency: string
+          discount_amount: number | null
           email: string
           id: string
           order_id: string
@@ -33,9 +74,11 @@ export type Database = {
         Insert: {
           admin_notes?: string | null
           amount: number
+          coupon_code?: string | null
           created_at?: string
           credits: number
           currency?: string
+          discount_amount?: number | null
           email: string
           id?: string
           order_id?: string
@@ -48,9 +91,11 @@ export type Database = {
         Update: {
           admin_notes?: string | null
           amount?: number
+          coupon_code?: string | null
           created_at?: string
           credits?: number
           currency?: string
+          discount_amount?: number | null
           email?: string
           id?: string
           order_id?: string
@@ -92,9 +137,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      use_coupon: { Args: { p_code: string }; Returns: undefined }
+      validate_coupon: {
+        Args: { p_amount: number; p_code: string }
+        Returns: {
+          calculated_discount: number
+          discount_type: Database["public"]["Enums"]["discount_type"]
+          discount_value: number
+          message: string
+          valid: boolean
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"
+      discount_type: "percentage" | "fixed"
       order_status: "pending" | "processing" | "completed" | "failed"
     }
     CompositeTypes: {
@@ -224,6 +281,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      discount_type: ["percentage", "fixed"],
       order_status: ["pending", "processing", "completed", "failed"],
     },
   },

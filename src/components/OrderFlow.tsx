@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -23,9 +23,18 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+
   const { toast } = useToast();
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
+  const finalPrice = Math.max(selectedPackage.price - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
@@ -33,6 +42,41 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       return;
     }
     setStep("summary");
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setValidatingCoupon(true);
+    setCouponMessage("");
+
+    const { data, error } = await supabase.rpc("validate_coupon", {
+      p_code: couponCode.trim().toUpperCase(),
+      p_amount: selectedPackage.price,
+    });
+
+    if (error || !data || data.length === 0) {
+      setCouponMessage("Failed to validate coupon");
+      setValidatingCoupon(false);
+      return;
+    }
+
+    const result = data[0];
+    if (result.valid) {
+      setCouponApplied(true);
+      setCouponDiscount(Number(result.calculated_discount));
+      setCouponMessage(result.message);
+      toast({ title: "🎉 Coupon applied!", description: `You save ৳${result.calculated_discount}` });
+    } else {
+      setCouponMessage(result.message);
+    }
+    setValidatingCoupon(false);
+  };
+
+  const removeCoupon = () => {
+    setCouponApplied(false);
+    setCouponDiscount(0);
+    setCouponCode("");
+    setCouponMessage("");
   };
 
   const handleProceedToPayment = () => setStep("payment");
@@ -44,16 +88,23 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
     }
     setSubmitting(true);
 
+    // Increment coupon usage if applied
+    if (couponApplied && couponCode) {
+      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
+    }
+
     const { data, error } = await supabase
       .from("orders")
       .insert({
         email,
         package_id: selectedPackage.id,
         credits: selectedPackage.credits,
-        amount: selectedPackage.price,
+        amount: finalPrice,
         currency: selectedPackage.currency,
         payment_method: selectedPayment,
         transaction_id: transactionId.trim(),
+        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
+        discount_amount: couponDiscount,
       })
       .select("order_id")
       .single();
@@ -112,9 +163,64 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
             <span>Email</span>
             <span className="text-muted-foreground text-sm">{email}</span>
           </div>
+          <div className="flex justify-between text-foreground">
+            <span>Subtotal</span>
+            <span>৳{selectedPackage.price}</span>
+          </div>
+
+          {/* Coupon section */}
+          {!couponApplied ? (
+            <div className="border-t border-border/30 pt-4">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Coupon code"
+                    value={couponCode}
+                    onChange={(e) => { setCouponCode(e.target.value); setCouponMessage(""); }}
+                    className="h-10 bg-background border-border/50 pl-9 uppercase"
+                    onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-10 px-4"
+                  onClick={handleApplyCoupon}
+                  disabled={validatingCoupon || !couponCode.trim()}
+                >
+                  {validatingCoupon ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
+                </Button>
+              </div>
+              {couponMessage && !couponApplied && (
+                <p className="text-xs text-destructive mt-2">{couponMessage}</p>
+              )}
+            </div>
+          ) : (
+            <div className="border-t border-border/30 pt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-primary">-৳{couponDiscount}</span>
+                  <button onClick={removeCoupon} className="text-muted-foreground hover:text-foreground">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="border-t border-border/30 pt-4 flex justify-between text-foreground">
             <span className="font-semibold">Total</span>
-            <span className="text-2xl font-bold text-gradient-primary">৳{selectedPackage.price}</span>
+            <div className="text-right">
+              {couponApplied && (
+                <span className="text-sm text-muted-foreground line-through mr-2">৳{selectedPackage.price}</span>
+              )}
+              <span className="text-2xl font-bold text-gradient-primary">৳{finalPrice}</span>
+            </div>
           </div>
         </div>
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleProceedToPayment}>
@@ -129,7 +235,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
             <CreditCard className="w-7 h-7 text-primary" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">Complete Payment</h2>
-          <p className="text-muted-foreground">Send ৳{selectedPackage.price} to complete your order</p>
+          <p className="text-muted-foreground">Send ৳{finalPrice} to complete your order</p>
         </div>
 
         <div className="flex gap-2">
@@ -157,7 +263,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Send exactly ৳{selectedPackage.price} via {currentPayment.name} &quot;Send Money&quot; option. Then paste your Transaction ID below.
+            Send exactly ৳{finalPrice} via {currentPayment.name} &quot;Send Money&quot; option. Then paste your Transaction ID below.
           </p>
         </div>
 
