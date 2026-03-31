@@ -9,6 +9,8 @@ interface PricingSectionProps {
 }
 
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
+  const { packages, loading } = usePackages();
+
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#7B61FF]/5 blur-[150px] pointer-events-none" />

@@ -301,6 +301,8 @@ const AdminDashboard = () => {
           </>
         ) : activeTab === "coupons" ? (
           <AdminCoupons />
+        ) : activeTab === "packages" ? (
+          <AdminPackages />
         ) : activeTab === "reserves" ? (
           <AdminReserves />
         ) : (
