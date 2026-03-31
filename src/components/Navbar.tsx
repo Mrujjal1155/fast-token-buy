@@ -24,34 +24,15 @@ const Navbar = () => {
             <Link to="/track">📦 Track Order</Link>
           </Button>
         </div>
-        {/* Mobile menu button */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition"
-        >
-          {menuOpen ? (
-            <X className="w-5 h-5 text-primary" />
-          ) : (
-            <div className="flex flex-col items-end gap-[5px]">
-              <span className="block h-[2.5px] w-6 rounded-full bg-primary" />
-              <span className="block h-[2.5px] w-5 rounded-full bg-primary/70" />
-              <span className="block h-[2.5px] w-4 rounded-full bg-primary/50" />
-            </div>
-          )}
-        </button>
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-border/20 bg-background/95 backdrop-blur-xl">
-          <div className="container py-4 space-y-4">
-            <OperatorStatus />
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link to="/track" onClick={() => setMenuOpen(false)}>📦 Track Order</Link>
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* Mobile: Operator + Track Order always visible */}
+      <div className="md:hidden container pb-3 space-y-3">
+        <OperatorStatus />
+        <Button variant="outline" size="sm" className="w-full" asChild>
+          <Link to="/track">📦 Track Order</Link>
+        </Button>
+      </div>
 
       <HeaderNotice />
     </header>
