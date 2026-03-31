@@ -449,7 +449,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <p className="text-2xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">Save this to track your order</p>
+          <p className="text-xs text-muted-foreground mt-2">অর্ডার ট্র্যাক করতে এটি সেভ করুন</p>
         </div>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
           Back to Home
