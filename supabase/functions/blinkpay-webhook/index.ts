@@ -39,7 +39,7 @@ serve(async (req) => {
     const { error } = await supabase
       .from('orders')
       .update({
-        status: 'completed',
+        status: 'processing',
         transaction_id: payment.tx_hash || payment.id,
       })
       .eq('order_id', orderId);
