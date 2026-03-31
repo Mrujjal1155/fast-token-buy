@@ -210,8 +210,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Package className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">প্যাকেজ বাছাই করুন</h2>
-          <p className="text-muted-foreground">আপনার পছন্দের প্যাকেজ সিলেক্ট করুন</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার প্যাকেজ বাছুন ⚡</h2>
+          <p className="text-muted-foreground">স্মার্ট ইউজাররা সেরা ডিলটাই বেছে নেয়!</p>
         </div>
         <div className="space-y-3">
           {allPackages.map((pkg) => (
@@ -228,7 +228,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                     <span className="font-bold text-foreground text-lg">{pkg.credits} ক্রেডিট</span>
                     {pkg.popular && (
                       <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                        <Star className="w-3 h-3" /> জনপ্রিয়
+                        <Star className="w-3 h-3" /> 🔥 সবাই এটাই নিচ্ছে
                       </span>
                     )}
                   </div>
