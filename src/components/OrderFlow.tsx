@@ -430,7 +430,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               className="h-12 bg-secondary border-border/50 text-center"
             />
             <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
-              {submitting ? "Submitting..." : "Submit Order"}
+              {submitting ? "জমা হচ্ছে..." : "অর্ডার জমা দিন"}
             </Button>
           </>
         )}
