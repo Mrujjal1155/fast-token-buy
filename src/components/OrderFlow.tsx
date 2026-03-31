@@ -494,6 +494,28 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
+        ) : ajkerpayEnabled ? (
+          /* AjkerPay auto payment UI */
+          <div className="space-y-4">
+            <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-sm font-medium text-emerald-400">অটো পেমেন্ট চালু</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                <span className="text-foreground font-semibold">{currentPayment.name}</span> দিয়ে{" "}
+                <span className="text-primary font-bold">৳{finalPrice}</span> পে করুন।
+                সিকিউর AjkerPay পেমেন্ট পেজে রিডাইরেক্ট হবেন।
+              </p>
+            </div>
+            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
+              {submitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং হচ্ছে...</>
+              ) : (
+                <>এখনই {currentPayment.name} দিয়ে পে করুন ⚡</>
+              )}
+            </Button>
+          </div>
         ) : (
           /* Manual payment UI */
           <>
