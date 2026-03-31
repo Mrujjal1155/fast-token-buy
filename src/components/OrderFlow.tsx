@@ -38,7 +38,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
   const [ajkerpayEnabled, setAjkerpayEnabled] = useState(false);
-  const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; number: string; color: string; type: "manual" | "crypto" }>>(paymentMethods.map((m) => ({ ...m })));
+  const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; number: string; color: string; type: "manual" | "crypto"; iconUrl?: string }>>(paymentMethods.map((m) => ({ ...m })));
 
   const { toast } = useToast();
 
@@ -54,6 +54,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         let ajkerEnabled = false;
         const enabledMap: Record<string, boolean> = {};
         const numberMap: Record<string, string> = {};
+        const iconMap: Record<string, string> = {};
 
         data.forEach((s) => {
           if (s.key === "ajkerpay_enabled") {
@@ -64,6 +65,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           } else if (s.key.endsWith("_number")) {
             const id = s.key.replace("payment_method_", "").replace("_number", "");
             numberMap[id] = s.value;
+          } else if (s.key.endsWith("_icon") && s.value) {
+            const id = s.key.replace("payment_method_", "").replace("_icon", "");
+            iconMap[id] = s.value;
           }
         });
 
@@ -74,6 +78,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           .map((m) => ({
             ...m,
             number: numberMap[m.id] || m.number,
+            iconUrl: iconMap[m.id] || undefined,
           }));
 
         setActivePaymentMethods(filtered);
@@ -478,12 +483,15 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
-              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
                 selectedPayment === m.id
                   ? "bg-primary/10 border-2 border-primary text-primary"
                   : "bg-secondary border-2 border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
+              {m.iconUrl ? (
+                <img src={m.iconUrl} alt={m.name} className="w-5 h-5 rounded object-contain" />
+              ) : null}
               {m.name}
             </button>
           ))}
