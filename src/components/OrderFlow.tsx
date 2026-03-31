@@ -22,9 +22,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<string>("");
-  const [transactionId, setTransactionId] = useState("");
   const [orderId, setOrderId] = useState("");
-  const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
 
