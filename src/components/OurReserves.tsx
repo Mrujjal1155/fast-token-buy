@@ -50,36 +50,57 @@ const OurReserves = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
-          {reserves.map((r, i) => (
+          {reserves.map((r, i) => {
+            const stock = parseInt(r.amount) || 0;
+            const isOutOfStock = stock <= 0;
+            return (
             <motion.div
               key={r.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.12, duration: 0.5 }}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="glass rounded-2xl p-5 md:p-6 text-center hover:shadow-glow transition-shadow duration-300 relative overflow-hidden"
+              whileHover={!isOutOfStock ? { y: -6, transition: { duration: 0.2 } } : {}}
+              className={`glass rounded-2xl p-5 md:p-6 text-center transition-shadow duration-300 relative overflow-hidden ${isOutOfStock ? "opacity-60 grayscale" : "hover:shadow-glow"}`}
             >
               {/* Background glow */}
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
 
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 bg-primary/10">
-                <Package className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+              {isOutOfStock && (
+                <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-destructive/20 text-destructive text-[10px] font-bold uppercase tracking-wide">
+                  স্টক শেষ
+                </div>
+              )}
+
+              <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 ${isOutOfStock ? "bg-muted" : "bg-primary/10"}`}>
+                <Package className={`w-6 h-6 md:w-7 md:h-7 ${isOutOfStock ? "text-muted-foreground" : "text-primary"}`} />
               </div>
 
               <p className="text-lg md:text-xl font-bold text-foreground mb-1">{r.label}</p>
 
               <div className="flex items-center justify-center gap-1.5 mb-2">
-                <span className="text-3xl md:text-4xl font-bold text-gradient-primary">{r.amount}</span>
+                <span className={`text-3xl md:text-4xl font-bold ${isOutOfStock ? "text-destructive" : "text-gradient-primary"}`}>
+                  {isOutOfStock ? "০" : r.amount}
+                </span>
               </div>
-              <p className="text-xs md:text-sm text-muted-foreground">প্যাকেজ এভেইলেবল</p>
+              <p className={`text-xs md:text-sm ${isOutOfStock ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                {isOutOfStock ? "⚠️ বর্তমানে স্টক নেই" : "প্যাকেজ এভেইলেবল"}
+              </p>
 
               {/* Stock indicator bar */}
               <div className="mt-3 w-full h-1.5 rounded-full bg-border/30 overflow-hidden">
-                <div className="h-full rounded-full bg-emerald-400 animate-pulse" style={{ width: `${Math.min(Number(r.amount) > 0 ? 70 + Math.random() * 30 : 0, 100)}%` }} />
+                <div
+                  className={`h-full rounded-full ${isOutOfStock ? "bg-destructive" : stock <= 50 ? "bg-yellow-400 animate-pulse" : "bg-emerald-400 animate-pulse"}`}
+                  style={{ width: `${isOutOfStock ? 0 : Math.min(70 + Math.random() * 30, 100)}%` }}
+                />
               </div>
+
+              {!isOutOfStock && stock <= 50 && (
+                <p className="text-[10px] text-yellow-400 font-medium mt-2 animate-pulse">⚡ দ্রুত শেষ হচ্ছে!</p>
+              )}
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
