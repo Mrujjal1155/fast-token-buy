@@ -19,6 +19,7 @@ import type { Tables } from "@/integrations/supabase/types";
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
