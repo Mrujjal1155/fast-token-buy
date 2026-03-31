@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Search, Package, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { findOrder, type Order } from "@/lib/orders";
+import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import type { Tables } from "@/integrations/supabase/types";
 
-const statusConfig: Record<Order["status"], { icon: React.ElementType; label: string; className: string }> = {
+type Order = Tables<"orders">;
+
+const statusConfig: Record<string, { icon: React.ElementType; label: string; className: string }> = {
   pending: { icon: Clock, label: "Pending", className: "text-yellow-400 bg-yellow-400/10" },
   processing: { icon: Package, label: "Processing", className: "text-blue-400 bg-blue-400/10" },
   completed: { icon: CheckCircle, label: "Completed", className: "text-primary bg-primary/10" },
@@ -17,12 +20,33 @@ const TrackOrder = () => {
   const [query, setQuery] = useState("");
   const [order, setOrder] = useState<Order | null>(null);
   const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!query.trim()) return;
-    const found = findOrder(query.trim());
-    setOrder(found || null);
+    setLoading(true);
+
+    // Try by order_id first, then by email
+    let { data } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("order_id", query.trim())
+      .maybeSingle();
+
+    if (!data) {
+      const res = await supabase
+        .from("orders")
+        .select("*")
+        .eq("email", query.trim().toLowerCase())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      data = res.data;
+    }
+
+    setOrder(data);
     setSearched(true);
+    setLoading(false);
   };
 
   const status = order ? statusConfig[order.status] : null;
@@ -55,7 +79,7 @@ const TrackOrder = () => {
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className="h-12 bg-secondary border-border/50"
             />
-            <Button variant="hero" size="lg" onClick={handleSearch}>
+            <Button variant="hero" size="lg" onClick={handleSearch} disabled={loading}>
               <Search className="w-5 h-5" />
             </Button>
           </div>
@@ -71,7 +95,7 @@ const TrackOrder = () => {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Order</span>
-                <span className="font-mono font-bold text-foreground">{order.id}</span>
+                <span className="font-mono font-bold text-foreground">{order.order_id}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Status</span>
@@ -90,7 +114,7 @@ const TrackOrder = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Date</span>
-                <span className="text-foreground text-sm">{new Date(order.createdAt).toLocaleDateString()}</span>
+                <span className="text-foreground text-sm">{new Date(order.created_at).toLocaleDateString()}</span>
               </div>
             </motion.div>
           )}

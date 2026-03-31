@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
 import { paymentMethods } from "@/lib/packages";
-import { createOrder } from "@/lib/orders";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type Step = "email" | "summary" | "payment" | "success";
@@ -22,6 +22,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [transactionId, setTransactionId] = useState("");
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
@@ -36,22 +37,36 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
 
   const handleProceedToPayment = () => setStep("payment");
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
     if (!transactionId.trim()) {
       toast({ title: "Please enter your Transaction ID", variant: "destructive" });
       return;
     }
-    const order = createOrder({
-      email,
-      packageId: selectedPackage.id,
-      credits: selectedPackage.credits,
-      amount: selectedPackage.price,
-      currency: selectedPackage.currency,
-      paymentMethod: selectedPayment,
-      transactionId: transactionId.trim(),
-    });
-    setOrderId(order.id);
+    setSubmitting(true);
+
+    const { data, error } = await supabase
+      .from("orders")
+      .insert({
+        email,
+        package_id: selectedPackage.id,
+        credits: selectedPackage.credits,
+        amount: selectedPackage.price,
+        currency: selectedPackage.currency,
+        payment_method: selectedPayment,
+        transaction_id: transactionId.trim(),
+      })
+      .select("order_id")
+      .single();
+
+    if (error) {
+      toast({ title: "Failed to submit order", description: error.message, variant: "destructive" });
+      setSubmitting(false);
+      return;
+    }
+
+    setOrderId(data.order_id);
     setStep("success");
+    setSubmitting(false);
   };
 
   const copyNumber = () => {
@@ -117,7 +132,6 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           <p className="text-muted-foreground">Send ৳{selectedPackage.price} to complete your order</p>
         </div>
 
-        {/* Payment method selector */}
         <div className="flex gap-2">
           {paymentMethods.map((m) => (
             <button
@@ -134,7 +148,6 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           ))}
         </div>
 
-        {/* Payment instructions */}
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
           <p className="text-sm text-muted-foreground">Send Money to:</p>
           <div className="flex items-center gap-3">
@@ -154,8 +167,8 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           onChange={(e) => setTransactionId(e.target.value)}
           className="h-12 bg-secondary border-border/50 text-center"
         />
-        <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder}>
-          Submit Order
+        <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit Order"}
         </Button>
       </div>
     ),
@@ -184,7 +197,6 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Back button */}
         {step !== "success" && (
           <button
             onClick={step === "email" ? onBack : () => setStep(steps[currentStepIndex - 1])}
@@ -194,7 +206,6 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           </button>
         )}
 
-        {/* Progress bar */}
         {step !== "success" && (
           <div className="flex gap-2 mb-8">
             {["email", "summary", "payment"].map((s, i) => (
@@ -208,7 +219,6 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           </div>
         )}
 
-        {/* Content */}
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
