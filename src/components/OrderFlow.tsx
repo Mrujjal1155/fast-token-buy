@@ -498,19 +498,19 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const progressIndex = progressSteps.indexOf(step);
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-3 md:p-4">
       <div className="w-full max-w-md">
         {step !== "success" && step !== "crypto-checkout" && (
           <button
             onClick={step === "package" ? onBack : () => setStep(steps[currentStepIndex - 1])}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-6"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-4 md:mb-6 text-sm"
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
         )}
 
         {step !== "success" && step !== "crypto-checkout" && (
-          <div className="flex gap-2 mb-8">
+          <div className="flex gap-2 mb-6 md:mb-8">
             {progressSteps.map((s, i) => (
               <div
                 key={s}
@@ -529,7 +529,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="bg-card border border-border/30 rounded-2xl p-8 shadow-card"
+            className="bg-card border border-border/30 rounded-2xl p-5 md:p-8 shadow-card"
           >
             {stepContent[step]}
           </motion.div>

@@ -9,21 +9,21 @@ interface PricingSectionProps {
 
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   return (
-    <section id="pricing" className="py-24">
-      <div className="container">
+    <section id="pricing" className="py-16 md:py-24">
+      <div className="container px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
             Choose Your <span className="text-gradient-primary">Package</span>
           </h2>
-          <p className="text-muted-foreground text-lg">Simple pricing. No hidden fees.</p>
+          <p className="text-muted-foreground text-base md:text-lg">Simple pricing. No hidden fees.</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
           {packages.map((pkg, i) => (
             <motion.div
               key={pkg.id}
@@ -43,29 +43,29 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                 </div>
               )}
 
-              <div className="rounded-2xl bg-card p-8 h-full flex flex-col">
+              <div className="rounded-2xl bg-card p-6 md:p-8 h-full flex flex-col">
                 {pkg.savings && (
                   <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full w-fit mb-3">
                     {pkg.savings}
                   </span>
                 )}
 
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-foreground mb-1">
+                <div className="mb-4 md:mb-6">
+                  <h3 className="text-xl md:text-2xl font-bold text-foreground mb-1">
                     {pkg.credits} Credits
                   </h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-gradient-primary">৳{pkg.price}</span>
+                    <span className="text-3xl md:text-4xl font-bold text-gradient-primary">৳{pkg.price}</span>
                     <span className="text-muted-foreground text-sm">BDT</span>
                   </div>
-                  <p className="text-muted-foreground text-sm mt-1">
+                  <p className="text-muted-foreground text-xs md:text-sm mt-1">
                     ৳{(pkg.price / pkg.credits).toFixed(2)} per credit
                   </p>
                 </div>
 
-                <ul className="space-y-3 mb-8 flex-1">
+                <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
                   {["Instant delivery", "24/7 support", "Secure payment"].map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-secondary-foreground">
+                    <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
                       <Check className="w-4 h-4 text-primary shrink-0" />
                       {f}
                     </li>

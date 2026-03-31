@@ -75,7 +75,7 @@ const TrackOrder = () => {
   const status = order ? statusConfig[order.status] : null;
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-3 md:p-4">
       <div className="w-full max-w-md">
         <Link to="/" className="text-muted-foreground hover:text-foreground text-sm mb-6 block">
           ← Back to Home
