@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
 import OperatorStatus from "@/components/OperatorStatus";
 import HeaderNotice from "@/components/HeaderNotice";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20">
@@ -24,34 +21,15 @@ const Navbar = () => {
             <Link to="/track">📦 Track Order</Link>
           </Button>
         </div>
-        {/* Mobile menu button */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition"
-        >
-          {menuOpen ? (
-            <X className="w-5 h-5 text-primary" />
-          ) : (
-            <div className="flex flex-col items-end gap-[5px]">
-              <span className="block h-[2.5px] w-6 rounded-full bg-primary" />
-              <span className="block h-[2.5px] w-5 rounded-full bg-primary/70" />
-              <span className="block h-[2.5px] w-4 rounded-full bg-primary/50" />
-            </div>
-          )}
-        </button>
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-border/20 bg-background/95 backdrop-blur-xl">
-          <div className="container py-4 space-y-4">
-            <OperatorStatus />
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <Link to="/track" onClick={() => setMenuOpen(false)}>📦 Track Order</Link>
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* Mobile: Operator + Track Order always visible */}
+      <div className="md:hidden container pb-3 space-y-3">
+        <OperatorStatus />
+        <Button variant="outline" size="sm" className="w-full" asChild>
+          <Link to="/track">📦 Track Order</Link>
+        </Button>
+      </div>
 
       <HeaderNotice />
     </header>
