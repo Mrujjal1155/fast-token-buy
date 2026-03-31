@@ -8,7 +8,7 @@ import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type Step = "email" | "summary" | "payment" | "success";
+type Step = "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
 interface OrderFlowProps {
   selectedPackage: CreditPackage;
