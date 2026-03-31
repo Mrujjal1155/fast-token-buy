@@ -11,14 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3 } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
+import AdminReserves from "@/components/AdminReserves";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -116,6 +117,7 @@ const AdminDashboard = () => {
           {[
             { id: "orders" as const, label: "Orders", icon: Package },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
+            { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -260,8 +262,10 @@ const AdminDashboard = () => {
               </div>
             </div>
           </>
-        ) : (
+        ) : activeTab === "coupons" ? (
           <AdminCoupons />
+        ) : (
+          <AdminReserves />
         )}
       </div>
     </div>
