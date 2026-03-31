@@ -157,6 +157,7 @@ const AdminDashboard = () => {
             { id: "packages" as const, label: "Packages", icon: Package },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
+            { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "ajkerpay" as const, label: "AjkerPay", icon: CreditCard },
           ].map((tab) => (
             <button
