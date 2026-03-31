@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -22,9 +22,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<string>("");
-  const [transactionId, setTransactionId] = useState("");
   const [orderId, setOrderId] = useState("");
-  const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
 
@@ -37,7 +35,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
-  const [ajkerpayEnabled, setAjkerpayEnabled] = useState(false);
   const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; number: string; color: string; type: "manual" | "crypto"; iconUrl?: string }>>(paymentMethods.map((m) => ({ ...m })));
 
   const { toast } = useToast();
@@ -51,15 +48,12 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         .or("key.like.payment_method_%,key.eq.ajkerpay_enabled");
 
       if (data) {
-        let ajkerEnabled = false;
         const enabledMap: Record<string, boolean> = {};
         const numberMap: Record<string, string> = {};
         const iconMap: Record<string, string> = {};
 
         data.forEach((s) => {
-          if (s.key === "ajkerpay_enabled") {
-            ajkerEnabled = s.value === "true";
-          } else if (s.key.endsWith("_enabled")) {
+          if (s.key.endsWith("_enabled") && s.key !== "ajkerpay_enabled") {
             const id = s.key.replace("payment_method_", "").replace("_enabled", "");
             enabledMap[id] = s.value === "true";
           } else if (s.key.endsWith("_number")) {
@@ -70,8 +64,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             iconMap[id] = s.value;
           }
         });
-
-        setAjkerpayEnabled(ajkerEnabled);
 
         const filtered = paymentMethods
           .filter((m) => enabledMap[m.id] !== false) // default to enabled if no setting
@@ -277,53 +269,11 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       return handleCryptoPayment();
     }
 
-    // If AjkerPay enabled for manual methods, use auto payment
-    if (ajkerpayEnabled && !isCrypto) {
-      return handleAjkerPayPayment();
-    }
-
-    if (!transactionId.trim()) {
-      toast({ title: "ট্রানজেকশন আইডি দিন", variant: "destructive" });
-      return;
-    }
-    setSubmitting(true);
-
-    if (couponApplied && couponCode) {
-      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
-    }
-
-    const { data, error } = await supabase
-      .from("orders")
-      .insert({
-        email,
-        package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
-        amount: finalPrice,
-        currency: chosenPackage?.currency,
-        payment_method: selectedPayment,
-        transaction_id: transactionId.trim(),
-        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
-        discount_amount: couponDiscount,
-      })
-      .select("order_id")
-      .single();
-
-    if (error) {
-      toast({ title: "অর্ডার জমা দিতে সমস্যা হয়েছে", description: error.message, variant: "destructive" });
-      setSubmitting(false);
-      return;
-    }
-
-    setOrderId(data.order_id);
-    setStep("success");
-    setSubmitting(false);
+    // All non-crypto methods use AjkerPay auto payment
+    return handleAjkerPayPayment();
   };
 
-  const copyNumber = () => {
-    navigator.clipboard.writeText(currentPayment.number);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+
 
   const stepContent: Record<Step, React.ReactNode> = {
     package: (
@@ -533,7 +483,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
-        ) : ajkerpayEnabled ? (
+        ) : (
           /* AjkerPay auto payment UI */
           <div className="space-y-4">
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
@@ -555,32 +505,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
-        ) : (
-          /* Manual payment UI */
-          <>
-            <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-              <p className="text-sm text-muted-foreground">👇 এই নম্বরে টাকা পাঠান:</p>
-              <div className="flex items-center gap-3">
-                <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
-                <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
-                  {copied ? <CheckCheck className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {currentPayment.name} থেকে &quot;Send Money&quot; করে ঠিক <span className="text-foreground font-semibold">৳{finalPrice}</span> পাঠান। তারপর নিচে ট্রানজেকশন আইডি বসান।
-              </p>
-            </div>
-
-            <Input
-              placeholder="ট্রানজেকশন আইডি বসান (যেমন: 8N4K2P)"
-              value={transactionId}
-              onChange={(e) => setTransactionId(e.target.value)}
-              className="h-12 bg-secondary border-border/50 text-center"
-            />
-            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
-              {submitting ? "জমা হচ্ছে..." : "অর্ডার কনফার্ম করুন ✅"}
-            </Button>
-          </>
         )}
       </div>
     ),
