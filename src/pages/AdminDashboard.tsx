@@ -17,6 +17,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
+import AdminPackages from "@/components/AdminPackages";
 
 type Order = Tables<"orders">;
 
