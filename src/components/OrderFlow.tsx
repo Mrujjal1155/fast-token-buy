@@ -8,6 +8,7 @@ import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { usePackages } from "@/hooks/usePackages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import CryptoCheckoutStep from "./CryptoCheckoutStep";
 
 type Step = "package" | "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
@@ -529,38 +530,12 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       </div>
     ),
     "crypto-checkout": (
-      <div className="space-y-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-          <Coins className="w-8 h-8 text-primary" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট সম্পন্ন করুন 🔐</h2>
-        <p className="text-muted-foreground">
-          নিচের বাটনে ক্লিক করুন এবং সিকিউর পেমেন্ট পেজে পেমেন্ট করুন। সব নিরাপদ!
-        </p>
-        <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-          <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
-          <div className="flex items-center justify-center gap-2">
-            <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
-            <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
-          </div>
-        </div>
-        <a
-          href={cryptoPaymentUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          <Button variant="hero" size="lg" className="w-full py-6">
-            🔗 BlinkPay এ পেমেন্ট করুন
-          </Button>
-        </a>
-        <p className="text-xs text-muted-foreground">
-          পেমেন্ট হলে অটো আপডেট হবে। অর্ডার আইডি সেভ রাখুন! 📋
-        </p>
-        <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরে যান
-        </Button>
-      </div>
+      <CryptoCheckoutStep
+        orderId={orderId}
+        paymentUrl={cryptoPaymentUrl}
+        onSuccess={() => setStep("success")}
+        onBack={onBack}
+      />
     ),
   };
 
