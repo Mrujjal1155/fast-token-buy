@@ -44,7 +44,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
-      toast({ title: "Please enter a valid email", variant: "destructive" });
+      toast({ title: "সঠিক ইমেইল দিন", variant: "destructive" });
       return;
     }
     setStep("summary");
