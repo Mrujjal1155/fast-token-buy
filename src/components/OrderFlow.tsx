@@ -36,7 +36,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
-  const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; number: string; color: string; type: "manual" | "crypto"; iconUrl?: string }>>(paymentMethods.map((m) => ({ ...m })));
+  const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; color: string; type: "auto" | "crypto"; iconUrl?: string }>>(paymentMethods.map((m) => ({ ...m })));
 
   const { toast } = useToast();
 
