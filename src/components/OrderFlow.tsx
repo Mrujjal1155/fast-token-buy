@@ -277,46 +277,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       return handleCryptoPayment();
     }
 
-    // If AjkerPay enabled for manual methods, use auto payment
-    if (ajkerpayEnabled && !isCrypto) {
-      return handleAjkerPayPayment();
-    }
-
-    if (!transactionId.trim()) {
-      toast({ title: "ট্রানজেকশন আইডি দিন", variant: "destructive" });
-      return;
-    }
-    setSubmitting(true);
-
-    if (couponApplied && couponCode) {
-      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
-    }
-
-    const { data, error } = await supabase
-      .from("orders")
-      .insert({
-        email,
-        package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
-        amount: finalPrice,
-        currency: chosenPackage?.currency,
-        payment_method: selectedPayment,
-        transaction_id: transactionId.trim(),
-        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
-        discount_amount: couponDiscount,
-      })
-      .select("order_id")
-      .single();
-
-    if (error) {
-      toast({ title: "অর্ডার জমা দিতে সমস্যা হয়েছে", description: error.message, variant: "destructive" });
-      setSubmitting(false);
-      return;
-    }
-
-    setOrderId(data.order_id);
-    setStep("success");
-    setSubmitting(false);
+    // All non-crypto methods use AjkerPay auto payment
+    return handleAjkerPayPayment();
   };
 
   const copyNumber = () => {
