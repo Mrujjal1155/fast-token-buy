@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Search, Package, Clock, CheckCircle, AlertCircle, Copy } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Copy, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ type Order = Tables<"orders">;
 
 const statusConfig: Record<string, { icon: React.ElementType; label: string; className: string }> = {
   pending: { icon: Clock, label: "Pending", className: "text-yellow-400 bg-yellow-400/10" },
-  processing: { icon: Package, label: "Processing", className: "text-blue-400 bg-blue-400/10" },
+  processing: { icon: Loader2, label: "Processing", className: "text-blue-400 bg-blue-400/10" },
   completed: { icon: CheckCircle, label: "Completed", className: "text-primary bg-primary/10" },
   failed: { icon: AlertCircle, label: "Failed", className: "text-destructive bg-destructive/10" },
 };
@@ -23,22 +23,22 @@ const TrackOrder = () => {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
+  const handleSearch = useCallback(async (searchQuery?: string) => {
+    const q = (searchQuery || query).trim();
+    if (!q) return;
     setLoading(true);
 
-    // Try by order_id first, then by email
     let { data } = await supabase
       .from("orders")
       .select("*")
-      .eq("order_id", query.trim())
+      .eq("order_id", q)
       .maybeSingle();
 
     if (!data) {
       const res = await supabase
         .from("orders")
         .select("*")
-        .eq("email", query.trim().toLowerCase())
+        .eq("email", q.toLowerCase())
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -48,7 +48,29 @@ const TrackOrder = () => {
     setOrder(data);
     setSearched(true);
     setLoading(false);
-  };
+  }, [query]);
+
+  // Realtime subscription for the tracked order
+  useEffect(() => {
+    if (!order) return;
+
+    const channel = supabase
+      .channel(`track-order-${order.id}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${order.id}` },
+        (payload) => {
+          const updated = payload.new as Order;
+          setOrder(updated);
+          if (updated.status !== order.status) {
+            toast({ title: "স্ট্যাটাস আপডেট!", description: `আপনার অর্ডার এখন: ${statusConfig[updated.status]?.label || updated.status}` });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [order?.id, order?.status]);
 
   const status = order ? statusConfig[order.status] : null;
 
