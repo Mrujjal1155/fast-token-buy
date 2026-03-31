@@ -442,18 +442,18 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Check className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">অর্ডার জমা হয়েছে!</h2>
-        <p className="text-muted-foreground">আপনার অর্ডার প্রক্রিয়াধীন। ক্রেডিট <span className="text-foreground font-medium">{email}</span> এ পাঠানো হবে</p>
+        <h2 className="text-2xl font-bold text-foreground">অর্ডার সফল! 🎉</h2>
+        <p className="text-muted-foreground">আপনার ক্রেডিট খুব শীঘ্রই <span className="text-foreground font-medium">{email}</span> এ পৌঁছে যাবে!</p>
         <div className="bg-secondary/50 rounded-xl p-6">
           <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-2xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">অর্ডার ট্র্যাক করতে এটি সেভ করুন</p>
+          <p className="text-xs text-muted-foreground mt-2">👆 এই আইডি দিয়ে যেকোনো সময় অর্ডার ট্র্যাক করতে পারবেন</p>
         </div>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরুন
+          হোমে ফিরে যান
         </Button>
       </div>
     ),
@@ -462,12 +462,12 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Coins className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট করুন</h2>
+        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট সম্পন্ন করুন 🔐</h2>
         <p className="text-muted-foreground">
-          নিচের বাটনে ক্লিক করে BlinkPay চেকআউট পেজে যান এবং পেমেন্ট সম্পন্ন করুন।
+          নিচের বাটনে ক্লিক করুন এবং সিকিউর BlinkPay পেজে পেমেন্ট করুন। সব নিরাপদ!
         </p>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-          <p className="text-sm text-muted-foreground mb-1">অর্ডার আইডি</p>
+          <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
@@ -484,10 +484,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </Button>
         </a>
         <p className="text-xs text-muted-foreground">
-          পেমেন্ট সম্পন্ন হলে অটোমেটিক আপডেট হবে। অর্ডার ট্র্যাক করতে Order ID সেভ করুন।
+          পেমেন্ট হলে অটো আপডেট হবে। অর্ডার আইডি সেভ রাখুন! 📋
         </p>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরুন
+          হোমে ফিরে যান
         </Button>
       </div>
     ),
