@@ -9,7 +9,11 @@ const Navbar = () => (
         <img src="/logo-icon.png" alt="Lovable Credits" className="w-10 h-10" />
         <span className="font-display font-bold text-2xl text-foreground">Lovable Credits</span>
       </Link>
-      <OperatorStatus />
+      <div className="hidden md:flex flex-1 justify-center">
+        <OperatorStatus />
+      </div>
+      {/* Empty div to balance flex layout */}
+      <div className="hidden md:block w-[200px]" />
     </div>
     <HeaderNotice />
   </header>
