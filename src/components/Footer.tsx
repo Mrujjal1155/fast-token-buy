@@ -20,8 +20,8 @@ const Footer = () => (
           {/* Social icons */}
           <div className="flex gap-3 pt-2">
             {[
-              { icon: Twitter, href: "#" },
-              { icon: Github, href: "#" },
+              { icon: Globe, href: "#" },
+              { icon: Send, href: "#" },
               { icon: MessageCircle, href: "#" },
               { icon: Mail, href: "#" },
             ].map(({ icon: Icon, href }, i) => (
