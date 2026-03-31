@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,22 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [ajkerpayEnabled, setAjkerpayEnabled] = useState(false);
 
   const { toast } = useToast();
+
+  // Check if AjkerPay is enabled
+  useEffect(() => {
+    const checkAjkerPay = async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "ajkerpay_enabled")
+        .maybeSingle();
+      if (data) setAjkerpayEnabled(data.value === "true");
+    };
+    checkAjkerPay();
+  }, []);
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
   const isCrypto = currentPayment.type === "crypto";
@@ -157,9 +171,79 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     window.open(paymentData.payment_url, "_blank");
   };
 
+  const handleAjkerPayPayment = async () => {
+    setSubmitting(true);
+
+    if (couponApplied && couponCode) {
+      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
+    }
+
+    // Create order first
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        email,
+        package_id: chosenPackage?.id,
+        credits: chosenPackage?.credits,
+        amount: finalPrice,
+        currency: chosenPackage?.currency,
+        payment_method: `ajkerpay-${selectedPayment}`,
+        transaction_id: "pending-ajkerpay",
+        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
+        discount_amount: couponDiscount,
+      })
+      .select("order_id")
+      .single();
+
+    if (orderError || !orderData) {
+      toast({ title: "অর্ডার তৈরি করা যায়নি", description: orderError?.message, variant: "destructive" });
+      setSubmitting(false);
+      return;
+    }
+
+    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}`;
+    const cancelUrl = `${window.location.origin}/?cancelled=true`;
+
+    const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+      "create-ajkerpay-payment",
+      {
+        body: {
+          amount: finalPrice,
+          order_id: orderData.order_id,
+          customer_email: email,
+          customer_name: "Customer",
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+        },
+      }
+    );
+
+    if (paymentError || !paymentData?.payment_url) {
+      toast({
+        title: "পেমেন্ট তৈরি করা যায়নি",
+        description: paymentError?.message || paymentData?.error || "AjkerPay error",
+        variant: "destructive",
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // Redirect to AjkerPay payment page
+    setOrderId(orderData.order_id);
+    setCryptoPaymentUrl(paymentData.payment_url);
+    setStep("crypto-checkout");
+    setSubmitting(false);
+    window.open(paymentData.payment_url, "_blank");
+  };
+
   const handleSubmitOrder = async () => {
     if (isCrypto) {
       return handleCryptoPayment();
+    }
+
+    // If AjkerPay enabled for manual methods, use auto payment
+    if (ajkerpayEnabled && !isCrypto) {
+      return handleAjkerPayPayment();
     }
 
     if (!transactionId.trim()) {
@@ -410,6 +494,28 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
+        ) : ajkerpayEnabled ? (
+          /* AjkerPay auto payment UI */
+          <div className="space-y-4">
+            <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-sm font-medium text-emerald-400">অটো পেমেন্ট চালু</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                <span className="text-foreground font-semibold">{currentPayment.name}</span> দিয়ে{" "}
+                <span className="text-primary font-bold">৳{finalPrice}</span> পে করুন।
+                সিকিউর AjkerPay পেমেন্ট পেজে রিডাইরেক্ট হবেন।
+              </p>
+            </div>
+            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
+              {submitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং হচ্ছে...</>
+              ) : (
+                <>এখনই {currentPayment.name} দিয়ে পে করুন ⚡</>
+              )}
+            </Button>
+          </div>
         ) : (
           /* Manual payment UI */
           <>
@@ -466,7 +572,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         </div>
         <h2 className="text-2xl font-bold text-foreground">পেমেন্ট সম্পন্ন করুন 🔐</h2>
         <p className="text-muted-foreground">
-          নিচের বাটনে ক্লিক করুন এবং সিকিউর BlinkPay পেজে পেমেন্ট করুন। সব নিরাপদ!
+          নিচের বাটনে ক্লিক করুন এবং সিকিউর পেমেন্ট পেজে পেমেন্ট করুন। সব নিরাপদ!
         </p>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
           <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
