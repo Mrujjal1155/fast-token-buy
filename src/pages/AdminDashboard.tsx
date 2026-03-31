@@ -18,6 +18,7 @@ import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
+import AdminAjkerPay from "@/components/AdminAjkerPay";
 
 type Order = Tables<"orders">;
 
