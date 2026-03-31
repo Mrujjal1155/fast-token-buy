@@ -40,7 +40,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
   const isCrypto = currentPayment.type === "crypto";
-  const finalPrice = Math.max(selectedPackage.price - couponDiscount, 0);
+  const finalPrice = Math.max(chosenPackage!.price - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
@@ -57,7 +57,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
     const { data, error } = await supabase.rpc("validate_coupon", {
       p_code: couponCode.trim().toUpperCase(),
-      p_amount: selectedPackage.price,
+      p_amount: chosenPackage!.price,
     });
 
     if (error || !data || data.length === 0) {
@@ -100,10 +100,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .from("orders")
       .insert({
         email,
-        package_id: selectedPackage.id,
-        credits: selectedPackage.credits,
+        package_id: chosenPackage!.id,
+        credits: chosenPackage!.credits,
         amount: finalPrice,
-        currency: selectedPackage.currency,
+        currency: chosenPackage!.currency,
         payment_method: `crypto-${selectedCrypto.token}-${selectedCrypto.network}`,
         transaction_id: "pending-crypto",
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
@@ -174,10 +174,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .from("orders")
       .insert({
         email,
-        package_id: selectedPackage.id,
-        credits: selectedPackage.credits,
+        package_id: chosenPackage!.id,
+        credits: chosenPackage!.credits,
         amount: finalPrice,
-        currency: selectedPackage.currency,
+        currency: chosenPackage!.currency,
         payment_method: selectedPayment,
         transaction_id: transactionId.trim(),
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
@@ -234,7 +234,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
             <span>Package</span>
-            <span className="font-semibold">{selectedPackage.credits} Credits</span>
+            <span className="font-semibold">{chosenPackage!.credits} Credits</span>
           </div>
           <div className="flex justify-between text-foreground">
             <span>Email</span>
@@ -242,7 +242,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </div>
           <div className="flex justify-between text-foreground">
             <span>Subtotal</span>
-            <span>৳{selectedPackage.price}</span>
+            <span>৳{chosenPackage!.price}</span>
           </div>
 
           {/* Coupon section */}
@@ -294,7 +294,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span className="font-semibold">Total</span>
             <div className="text-right">
               {couponApplied && (
-                <span className="text-sm text-muted-foreground line-through mr-2">৳{selectedPackage.price}</span>
+                <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage!.price}</span>
               )}
               <span className="text-2xl font-bold text-gradient-primary">৳{finalPrice}</span>
             </div>
