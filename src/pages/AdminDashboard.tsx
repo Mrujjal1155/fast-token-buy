@@ -34,7 +34,31 @@ const AdminDashboard = () => {
   useEffect(() => {
     checkAuth();
     fetchOrders();
+    fetchOperatorStatus();
   }, []);
+
+  const fetchOperatorStatus = async () => {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "operator_status")
+      .maybeSingle();
+    if (data) setOperatorOnline(data.value === "online");
+  };
+
+  const toggleOperator = async (checked: boolean) => {
+    setOperatorOnline(checked);
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ value: checked ? "online" : "offline", updated_at: new Date().toISOString() })
+      .eq("key", "operator_status");
+    if (error) {
+      toast({ title: "Failed to update", variant: "destructive" });
+      setOperatorOnline(!checked);
+    } else {
+      toast({ title: checked ? "অপারেটর অনলাইন" : "অপারেটর অফলাইন" });
+    }
+  };
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
