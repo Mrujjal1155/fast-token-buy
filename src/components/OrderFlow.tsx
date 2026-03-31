@@ -411,7 +411,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           /* Manual payment UI */
           <>
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-              <p className="text-sm text-muted-foreground">Send Money to:</p>
+              <p className="text-sm text-muted-foreground">এখানে টাকা পাঠান:</p>
               <div className="flex items-center gap-3">
                 <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
                 <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
