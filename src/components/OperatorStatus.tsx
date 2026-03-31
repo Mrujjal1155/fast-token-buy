@@ -13,7 +13,7 @@ const OperatorStatus = () => {
   });
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchStatus = async () => {
       const { data } = await supabase
         .from("site_settings")
         .select("value")
@@ -21,14 +21,18 @@ const OperatorStatus = () => {
         .maybeSingle();
       if (data) setIsOnline(data.value === "online");
     };
-    fetch();
+    fetchStatus();
 
     const channel = supabase
-      .channel("operator-status")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "site_settings" }, (payload) => {
-        const row = payload.new as { key: string; value: string };
-        if (row.key === "operator_status") setIsOnline(row.value === "online");
-      })
+      .channel("operator-status-live")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "site_settings" },
+        (payload) => {
+          const row = payload.new as { key: string; value: string };
+          if (row.key === "operator_status") setIsOnline(row.value === "online");
+        }
+      )
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
