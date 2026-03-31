@@ -474,7 +474,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
         {/* Payment method tabs */}
         <div className="flex flex-wrap gap-2">
-          {paymentMethods.map((m) => (
+          {activePaymentMethods.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
