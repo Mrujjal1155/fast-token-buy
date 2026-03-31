@@ -7,10 +7,10 @@ import type { Tables } from "@/integrations/supabase/types";
 type Order = Tables<"orders">;
 
 const statusConfig: Record<string, { icon: typeof Clock; label: string; color: string; bgColor: string }> = {
-  pending: { icon: Clock, label: "Pending", color: "text-yellow-400", bgColor: "bg-yellow-400/10" },
-  processing: { icon: Loader2, label: "Processing", color: "text-blue-400", bgColor: "bg-blue-400/10" },
-  completed: { icon: CheckCircle, label: "Completed", color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
-  failed: { icon: AlertCircle, label: "Failed", color: "text-red-400", bgColor: "bg-red-400/10" },
+  pending: { icon: Clock, label: "অপেক্ষমাণ", color: "text-yellow-400", bgColor: "bg-yellow-400/10" },
+  processing: { icon: Loader2, label: "প্রক্রিয়াধীন", color: "text-blue-400", bgColor: "bg-blue-400/10" },
+  completed: { icon: CheckCircle, label: "সম্পন্ন", color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
+  failed: { icon: AlertCircle, label: "ব্যর্থ", color: "text-red-400", bgColor: "bg-red-400/10" },
 };
 
 const maskEmail = (email: string) => {
@@ -59,7 +59,6 @@ const RecentPurchases = () => {
 
   return (
     <section className="py-10 md:py-16 relative">
-      {/* Subtle glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-[#FF3CAC]/5 blur-[120px] pointer-events-none" />
 
       <div className="container px-4 relative z-10">
@@ -90,7 +89,7 @@ const RecentPurchases = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs md:text-sm font-medium text-foreground truncate">
-                        {maskEmail(order.email)} — {order.credits} Credits
+                        {maskEmail(order.email)} — {order.credits} ক্রেডিট
                       </p>
                       <p className="text-[10px] md:text-xs text-muted-foreground font-mono truncate">{order.order_id}</p>
                     </div>
