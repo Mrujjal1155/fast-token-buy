@@ -114,7 +114,8 @@ const TrackOrder = () => {
           )}
 
           {order && status && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
+              {/* Order ID */}
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">অর্ডার</span>
                 <div className="flex items-center gap-1.5">
@@ -122,13 +123,58 @@ const TrackOrder = () => {
                   <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!" }); }} className="p-1 rounded hover:bg-secondary transition"><Copy className="w-3.5 h-3.5 text-muted-foreground" /></button>
                 </div>
               </div>
+
+              {/* Realtime Status Timeline */}
+              <div className="bg-secondary/30 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className={`w-2 h-2 rounded-full animate-pulse ${
+                    order.status === "completed" ? "bg-primary" : order.status === "failed" ? "bg-destructive" : "bg-yellow-400"
+                  }`} />
+                  <span className="text-xs text-muted-foreground">রিয়েলটাইম আপডেট</span>
+                </div>
+                <div className="flex items-center justify-between gap-1">
+                  {(["pending", "processing", "completed"] as const).map((s, i) => {
+                    const stepConfig = statusConfig[s];
+                    const StepIcon = stepConfig.icon;
+                    const statusOrder = { pending: 0, processing: 1, completed: 2, failed: -1 };
+                    const currentOrder = statusOrder[order.status] ?? -1;
+                    const isActive = order.status === "failed" ? false : currentOrder >= i;
+                    const isCurrent = order.status === s;
+                    return (
+                      <div key={s} className="flex flex-col items-center flex-1">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-1.5 transition-all ${
+                          isCurrent ? `${stepConfig.className} ring-2 ring-offset-2 ring-offset-card ${s === "completed" ? "ring-primary" : "ring-yellow-400"}` :
+                          isActive ? stepConfig.className : "bg-secondary text-muted-foreground"
+                        }`}>
+                          <StepIcon className={`w-5 h-5 ${isCurrent && s === "processing" ? "animate-spin" : ""}`} />
+                        </div>
+                        <span className={`text-[10px] font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
+                          {stepConfig.label}
+                        </span>
+                        {i < 2 && (
+                          <div className={`absolute w-[calc(33%-20px)] h-0.5 top-5 ${isActive ? "bg-primary" : "bg-border"}`} style={{ display: "none" }} />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {order.status === "failed" && (
+                  <div className="mt-3 flex items-center gap-2 text-destructive text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    পেমেন্ট ব্যর্থ হয়েছে। আবার চেষ্টা করুন।
+                  </div>
+                )}
+              </div>
+
+              {/* Current Status Badge */}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">স্ট্যাটাস</span>
+                <span className="text-sm text-muted-foreground">বর্তমান স্ট্যাটাস</span>
                 <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>
-                  <status.icon className="w-4 h-4" />
+                  <status.icon className={`w-4 h-4 ${order.status === "processing" ? "animate-spin" : ""}`} />
                   {status.label}
                 </div>
               </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">প্যাকেজ</span>
                 <span className="text-foreground">{order.credits} ক্রেডিট</span>
@@ -136,6 +182,10 @@ const TrackOrder = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">মূল্য</span>
                 <span className="text-foreground">৳{order.amount}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">পেমেন্ট</span>
+                <span className="text-foreground capitalize">{order.payment_method.replace("ajkerpay-", "").replace("crypto-", "Crypto: ")}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">তারিখ</span>
