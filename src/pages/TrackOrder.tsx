@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, Package, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Copy } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
