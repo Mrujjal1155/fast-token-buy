@@ -14,7 +14,18 @@ export const packages: CreditPackage[] = [
 ];
 
 export const paymentMethods = [
-  { id: "bkash", name: "bKash", number: "01XXXXXXXXX", color: "hsl(340, 80%, 55%)" },
-  { id: "nagad", name: "Nagad", number: "01XXXXXXXXX", color: "hsl(25, 90%, 55%)" },
-  { id: "rocket", name: "Rocket", number: "01XXXXXXXXX", color: "hsl(270, 60%, 50%)" },
+  { id: "bkash", name: "bKash", number: "01XXXXXXXXX", color: "hsl(340, 80%, 55%)", type: "manual" as const },
+  { id: "nagad", name: "Nagad", number: "01XXXXXXXXX", color: "hsl(25, 90%, 55%)", type: "manual" as const },
+  { id: "rocket", name: "Rocket", number: "01XXXXXXXXX", color: "hsl(270, 60%, 50%)", type: "manual" as const },
+  { id: "crypto", name: "Crypto (USDT)", number: "", color: "hsl(145, 70%, 50%)", type: "crypto" as const },
+] as const;
+
+export const cryptoTokens = [
+  { token: "USDT", network: "tron", label: "USDT (TRON)" },
+  { token: "USDT", network: "bsc", label: "USDT (BSC)" },
+  { token: "USDT", network: "ton", label: "USDT (TON)" },
+  { token: "USDC", network: "tron", label: "USDC (TRON)" },
+  { token: "TRX", network: "tron", label: "TRX" },
+  { token: "BNB", network: "bsc", label: "BNB" },
+  { token: "TON", network: "ton", label: "TON" },
 ] as const;
