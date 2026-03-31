@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Package } from "lucide-react";
 import OperatorStatus from "@/components/OperatorStatus";
-import HeaderNotice from "@/components/HeaderNotice";
+import NotificationBell from "@/components/NotificationBell";
 
 const Navbar = () => {
   return (
@@ -15,8 +15,9 @@ const Navbar = () => {
         <div className="hidden md:flex flex-1 justify-center">
           <OperatorStatus />
         </div>
-        <div className="hidden md:block">
-          <Button variant="outline" size="sm" asChild>
+        <div className="flex items-center gap-2 md:gap-3">
+          <NotificationBell />
+          <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
             <Link to="/track"><Package className="w-4 h-4" /> অর্ডার ট্র্যাক</Link>
           </Button>
         </div>
@@ -28,8 +29,6 @@ const Navbar = () => {
           <Link to="/track"><Package className="w-4 h-4" /> অর্ডার ট্র্যাক করুন</Link>
         </Button>
       </div>
-
-      <HeaderNotice />
     </header>
   );
 };

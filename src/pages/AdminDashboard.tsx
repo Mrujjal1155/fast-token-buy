@@ -11,15 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3 } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
+import AdminNotifications from "@/components/AdminNotifications";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -118,6 +119,7 @@ const AdminDashboard = () => {
             { id: "orders" as const, label: "Orders", icon: Package },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
+            { id: "notifications" as const, label: "Notifications", icon: Bell },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -264,8 +266,10 @@ const AdminDashboard = () => {
           </>
         ) : activeTab === "coupons" ? (
           <AdminCoupons />
-        ) : (
+        ) : activeTab === "reserves" ? (
           <AdminReserves />
+        ) : (
+          <AdminNotifications />
         )}
       </div>
     </div>
