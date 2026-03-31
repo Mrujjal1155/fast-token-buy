@@ -19,7 +19,7 @@ const Navbar = () => {
         </div>
         <div className="hidden md:block">
           <Button variant="outline" size="sm" asChild>
-            <Link to="/track">📦 Track Order</Link>
+            <Link to="/track"><Package className="w-4 h-4" /> Track Order</Link>
           </Button>
         </div>
       </div>
