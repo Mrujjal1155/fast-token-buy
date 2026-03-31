@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
-import { paymentMethods } from "@/lib/packages";
+import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,6 +24,9 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Crypto state
+  const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
+
   // Coupon state
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
@@ -34,6 +37,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   const { toast } = useToast();
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
+  const isCrypto = currentPayment.type === "crypto";
   const finalPrice = Math.max(selectedPackage.price - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
@@ -81,14 +85,79 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
 
   const handleProceedToPayment = () => setStep("payment");
 
+  const handleCryptoPayment = async () => {
+    setSubmitting(true);
+
+    // Increment coupon usage if applied
+    if (couponApplied && couponCode) {
+      await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
+    }
+
+    // First create the order in our DB
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        email,
+        package_id: selectedPackage.id,
+        credits: selectedPackage.credits,
+        amount: finalPrice,
+        currency: selectedPackage.currency,
+        payment_method: `crypto-${selectedCrypto.token}-${selectedCrypto.network}`,
+        transaction_id: "pending-crypto",
+        coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
+        discount_amount: couponDiscount,
+      })
+      .select("order_id")
+      .single();
+
+    if (orderError || !orderData) {
+      toast({ title: "Failed to create order", description: orderError?.message, variant: "destructive" });
+      setSubmitting(false);
+      return;
+    }
+
+    const returnUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}`;
+
+    // Call our edge function to create BlinkPay payment
+    const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+      "create-blinkpay-payment",
+      {
+        body: {
+          amount: finalPrice,
+          order_id: orderData.order_id,
+          token: selectedCrypto.token,
+          network: selectedCrypto.network,
+          customer_email: email,
+          return_url: returnUrl,
+        },
+      }
+    );
+
+    if (paymentError || !paymentData?.payment_url) {
+      toast({
+        title: "পেমেন্ট তৈরি করা যায়নি",
+        description: paymentError?.message || paymentData?.error || "BlinkPay error",
+        variant: "destructive",
+      });
+      setSubmitting(false);
+      return;
+    }
+
+    // Redirect to BlinkPay checkout
+    window.location.href = paymentData.payment_url;
+  };
+
   const handleSubmitOrder = async () => {
+    if (isCrypto) {
+      return handleCryptoPayment();
+    }
+
     if (!transactionId.trim()) {
       toast({ title: "Please enter your Transaction ID", variant: "destructive" });
       return;
     }
     setSubmitting(true);
 
-    // Increment coupon usage if applied
     if (couponApplied && couponCode) {
       await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
     }
@@ -232,18 +301,21 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       <div className="space-y-6">
         <div className="text-center">
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <CreditCard className="w-7 h-7 text-primary" />
+            {isCrypto ? <Coins className="w-7 h-7 text-primary" /> : <CreditCard className="w-7 h-7 text-primary" />}
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">Complete Payment</h2>
-          <p className="text-muted-foreground">Send ৳{finalPrice} to complete your order</p>
+          <p className="text-muted-foreground">
+            {isCrypto ? "ক্রিপ্টো দিয়ে পেমেন্ট করুন" : `Send ৳${finalPrice} to complete your order`}
+          </p>
         </div>
 
-        <div className="flex gap-2">
+        {/* Payment method tabs */}
+        <div className="flex flex-wrap gap-2">
           {paymentMethods.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
-              className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all ${
+              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all ${
                 selectedPayment === m.id
                   ? "bg-primary/10 border-2 border-primary text-primary"
                   : "bg-secondary border-2 border-transparent text-muted-foreground hover:text-foreground"
@@ -254,28 +326,69 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           ))}
         </div>
 
-        <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-          <p className="text-sm text-muted-foreground">Send Money to:</p>
-          <div className="flex items-center gap-3">
-            <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
-            <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
-              {copied ? <CheckCheck className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-            </button>
+        {isCrypto ? (
+          /* Crypto payment UI */
+          <div className="space-y-4">
+            <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
+              <p className="text-sm font-medium text-foreground">টোকেন ও নেটওয়ার্ক নির্বাচন করুন:</p>
+              <div className="grid grid-cols-2 gap-2">
+                {cryptoTokens.map((ct, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedCrypto(ct)}
+                    className={`py-2 px-3 rounded-lg text-xs font-medium transition-all ${
+                      selectedCrypto.token === ct.token && selectedCrypto.network === ct.network
+                        ? "bg-primary/10 border border-primary text-primary"
+                        : "bg-background border border-border/30 text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {ct.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="bg-secondary/50 rounded-xl p-4">
+              <p className="text-sm text-muted-foreground">
+                আপনি <span className="text-foreground font-semibold">{selectedCrypto.label}</span> দিয়ে{" "}
+                <span className="text-primary font-bold">৳{finalPrice}</span> সমপরিমাণ পে করবেন।
+                BlinkPay চেকআউট পেজে রিডাইরেক্ট হবেন।
+              </p>
+            </div>
+            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
+              {submitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং...</>
+              ) : (
+                <>Pay with {selectedCrypto.label}</>
+              )}
+            </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Send exactly ৳{finalPrice} via {currentPayment.name} &quot;Send Money&quot; option. Then paste your Transaction ID below.
-          </p>
-        </div>
+        ) : (
+          /* Manual payment UI */
+          <>
+            <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
+              <p className="text-sm text-muted-foreground">Send Money to:</p>
+              <div className="flex items-center gap-3">
+                <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
+                <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
+                  {copied ? <CheckCheck className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Send exactly ৳{finalPrice} via {currentPayment.name} &quot;Send Money&quot; option. Then paste your Transaction ID below.
+              </p>
+            </div>
 
-        <Input
-          placeholder="Enter Transaction ID"
-          value={transactionId}
-          onChange={(e) => setTransactionId(e.target.value)}
-          className="h-12 bg-secondary border-border/50 text-center"
-        />
-        <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
-          {submitting ? "Submitting..." : "Submit Order"}
-        </Button>
+            <Input
+              placeholder="Enter Transaction ID"
+              value={transactionId}
+              onChange={(e) => setTransactionId(e.target.value)}
+              className="h-12 bg-secondary border-border/50 text-center"
+            />
+            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit Order"}
+            </Button>
+          </>
+        )}
       </div>
     ),
     success: (
