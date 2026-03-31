@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { type CreditPackage } from "@/lib/packages";
+import { type CreditPackage, packages as allPackages } from "@/lib/packages";
 import { paymentMethods, cryptoTokens } from "@/lib/packages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type Step = "email" | "summary" | "payment" | "crypto-checkout" | "success";
+type Step = "package" | "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
 interface OrderFlowProps {
-  selectedPackage: CreditPackage;
+  selectedPackage?: CreditPackage | null;
   onBack: () => void;
 }
 
-const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
-  const [step, setStep] = useState<Step>("email");
+const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) => {
+  const [chosenPackage, setChosenPackage] = useState<CreditPackage | null>(initialPackage || null);
+  const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<string>(paymentMethods[0].id);
   const [transactionId, setTransactionId] = useState("");
@@ -39,7 +40,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
 
   const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
   const isCrypto = currentPayment.type === "crypto";
-  const finalPrice = Math.max(selectedPackage.price - couponDiscount, 0);
+  const finalPrice = Math.max(chosenPackage!.price - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
@@ -56,7 +57,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
 
     const { data, error } = await supabase.rpc("validate_coupon", {
       p_code: couponCode.trim().toUpperCase(),
-      p_amount: selectedPackage.price,
+      p_amount: chosenPackage!.price,
     });
 
     if (error || !data || data.length === 0) {
@@ -99,10 +100,10 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       .from("orders")
       .insert({
         email,
-        package_id: selectedPackage.id,
-        credits: selectedPackage.credits,
+        package_id: chosenPackage!.id,
+        credits: chosenPackage!.credits,
         amount: finalPrice,
-        currency: selectedPackage.currency,
+        currency: chosenPackage!.currency,
         payment_method: `crypto-${selectedCrypto.token}-${selectedCrypto.network}`,
         transaction_id: "pending-crypto",
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
@@ -173,10 +174,10 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
       .from("orders")
       .insert({
         email,
-        package_id: selectedPackage.id,
-        credits: selectedPackage.credits,
+        package_id: chosenPackage!.id,
+        credits: chosenPackage!.credits,
         amount: finalPrice,
-        currency: selectedPackage.currency,
+        currency: chosenPackage!.currency,
         payment_method: selectedPayment,
         transaction_id: transactionId.trim(),
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
@@ -203,6 +204,43 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   };
 
   const stepContent: Record<Step, React.ReactNode> = {
+    package: (
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Package className="w-7 h-7 text-primary" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">প্যাকেজ বাছাই করুন</h2>
+          <p className="text-muted-foreground">আপনার পছন্দের প্যাকেজ সিলেক্ট করুন</p>
+        </div>
+        <div className="space-y-3">
+          {allPackages.map((pkg) => (
+            <button
+              key={pkg.id}
+              onClick={() => { setChosenPackage(pkg); setStep("email"); }}
+              className={`w-full text-left rounded-xl border p-4 transition-all hover:border-primary/50 hover:bg-secondary/50 ${
+                chosenPackage?.id === pkg.id ? "border-primary bg-primary/5" : "border-border/30 bg-secondary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-foreground text-lg">{pkg.credits} Credits</span>
+                    {pkg.popular && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
+                        <Star className="w-3 h-3" /> Popular
+                      </span>
+                    )}
+                  </div>
+                  {pkg.savings && <span className="text-xs text-primary font-medium">{pkg.savings}</span>}
+                </div>
+                <span className="text-2xl font-bold text-gradient-primary">৳{pkg.price}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    ),
     email: (
       <div className="space-y-6">
         <div className="text-center">
@@ -233,7 +271,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
             <span>Package</span>
-            <span className="font-semibold">{selectedPackage.credits} Credits</span>
+            <span className="font-semibold">{chosenPackage!.credits} Credits</span>
           </div>
           <div className="flex justify-between text-foreground">
             <span>Email</span>
@@ -241,7 +279,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           </div>
           <div className="flex justify-between text-foreground">
             <span>Subtotal</span>
-            <span>৳{selectedPackage.price}</span>
+            <span>৳{chosenPackage!.price}</span>
           </div>
 
           {/* Coupon section */}
@@ -293,7 +331,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
             <span className="font-semibold">Total</span>
             <div className="text-right">
               {couponApplied && (
-                <span className="text-sm text-muted-foreground line-through mr-2">৳{selectedPackage.price}</span>
+                <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage!.price}</span>
               )}
               <span className="text-2xl font-bold text-gradient-primary">৳{finalPrice}</span>
             </div>
@@ -454,15 +492,17 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
     ),
   };
 
-  const steps: Step[] = ["email", "summary", "payment", "crypto-checkout", "success"];
+  const steps: Step[] = ["package", "email", "summary", "payment", "crypto-checkout", "success"];
   const currentStepIndex = steps.indexOf(step);
+  const progressSteps = ["package", "email", "summary", "payment"];
+  const progressIndex = progressSteps.indexOf(step);
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {step !== "success" && step !== "crypto-checkout" && (
           <button
-            onClick={step === "email" ? onBack : () => setStep(steps[currentStepIndex - 1])}
+            onClick={step === "package" ? onBack : () => setStep(steps[currentStepIndex - 1])}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-6"
           >
             <ArrowLeft className="w-4 h-4" /> Back
@@ -471,11 +511,11 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
 
         {step !== "success" && step !== "crypto-checkout" && (
           <div className="flex gap-2 mb-8">
-            {["email", "summary", "payment"].map((s, i) => (
+            {progressSteps.map((s, i) => (
               <div
                 key={s}
                 className={`h-1 flex-1 rounded-full transition-all ${
-                  i <= currentStepIndex ? "bg-gradient-primary" : "bg-border"
+                  i <= progressIndex ? "bg-gradient-primary" : "bg-border"
                 }`}
               />
             ))}
