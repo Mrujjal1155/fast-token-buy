@@ -137,6 +137,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      setup_first_admin: { Args: { p_user_id: string }; Returns: boolean }
       use_coupon: { Args: { p_code: string }; Returns: undefined }
       validate_coupon: {
         Args: { p_amount: number; p_code: string }
