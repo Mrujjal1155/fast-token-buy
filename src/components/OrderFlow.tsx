@@ -71,7 +71,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       setCouponApplied(true);
       setCouponDiscount(Number(result.calculated_discount));
       setCouponMessage(result.message);
-      toast({ title: "🎉 Coupon applied!", description: `You save ৳${result.calculated_discount}` });
+      toast({ title: "Coupon applied!", description: `You save ৳${result.calculated_discount}` });
     } else {
       setCouponMessage(result.message);
     }

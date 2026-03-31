@@ -8,10 +8,10 @@ const HeaderNotice = () => {
 
   return (
     <div className="bg-primary/80 text-primary-foreground py-2 px-4 relative overflow-hidden">
-      <div className="animate-marquee whitespace-nowrap font-medium text-sm">
-        🎉 Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! 🎉
+      <div className="animate-marquee whitespace-nowrap font-medium text-sm flex items-center gap-1">
+        <Sparkles className="w-3.5 h-3.5 inline-block shrink-0" /> Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! <Sparkles className="w-3.5 h-3.5 inline-block shrink-0" />
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        🎉 Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! 🎉
+        <Sparkles className="w-3.5 h-3.5 inline-block shrink-0" /> Lovable Credits এর পক্ষ থেকে সবাইকে স্বাগতম! সীমিত সময়ের জন্য সকল প্যাকেজে বিশেষ ছাড় চলছে। এখনই অর্ডার করুন! <Sparkles className="w-3.5 h-3.5 inline-block shrink-0" />
       </div>
       <button
         onClick={() => setVisible(false)}

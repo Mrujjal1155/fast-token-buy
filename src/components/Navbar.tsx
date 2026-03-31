@@ -28,7 +28,7 @@ const Navbar = () => {
       <div className="md:hidden container pb-2.5 space-y-2">
         <OperatorStatus />
         <Button variant="outline" size="sm" className="w-full h-9" asChild>
-          <Link to="/track">📦 Track Order</Link>
+          <Link to="/track"><Package className="w-4 h-4" /> Track Order</Link>
         </Button>
       </div>
 

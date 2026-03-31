@@ -71,7 +71,7 @@ const AdminLogin = () => {
     const { data: isAdmin } = await supabase.rpc("setup_first_admin", { p_user_id: data.user.id });
 
     if (isAdmin) {
-      toast({ title: "🎉 অ্যাডমিন অ্যাকাউন্ট তৈরি হয়েছে!" });
+      toast({ title: "অ্যাডমিন অ্যাকাউন্ট তৈরি হয়েছে!" });
       navigate("/admin/dashboard");
     } else {
       toast({ title: "অ্যাকাউন্ট তৈরি হয়েছে, কিন্তু অ্যাডমিন ইতিমধ্যে আছে।", variant: "destructive" });
