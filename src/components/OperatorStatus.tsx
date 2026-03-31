@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, UserCircle } from "lucide-react";
+import { Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const OperatorStatus = () => {
