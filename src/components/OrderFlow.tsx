@@ -210,8 +210,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Package className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">প্যাকেজ বাছাই করুন</h2>
-          <p className="text-muted-foreground">আপনার পছন্দের প্যাকেজ সিলেক্ট করুন</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার প্যাকেজ বাছুন ⚡</h2>
+          <p className="text-muted-foreground">স্মার্ট ইউজাররা সেরা ডিলটাই বেছে নেয়!</p>
         </div>
         <div className="space-y-3">
           {allPackages.map((pkg) => (
@@ -228,7 +228,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                     <span className="font-bold text-foreground text-lg">{pkg.credits} ক্রেডিট</span>
                     {pkg.popular && (
                       <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                        <Star className="w-3 h-3" /> জনপ্রিয়
+                        <Star className="w-3 h-3" /> 🔥 সবাই এটাই নিচ্ছে
                       </span>
                     )}
                   </div>
@@ -247,8 +247,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Mail className="w-7 h-7 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার ইমেইল লিখুন</h2>
-          <p className="text-muted-foreground">এই ইমেইলে ক্রেডিট পাঠানো হবে</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">কোথায় ক্রেডিট পাঠাবো? 📧</h2>
+          <p className="text-muted-foreground">যে Lovable অ্যাকাউন্টে ক্রেডিট চান, সেই ইমেইল দিন</p>
         </div>
         <Input
           type="email"
@@ -259,14 +259,15 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
         />
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleEmailSubmit}>
-          পরবর্তী
+          এগিয়ে যান — প্রায় শেষ! 🚀
         </Button>
       </div>
     ),
     summary: (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-2">অর্ডার সারাংশ</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার অর্ডার রেডি! ✅</h2>
+          <p className="text-muted-foreground text-sm">সব ঠিক আছে তো? তাহলে পেমেন্টে যান!</p>
         </div>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
@@ -289,7 +290,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <div className="relative flex-1">
                   <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    placeholder="কুপন কোড"
+                    placeholder="কুপন কোড থাকলে দিন"
                     value={couponCode}
                     onChange={(e) => { setCouponCode(e.target.value); setCouponMessage(""); }}
                     className="h-10 bg-background border-border/50 pl-9 uppercase"
@@ -315,10 +316,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()}</span>
+                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()} ✨</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-primary">-৳{couponDiscount}</span>
+                  <span className="text-sm font-medium text-primary">-৳{couponDiscount} সাশ্রয়!</span>
                   <button onClick={removeCoupon} className="text-muted-foreground hover:text-foreground">
                     <X className="w-4 h-4" />
                   </button>
@@ -328,7 +329,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           )}
 
           <div className="border-t border-border/30 pt-4 flex justify-between text-foreground">
-            <span className="font-semibold">মোট</span>
+            <span className="font-semibold">সর্বমোট</span>
             <div className="text-right">
               {couponApplied && (
                 <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage?.price}</span>
@@ -338,7 +339,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </div>
         </div>
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleProceedToPayment}>
-          পেমেন্টে যান
+          পেমেন্ট করুন — মাত্র ১ স্টেপ বাকি! 🎯
         </Button>
       </div>
     ),
@@ -348,9 +349,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             {isCrypto ? <Coins className="w-7 h-7 text-primary" /> : <CreditCard className="w-7 h-7 text-primary" />}
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">পেমেন্ট সম্পন্ন করুন</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">পেমেন্ট করুন 💸</h2>
           <p className="text-muted-foreground">
-            {isCrypto ? "ক্রিপ্টো দিয়ে পেমেন্ট করুন" : `অর্ডার সম্পন্ন করতে ৳${finalPrice} পাঠান`}
+            {isCrypto ? "ক্রিপ্টো দিয়ে নিরাপদে পে করুন" : `মাত্র ৳${finalPrice} পাঠান — ক্রেডিট চলে আসবে!`}
           </p>
         </div>
 
@@ -375,7 +376,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           /* Crypto payment UI */
           <div className="space-y-4">
             <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
-              <p className="text-sm font-medium text-foreground">টোকেন ও নেটওয়ার্ক নির্বাচন করুন:</p>
+              <p className="text-sm font-medium text-foreground">টোকেন ও নেটওয়ার্ক বাছুন:</p>
               <div className="grid grid-cols-2 gap-2">
                 {cryptoTokens.map((ct, i) => (
                   <button
@@ -394,16 +395,16 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             </div>
             <div className="bg-secondary/50 rounded-xl p-4">
               <p className="text-sm text-muted-foreground">
-                আপনি <span className="text-foreground font-semibold">{selectedCrypto.label}</span> দিয়ে{" "}
+                <span className="text-foreground font-semibold">{selectedCrypto.label}</span> দিয়ে{" "}
                 <span className="text-primary font-bold">৳{finalPrice}</span> সমপরিমাণ পে করবেন।
-                BlinkPay চেকআউট পেজে রিডাইরেক্ট হবেন।
+                সিকিউর BlinkPay চেকআউটে রিডাইরেক্ট হবেন।
               </p>
             </div>
             <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
               {submitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং...</>
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> প্রসেসিং হচ্ছে...</>
               ) : (
-                <>{selectedCrypto.label} দিয়ে পে করুন</>
+                <>এখনই পে করুন — {selectedCrypto.label} ⚡</>
               )}
             </Button>
           </div>
@@ -411,7 +412,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           /* Manual payment UI */
           <>
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-              <p className="text-sm text-muted-foreground">এখানে টাকা পাঠান:</p>
+              <p className="text-sm text-muted-foreground">👇 এই নম্বরে টাকা পাঠান:</p>
               <div className="flex items-center gap-3">
                 <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
                 <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
@@ -419,18 +420,18 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                {currentPayment.name} এর &quot;Send Money&quot; অপশন দিয়ে ঠিক ৳{finalPrice} পাঠান। তারপর নিচে ট্রানজেকশন আইডি দিন।
+                {currentPayment.name} থেকে &quot;Send Money&quot; করে ঠিক <span className="text-foreground font-semibold">৳{finalPrice}</span> পাঠান। তারপর নিচে ট্রানজেকশন আইডি বসান।
               </p>
             </div>
 
             <Input
-              placeholder="ট্রানজেকশন আইডি লিখুন"
+              placeholder="ট্রানজেকশন আইডি বসান (যেমন: 8N4K2P)"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
               className="h-12 bg-secondary border-border/50 text-center"
             />
             <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
-              {submitting ? "জমা হচ্ছে..." : "অর্ডার জমা দিন"}
+              {submitting ? "জমা হচ্ছে..." : "অর্ডার কনফার্ম করুন ✅"}
             </Button>
           </>
         )}
@@ -441,18 +442,18 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Check className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">অর্ডার জমা হয়েছে!</h2>
-        <p className="text-muted-foreground">আপনার অর্ডার প্রক্রিয়াধীন। ক্রেডিট <span className="text-foreground font-medium">{email}</span> এ পাঠানো হবে</p>
+        <h2 className="text-2xl font-bold text-foreground">অর্ডার সফল! 🎉</h2>
+        <p className="text-muted-foreground">আপনার ক্রেডিট খুব শীঘ্রই <span className="text-foreground font-medium">{email}</span> এ পৌঁছে যাবে!</p>
         <div className="bg-secondary/50 rounded-xl p-6">
           <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-2xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">অর্ডার ট্র্যাক করতে এটি সেভ করুন</p>
+          <p className="text-xs text-muted-foreground mt-2">👆 এই আইডি দিয়ে যেকোনো সময় অর্ডার ট্র্যাক করতে পারবেন</p>
         </div>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরুন
+          হোমে ফিরে যান
         </Button>
       </div>
     ),
@@ -461,12 +462,12 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Coins className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট করুন</h2>
+        <h2 className="text-2xl font-bold text-foreground">পেমেন্ট সম্পন্ন করুন 🔐</h2>
         <p className="text-muted-foreground">
-          নিচের বাটনে ক্লিক করে BlinkPay চেকআউট পেজে যান এবং পেমেন্ট সম্পন্ন করুন।
+          নিচের বাটনে ক্লিক করুন এবং সিকিউর BlinkPay পেজে পেমেন্ট করুন। সব নিরাপদ!
         </p>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-          <p className="text-sm text-muted-foreground mb-1">অর্ডার আইডি</p>
+          <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
             <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
@@ -483,10 +484,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </Button>
         </a>
         <p className="text-xs text-muted-foreground">
-          পেমেন্ট সম্পন্ন হলে অটোমেটিক আপডেট হবে। অর্ডার ট্র্যাক করতে Order ID সেভ করুন।
+          পেমেন্ট হলে অটো আপডেট হবে। অর্ডার আইডি সেভ রাখুন! 📋
         </p>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরুন
+          হোমে ফিরে যান
         </Button>
       </div>
     ),
