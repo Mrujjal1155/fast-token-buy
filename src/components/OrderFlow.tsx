@@ -21,7 +21,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [chosenPackage, setChosenPackage] = useState<CreditPackage | null>(initialPackage || null);
   const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");
-  const [selectedPayment, setSelectedPayment] = useState<string>(paymentMethods[0].id);
+  const [selectedPayment, setSelectedPayment] = useState<string>("");
   const [transactionId, setTransactionId] = useState("");
   const [orderId, setOrderId] = useState("");
   const [copied, setCopied] = useState(false);
@@ -38,24 +38,55 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [couponMessage, setCouponMessage] = useState("");
   const [validatingCoupon, setValidatingCoupon] = useState(false);
   const [ajkerpayEnabled, setAjkerpayEnabled] = useState(false);
+  const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; number: string; color: string; type: "manual" | "crypto" }>>(paymentMethods.map((m) => ({ ...m })));
 
   const { toast } = useToast();
 
-  // Check if AjkerPay is enabled
+  // Fetch payment settings
   useEffect(() => {
-    const checkAjkerPay = async () => {
+    const fetchSettings = async () => {
       const { data } = await supabase
         .from("site_settings")
-        .select("value")
-        .eq("key", "ajkerpay_enabled")
-        .maybeSingle();
-      if (data) setAjkerpayEnabled(data.value === "true");
+        .select("key, value")
+        .or("key.like.payment_method_%,key.eq.ajkerpay_enabled");
+
+      if (data) {
+        let ajkerEnabled = false;
+        const enabledMap: Record<string, boolean> = {};
+        const numberMap: Record<string, string> = {};
+
+        data.forEach((s) => {
+          if (s.key === "ajkerpay_enabled") {
+            ajkerEnabled = s.value === "true";
+          } else if (s.key.endsWith("_enabled")) {
+            const id = s.key.replace("payment_method_", "").replace("_enabled", "");
+            enabledMap[id] = s.value === "true";
+          } else if (s.key.endsWith("_number")) {
+            const id = s.key.replace("payment_method_", "").replace("_number", "");
+            numberMap[id] = s.value;
+          }
+        });
+
+        setAjkerpayEnabled(ajkerEnabled);
+
+        const filtered = paymentMethods
+          .filter((m) => enabledMap[m.id] !== false) // default to enabled if no setting
+          .map((m) => ({
+            ...m,
+            number: numberMap[m.id] || m.number,
+          }));
+
+        setActivePaymentMethods(filtered);
+        if (filtered.length > 0 && !selectedPayment) {
+          setSelectedPayment(filtered[0].id);
+        }
+      }
     };
-    checkAjkerPay();
+    fetchSettings();
   }, []);
 
-  const currentPayment = paymentMethods.find((p) => p.id === selectedPayment)!;
-  const isCrypto = currentPayment.type === "crypto";
+  const currentPayment = activePaymentMethods.find((p) => p.id === selectedPayment) || activePaymentMethods[0];
+  const isCrypto = currentPayment?.type === "crypto";
   const finalPrice = chosenPackage ? Math.max(chosenPackage.price - couponDiscount, 0) : 0;
 
   const handleEmailSubmit = () => {
@@ -443,7 +474,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
         {/* Payment method tabs */}
         <div className="flex flex-wrap gap-2">
-          {paymentMethods.map((m) => (
+          {activePaymentMethods.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}

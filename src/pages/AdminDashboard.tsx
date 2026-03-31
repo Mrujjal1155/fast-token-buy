@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, CreditCard } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, CreditCard, Wallet } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
@@ -19,11 +19,12 @@ import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
 import AdminAjkerPay from "@/components/AdminAjkerPay";
+import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "ajkerpay">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "ajkerpay" | "payments">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -156,6 +157,7 @@ const AdminDashboard = () => {
             { id: "packages" as const, label: "Packages", icon: Package },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
+            { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "ajkerpay" as const, label: "AjkerPay", icon: CreditCard },
           ].map((tab) => (
             <button
@@ -309,6 +311,8 @@ const AdminDashboard = () => {
           <AdminReserves />
         ) : activeTab === "notifications" ? (
           <AdminNotifications />
+        ) : activeTab === "payments" ? (
+          <AdminPaymentMethods />
         ) : (
           <AdminAjkerPay />
         )}
