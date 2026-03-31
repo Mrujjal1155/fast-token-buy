@@ -1,13 +1,16 @@
 import { motion } from "framer-motion";
-import { Check, Star, Flame, Zap } from "lucide-react";
+import { Check, Star, Flame, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { packages, type CreditPackage } from "@/lib/packages";
+import { type CreditPackage } from "@/lib/packages";
+import { usePackages } from "@/hooks/usePackages";
 
 interface PricingSectionProps {
   onSelectPackage: (pkg: CreditPackage) => void;
 }
 
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
+  const { packages, loading } = usePackages();
+
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#7B61FF]/5 blur-[150px] pointer-events-none" />

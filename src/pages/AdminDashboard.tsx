@@ -17,11 +17,12 @@ import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
+import AdminPackages from "@/components/AdminPackages";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -151,6 +152,7 @@ const AdminDashboard = () => {
           {[
             { id: "orders" as const, label: "Orders", icon: Package },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
+            { id: "packages" as const, label: "Packages", icon: Package },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
           ].map((tab) => (
@@ -299,6 +301,8 @@ const AdminDashboard = () => {
           </>
         ) : activeTab === "coupons" ? (
           <AdminCoupons />
+        ) : activeTab === "packages" ? (
+          <AdminPackages />
         ) : activeTab === "reserves" ? (
           <AdminReserves />
         ) : (

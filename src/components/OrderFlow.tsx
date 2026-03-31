@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Mail, CreditCard, Check, Copy, CheckCheck, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { type CreditPackage, packages as allPackages } from "@/lib/packages";
+import { type CreditPackage } from "@/lib/packages";
 import { paymentMethods, cryptoTokens } from "@/lib/packages";
+import { usePackages } from "@/hooks/usePackages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,6 +17,7 @@ interface OrderFlowProps {
 }
 
 const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) => {
+  const { packages: allPackages } = usePackages();
   const [chosenPackage, setChosenPackage] = useState<CreditPackage | null>(initialPackage || null);
   const [step, setStep] = useState<Step>(initialPackage ? "email" : "package");
   const [email, setEmail] = useState("");

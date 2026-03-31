@@ -131,6 +131,48 @@ export type Database = {
         }
         Relationships: []
       }
+      packages: {
+        Row: {
+          created_at: string
+          credits: number
+          currency: string
+          id: string
+          is_active: boolean
+          package_key: string
+          popular: boolean
+          price: number
+          savings: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits: number
+          currency?: string
+          id?: string
+          is_active?: boolean
+          package_key: string
+          popular?: boolean
+          price: number
+          savings?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          currency?: string
+          id?: string
+          is_active?: boolean
+          package_key?: string
+          popular?: boolean
+          price?: number
+          savings?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reserves: {
         Row: {
           amount: string
