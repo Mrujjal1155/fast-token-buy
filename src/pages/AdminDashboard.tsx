@@ -20,7 +20,7 @@ import AdminNotifications from "@/components/AdminNotifications";
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
