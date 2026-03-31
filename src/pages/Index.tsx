@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
 import PricingSection from "@/components/PricingSection";
+import Testimonials from "@/components/Testimonials";
 import RecentPurchases from "@/components/RecentPurchases";
 import Footer from "@/components/Footer";
 import OrderFlow from "@/components/OrderFlow";
@@ -27,6 +28,7 @@ const Index = () => {
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
       <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
+      <Testimonials />
       <RecentPurchases />
       <Footer />
     </div>
