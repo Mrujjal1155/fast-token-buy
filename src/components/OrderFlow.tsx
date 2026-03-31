@@ -441,8 +441,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Check className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">Order Submitted!</h2>
-        <p className="text-muted-foreground">Your order is being processed. Credits will be delivered to <span className="text-foreground font-medium">{email}</span></p>
+        <h2 className="text-2xl font-bold text-foreground">অর্ডার জমা হয়েছে!</h2>
+        <p className="text-muted-foreground">আপনার অর্ডার প্রক্রিয়াধীন। ক্রেডিট <span className="text-foreground font-medium">{email}</span> এ পাঠানো হবে</p>
         <div className="bg-secondary/50 rounded-xl p-6">
           <p className="text-sm text-muted-foreground mb-1">Your Order ID</p>
           <div className="flex items-center justify-center gap-2">
