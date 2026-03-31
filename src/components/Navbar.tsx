@@ -27,9 +27,17 @@ const Navbar = () => {
         {/* Mobile menu button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition"
+          className="md:hidden p-2 text-muted-foreground hover:text-foreground transition flex flex-col items-end gap-[5px]"
         >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {menuOpen ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <>
+              <span className="block h-[2.5px] w-6 rounded-full bg-primary" />
+              <span className="block h-[2.5px] w-5 rounded-full bg-primary/70" />
+              <span className="block h-[2.5px] w-4 rounded-full bg-primary/50" />
+            </>
+          )}
         </button>
       </div>
 
