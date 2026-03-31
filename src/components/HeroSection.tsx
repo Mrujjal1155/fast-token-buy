@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Zap, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight, Flame, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeroSectionProps {
@@ -21,33 +21,44 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          {/* Limited offer badge */}
+          {/* Urgency badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 md:px-5 py-2 rounded-full glass mb-6 md:mb-8 animate-pulse-glow"
           >
-            <Zap className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#FF7A18]" />
-            <span className="text-xs md:text-sm font-medium text-gradient-primary">সীমিত সময়ের অফার — ২৪% ছাড়</span>
+            <Flame className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#FF7A18]" />
+            <span className="text-xs md:text-sm font-medium text-gradient-primary">এই অফার আর বেশিদিন থাকবে না — এখনই নিন!</span>
           </motion.div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-4 md:mb-6 leading-tight">
-            পান <span className="text-gradient-primary">১০৫ ক্রেডিট</span>
+            মাত্র <span className="text-gradient-primary">৳৮০</span> তে পান
             <br />
-            মাত্র <span className="text-gradient-primary">৳৮০</span> তে
+            <span className="text-gradient-primary">১০৫ ক্রেডিট</span> — আজই!
           </h1>
 
-          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto mb-8 md:mb-10 px-2">
-            আপনার Lovable প্রজেক্টে ক্রেডিট যোগ করুন। তাৎক্ষণিক ডেলিভারি, নিরাপদ পেমেন্ট এবং ২৪/৭ সহায়তা।
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl mx-auto mb-4 px-2">
+            ১ মিনিটে অর্ডার, ৫ মিনিটে ডেলিভারি। হাজারো ইউজার ইতিমধ্যে বিশ্বাস করে।
           </p>
+
+          {/* Trust micro-signals */}
+          <div className="flex items-center justify-center gap-4 mb-8 md:mb-10">
+            <span className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> ১০০% নিরাপদ
+            </span>
+            <span className="w-1 h-1 rounded-full bg-border" />
+            <span className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+              <Zap className="w-3.5 h-3.5 text-[#FF7A18]" /> তাৎক্ষণিক ডেলিভারি
+            </span>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
             <Button variant="hero" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-[14px]" onClick={onBuyNow}>
-              এখনই কিনুন <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1" />
+              এখনই ক্রেডিট নিন <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-1" />
             </Button>
             <Button variant="outline" size="lg" className="text-base md:text-lg px-8 md:px-10 py-5 md:py-6 rounded-[14px] border-border/50 hover:border-[#7B61FF]/50 transition-all duration-300" onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}>
-              প্যাকেজ দেখুন
+              ১ মিনিটে শুরু করুন
             </Button>
           </div>
         </motion.div>
