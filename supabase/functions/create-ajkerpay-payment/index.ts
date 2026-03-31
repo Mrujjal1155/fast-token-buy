@@ -17,6 +17,12 @@ serve(async (req) => {
     const AJKERPAY_SECRET_KEY = Deno.env.get("AJKERPAY_SECRET_KEY");
     const AJKERPAY_BRAND_KEY = Deno.env.get("AJKERPAY_BRAND_KEY");
 
+    console.log("AjkerPay keys present:", {
+      API_KEY: !!AJKERPAY_API_KEY,
+      SECRET_KEY: !!AJKERPAY_SECRET_KEY,
+      BRAND_KEY: !!AJKERPAY_BRAND_KEY,
+    });
+
     if (!AJKERPAY_API_KEY || !AJKERPAY_SECRET_KEY || !AJKERPAY_BRAND_KEY) {
       return new Response(
         JSON.stringify({ error: "AjkerPay API keys not configured" }),
@@ -28,10 +34,21 @@ serve(async (req) => {
 
     if (!amount || !order_id || !customer_email || !success_url || !cancel_url) {
       return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
+        JSON.stringify({ error: "Missing required fields", details: { amount: !!amount, order_id: !!order_id, customer_email: !!customer_email, success_url: !!success_url, cancel_url: !!cancel_url } }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const payload = {
+      cus_name: customer_name || "Customer",
+      cus_email: customer_email,
+      amount: String(amount),
+      success_url: success_url,
+      cancel_url: cancel_url,
+      metadata: { order_id },
+    };
+
+    console.log("AjkerPay request payload:", JSON.stringify(payload));
 
     const response = await fetch(AJKERPAY_URL, {
       method: "POST",
@@ -41,17 +58,11 @@ serve(async (req) => {
         "SECRET-KEY": AJKERPAY_SECRET_KEY,
         "BRAND-KEY": AJKERPAY_BRAND_KEY,
       },
-      body: JSON.stringify({
-        cus_name: customer_name || "Customer",
-        cus_email: customer_email,
-        amount: String(amount),
-        success_url,
-        cancel_url,
-        meta_data: JSON.stringify({ order_id }),
-      }),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
+    console.log("AjkerPay response:", JSON.stringify(data));
 
     if (data.status === true && data.payment_url) {
       return new Response(
@@ -60,7 +71,7 @@ serve(async (req) => {
       );
     } else {
       return new Response(
-        JSON.stringify({ error: data.message || "AjkerPay payment creation failed" }),
+        JSON.stringify({ error: data.message || "AjkerPay payment creation failed", ajkerpay_response: data }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
