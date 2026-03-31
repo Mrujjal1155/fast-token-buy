@@ -161,7 +161,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     }
 
     if (!transactionId.trim()) {
-      toast({ title: "Please enter your Transaction ID", variant: "destructive" });
+      toast({ title: "ট্রানজেকশন আইডি দিন", variant: "destructive" });
       return;
     }
     setSubmitting(true);
