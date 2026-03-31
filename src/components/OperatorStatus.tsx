@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   const bengaliDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
@@ -20,28 +19,31 @@ const OperatorStatus = () => {
         .select("value")
         .eq("key", "operator_status")
         .maybeSingle();
+
       if (data) setIsOnline(data.value === "online");
     };
+
     fetchStatus();
 
-    // Use unique channel name to avoid StrictMode conflicts
-    const channelName = `operator-status-${Date.now()}`;
     const channel = supabase
-      .channel(channelName)
+      .channel(`operator-status-${crypto.randomUUID()}`)
       .on(
         "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "site_settings" },
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "site_settings",
+          filter: "key=eq.operator_status",
+        },
         (payload) => {
           const row = payload.new as { key: string; value: string };
-          if (row.key === "operator_status") setIsOnline(row.value === "online");
+          setIsOnline(row.value === "online");
         }
       )
       .subscribe();
 
-    channelRef.current = channel;
-
     return () => {
-      supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
   }, []);
 
