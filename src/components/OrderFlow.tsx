@@ -266,7 +266,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     summary: (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-2">অর্ডার সারাংশ</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার অর্ডার রেডি! ✅</h2>
+          <p className="text-muted-foreground text-sm">সব ঠিক আছে তো? তাহলে পেমেন্টে যান!</p>
         </div>
         <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
           <div className="flex justify-between text-foreground">
@@ -289,7 +290,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <div className="relative flex-1">
                   <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    placeholder="কুপন কোড"
+                    placeholder="কুপন কোড থাকলে দিন"
                     value={couponCode}
                     onChange={(e) => { setCouponCode(e.target.value); setCouponMessage(""); }}
                     className="h-10 bg-background border-border/50 pl-9 uppercase"
@@ -315,10 +316,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()}</span>
+                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()} ✨</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-primary">-৳{couponDiscount}</span>
+                  <span className="text-sm font-medium text-primary">-৳{couponDiscount} সাশ্রয়!</span>
                   <button onClick={removeCoupon} className="text-muted-foreground hover:text-foreground">
                     <X className="w-4 h-4" />
                   </button>
@@ -328,7 +329,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           )}
 
           <div className="border-t border-border/30 pt-4 flex justify-between text-foreground">
-            <span className="font-semibold">মোট</span>
+            <span className="font-semibold">সর্বমোট</span>
             <div className="text-right">
               {couponApplied && (
                 <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage?.price}</span>
@@ -338,7 +339,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </div>
         </div>
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleProceedToPayment}>
-          পেমেন্টে যান
+          পেমেন্ট করুন — মাত্র ১ স্টেপ বাকি! 🎯
         </Button>
       </div>
     ),
