@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
+import AdminCoupons from "@/components/AdminCoupons";
 
 type Order = Tables<"orders">;
 
 const AdminDashboard = () => {
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -103,105 +105,130 @@ const AdminDashboard = () => {
             <LogOut className="w-4 h-4 mr-2" /> Logout
           </Button>
         </div>
+        <div className="container flex gap-1 -mb-px">
+          {[
+            { id: "orders" as const, label: "Orders", icon: Package },
+            { id: "coupons" as const, label: "Coupons", icon: Tag },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${
+                activeTab === tab.id
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </header>
 
       <div className="container py-8 space-y-8">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: "Total Orders", value: stats.total, icon: Package, color: "text-foreground" },
-            { label: "Pending", value: stats.pending, icon: Clock, color: "text-yellow-400" },
-            { label: "Completed", value: stats.completed, icon: CheckCircle, color: "text-primary" },
-            { label: "Revenue", value: `৳${stats.revenue}`, icon: DollarSign, color: "text-primary" },
-          ].map((s) => (
-            <div key={s.label} className="bg-card border border-border/30 rounded-xl p-5">
-              <div className="flex items-center gap-3 mb-2">
-                <s.icon className={`w-5 h-5 ${s.color}`} />
-                <span className="text-sm text-muted-foreground">{s.label}</span>
-              </div>
-              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+        {activeTab === "orders" ? (
+          <>
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: "Total Orders", value: stats.total, icon: Package, color: "text-foreground" },
+                { label: "Pending", value: stats.pending, icon: Clock, color: "text-yellow-400" },
+                { label: "Completed", value: stats.completed, icon: CheckCircle, color: "text-primary" },
+                { label: "Revenue", value: `৳${stats.revenue}`, icon: DollarSign, color: "text-primary" },
+              ].map((s) => (
+                <div key={s.label} className="bg-card border border-border/30 rounded-xl p-5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <s.icon className={`w-5 h-5 ${s.color}`} />
+                    <span className="text-sm text-muted-foreground">{s.label}</span>
+                  </div>
+                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Search */}
-        <div className="flex gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by order ID, email, or transaction ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-12 bg-secondary border-border/50"
-            />
-          </div>
-        </div>
+            {/* Search */}
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by order ID, email, or transaction ID..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10 h-12 bg-secondary border-border/50"
+                />
+              </div>
+            </div>
 
-        {/* Orders table */}
-        <div className="bg-card border border-border/30 rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border/30 text-muted-foreground">
-                  <th className="text-left p-4 font-medium">Order ID</th>
-                  <th className="text-left p-4 font-medium">Email</th>
-                  <th className="text-left p-4 font-medium">Credits</th>
-                  <th className="text-left p-4 font-medium">Amount</th>
-                  <th className="text-left p-4 font-medium">Payment</th>
-                  <th className="text-left p-4 font-medium">Txn ID</th>
-                  <th className="text-left p-4 font-medium">Status</th>
-                  <th className="text-left p-4 font-medium">Notes</th>
-                  <th className="text-left p-4 font-medium">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">Loading...</td></tr>
-                ) : filtered.length === 0 ? (
-                  <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">No orders found</td></tr>
-                ) : (
-                  filtered.map((order) => (
-                    <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
-                      <td className="p-4 font-mono text-xs text-foreground">{order.order_id}</td>
-                      <td className="p-4 text-foreground">{order.email}</td>
-                      <td className="p-4 text-foreground">{order.credits}</td>
-                      <td className="p-4 text-foreground">৳{order.amount}</td>
-                      <td className="p-4 text-foreground capitalize">{order.payment_method}</td>
-                      <td className="p-4 font-mono text-xs text-muted-foreground">{order.transaction_id}</td>
-                      <td className="p-4">
-                        <Select
-                          value={order.status}
-                          onValueChange={(val) => updateStatus(order.id, val)}
-                        >
-                          <SelectTrigger className={`w-32 h-8 text-xs border-0 ${statusColors[order.status]}`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="processing">Processing</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="failed">Failed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </td>
-                      <td className="p-4">
-                        <Input
-                          defaultValue={order.admin_notes || ""}
-                          placeholder="Add note..."
-                          className="h-8 text-xs bg-transparent border-border/30 w-32"
-                          onBlur={(e) => updateNotes(order.id, e.target.value)}
-                        />
-                      </td>
-                      <td className="p-4 text-xs text-muted-foreground whitespace-nowrap">
-                        {new Date(order.created_at).toLocaleDateString()}
-                      </td>
+            {/* Orders table */}
+            <div className="bg-card border border-border/30 rounded-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border/30 text-muted-foreground">
+                      <th className="text-left p-4 font-medium">Order ID</th>
+                      <th className="text-left p-4 font-medium">Email</th>
+                      <th className="text-left p-4 font-medium">Credits</th>
+                      <th className="text-left p-4 font-medium">Amount</th>
+                      <th className="text-left p-4 font-medium">Payment</th>
+                      <th className="text-left p-4 font-medium">Txn ID</th>
+                      <th className="text-left p-4 font-medium">Status</th>
+                      <th className="text-left p-4 font-medium">Notes</th>
+                      <th className="text-left p-4 font-medium">Date</th>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">Loading...</td></tr>
+                    ) : filtered.length === 0 ? (
+                      <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">No orders found</td></tr>
+                    ) : (
+                      filtered.map((order) => (
+                        <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
+                          <td className="p-4 font-mono text-xs text-foreground">{order.order_id}</td>
+                          <td className="p-4 text-foreground">{order.email}</td>
+                          <td className="p-4 text-foreground">{order.credits}</td>
+                          <td className="p-4 text-foreground">৳{order.amount}</td>
+                          <td className="p-4 text-foreground capitalize">{order.payment_method}</td>
+                          <td className="p-4 font-mono text-xs text-muted-foreground">{order.transaction_id}</td>
+                          <td className="p-4">
+                            <Select
+                              value={order.status}
+                              onValueChange={(val) => updateStatus(order.id, val)}
+                            >
+                              <SelectTrigger className={`w-32 h-8 text-xs border-0 ${statusColors[order.status]}`}>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="processing">Processing</SelectItem>
+                                <SelectItem value="completed">Completed</SelectItem>
+                                <SelectItem value="failed">Failed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-4">
+                            <Input
+                              defaultValue={order.admin_notes || ""}
+                              placeholder="Add note..."
+                              className="h-8 text-xs bg-transparent border-border/30 w-32"
+                              onBlur={(e) => updateNotes(order.id, e.target.value)}
+                            />
+                          </td>
+                          <td className="p-4 text-xs text-muted-foreground whitespace-nowrap">
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          <AdminCoupons />
+        )}
       </div>
     </div>
   );
