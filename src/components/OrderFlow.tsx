@@ -452,7 +452,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <p className="text-xs text-muted-foreground mt-2">অর্ডার ট্র্যাক করতে এটি সেভ করুন</p>
         </div>
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          Back to Home
+          হোমে ফিরুন
         </Button>
       </div>
     ),
