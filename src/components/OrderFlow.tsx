@@ -187,7 +187,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .single();
 
     if (error) {
-      toast({ title: "Failed to submit order", description: error.message, variant: "destructive" });
+      toast({ title: "অর্ডার জমা দিতে সমস্যা হয়েছে", description: error.message, variant: "destructive" });
       setSubmitting(false);
       return;
     }
