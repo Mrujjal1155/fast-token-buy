@@ -495,7 +495,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
-        ) : ajkerpayEnabled ? (
+        ) : (
           /* AjkerPay auto payment UI */
           <div className="space-y-4">
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
@@ -517,32 +517,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               )}
             </Button>
           </div>
-        ) : (
-          /* Manual payment UI */
-          <>
-            <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-              <p className="text-sm text-muted-foreground">👇 এই নম্বরে টাকা পাঠান:</p>
-              <div className="flex items-center gap-3">
-                <span className="text-xl font-bold text-foreground font-mono">{currentPayment.number}</span>
-                <button onClick={copyNumber} className="text-primary hover:text-primary/80 transition">
-                  {copied ? <CheckCheck className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {currentPayment.name} থেকে &quot;Send Money&quot; করে ঠিক <span className="text-foreground font-semibold">৳{finalPrice}</span> পাঠান। তারপর নিচে ট্রানজেকশন আইডি বসান।
-              </p>
-            </div>
-
-            <Input
-              placeholder="ট্রানজেকশন আইডি বসান (যেমন: 8N4K2P)"
-              value={transactionId}
-              onChange={(e) => setTransactionId(e.target.value)}
-              className="h-12 bg-secondary border-border/50 text-center"
-            />
-            <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
-              {submitting ? "জমা হচ্ছে..." : "অর্ডার কনফার্ম করুন ✅"}
-            </Button>
-          </>
         )}
       </div>
     ),
