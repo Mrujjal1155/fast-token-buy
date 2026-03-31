@@ -454,7 +454,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {step !== "success" && (
+        {step !== "success" && step !== "crypto-checkout" && (
           <button
             onClick={step === "email" ? onBack : () => setStep(steps[currentStepIndex - 1])}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition mb-6"
@@ -463,7 +463,7 @@ const OrderFlow = ({ selectedPackage, onBack }: OrderFlowProps) => {
           </button>
         )}
 
-        {step !== "success" && (
+        {step !== "success" && step !== "crypto-checkout" && (
           <div className="flex gap-2 mb-8">
             {["email", "summary", "payment"].map((s, i) => (
               <div
