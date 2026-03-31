@@ -64,7 +64,7 @@ serve(async (req) => {
     const data = await response.json();
     console.log("AjkerPay response:", JSON.stringify(data));
 
-    if (data.status === true && data.payment_url) {
+    if ((data.status === true || data.status === 1) && data.payment_url) {
       return new Response(
         JSON.stringify({ payment_url: data.payment_url }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
