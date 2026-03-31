@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import HeaderNotice from "@/components/HeaderNotice";
 import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
 import PricingSection from "@/components/PricingSection";
@@ -24,7 +23,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <HeaderNotice />
       <Navbar />
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
