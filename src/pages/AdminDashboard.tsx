@@ -266,8 +266,10 @@ const AdminDashboard = () => {
           </>
         ) : activeTab === "coupons" ? (
           <AdminCoupons />
-        ) : (
+        ) : activeTab === "reserves" ? (
           <AdminReserves />
+        ) : (
+          <AdminNotifications />
         )}
       </div>
     </div>
