@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   const bengaliDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
@@ -23,8 +24,10 @@ const OperatorStatus = () => {
     };
     fetchStatus();
 
+    // Use unique channel name to avoid StrictMode conflicts
+    const channelName = `operator-status-${Date.now()}`;
     const channel = supabase
-      .channel("operator-status-live")
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "site_settings" },
@@ -35,7 +38,11 @@ const OperatorStatus = () => {
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    channelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
