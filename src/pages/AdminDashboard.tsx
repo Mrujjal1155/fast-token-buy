@@ -11,7 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag } from "lucide-react";
+import type { Tables } from "@/integrations/supabase/types";
+import AdminCoupons from "@/components/AdminCoupons";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Order = Tables<"orders">;
