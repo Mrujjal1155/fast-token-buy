@@ -11,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
@@ -26,13 +27,38 @@ const AdminDashboard = () => {
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
+  const [operatorOnline, setOperatorOnline] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     checkAuth();
     fetchOrders();
+    fetchOperatorStatus();
   }, []);
+
+  const fetchOperatorStatus = async () => {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "operator_status")
+      .maybeSingle();
+    if (data) setOperatorOnline(data.value === "online");
+  };
+
+  const toggleOperator = async (checked: boolean) => {
+    setOperatorOnline(checked);
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ value: checked ? "online" : "offline", updated_at: new Date().toISOString() })
+      .eq("key", "operator_status");
+    if (error) {
+      toast({ title: "Failed to update", variant: "destructive" });
+      setOperatorOnline(!checked);
+    } else {
+      toast({ title: checked ? "অপারেটর অনলাইন" : "অপারেটর অফলাইন" });
+    }
+  };
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -110,9 +136,16 @@ const AdminDashboard = () => {
       <header className="border-b border-border/30 bg-card">
         <div className="container flex items-center justify-between h-16">
           <h1 className="text-xl font-bold text-foreground">Admin Dashboard</h1>
-          <Button variant="ghost" size="sm" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Power className={`w-4 h-4 ${operatorOnline ? "text-green-400" : "text-red-400"}`} />
+              <span className="text-sm text-muted-foreground hidden sm:inline">অপারেটর</span>
+              <Switch checked={operatorOnline} onCheckedChange={toggleOperator} />
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" /> Logout
+            </Button>
+          </div>
         </div>
         <div className="container flex gap-1 -mb-px">
           {[
