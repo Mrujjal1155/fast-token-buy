@@ -278,11 +278,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     return handleAjkerPayPayment();
   };
 
-  const copyNumber = () => {
-    navigator.clipboard.writeText(currentPayment.number);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+
 
   const stepContent: Record<Step, React.ReactNode> = {
     package: (
