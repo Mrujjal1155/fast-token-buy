@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, MessageCircle, Github, Twitter, ExternalLink } from "lucide-react";
+import { Mail, MessageCircle, ExternalLink, Globe, Send } from "lucide-react";
 
 const Footer = () => (
   <footer className="relative border-t border-border/10 pt-1">
