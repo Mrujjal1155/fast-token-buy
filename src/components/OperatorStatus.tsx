@@ -48,15 +48,15 @@ const OperatorStatus = () => {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 md:gap-3 px-3 md:px-6 py-1.5 md:py-3 rounded-lg md:rounded-xl glass w-full md:w-auto flex-wrap justify-center">
+    <div className="flex flex-col md:flex-row items-center gap-1 md:gap-3 px-3 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl glass w-full md:w-auto">
       <div className="flex items-center gap-1.5">
         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-semibold ${isOnline ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
           <span className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isOnline ? "bg-green-400 animate-pulse" : "bg-red-400"}`} />
           {isOnline ? "অনলাইন" : "অফলাইন"}
         </span>
       </div>
-      <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="w-3.5 h-3.5" />
+      <span className="inline-flex items-center gap-1.5 text-[10px] md:text-xs text-muted-foreground">
+        <Clock className="w-3 h-3 md:w-3.5 md:h-3.5" />
         সকাল ৯:০০ - রাত ১১:৫৯
       </span>
       <span className="text-[10px] md:text-xs font-medium text-gradient-primary">{bengaliDate}</span>
