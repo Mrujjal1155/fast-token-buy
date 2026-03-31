@@ -338,7 +338,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </div>
         </div>
         <Button variant="hero" size="lg" className="w-full py-6" onClick={handleProceedToPayment}>
-          Proceed to Payment
+          পেমেন্টে যান
         </Button>
       </div>
     ),
