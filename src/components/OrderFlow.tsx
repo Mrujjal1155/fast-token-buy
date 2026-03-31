@@ -535,6 +535,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         paymentUrl={cryptoPaymentUrl}
         onSuccess={() => setStep("success")}
         onBack={onBack}
+        onRetry={() => setStep("payment")}
       />
     ),
   };
