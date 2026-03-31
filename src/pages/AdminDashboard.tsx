@@ -27,6 +27,7 @@ const AdminDashboard = () => {
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
+  const [operatorOnline, setOperatorOnline] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
