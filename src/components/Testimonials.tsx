@@ -34,6 +34,7 @@ const StarRating = ({ rating }: { rating: number }) => (
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState<Review[]>(defaultTestimonials);
+  const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -44,7 +45,11 @@ const Testimonials = () => {
         .order("created_at", { ascending: false })
         .limit(12);
       if (data && data.length > 0) {
-        setReviews([...(data as Review[]), ...defaultTestimonials].slice(0, 9));
+        const allReviews = [...(data as Review[]), ...defaultTestimonials].slice(0, 9);
+        const totalCount = data.length + defaultTestimonials.length;
+        const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+        setReviews(allReviews);
+        setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
       }
     };
     fetchReviews();
