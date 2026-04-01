@@ -70,8 +70,18 @@ const Testimonials = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
             তারা বলছে — <span className="text-gradient-primary">"বিশ্বাসযোগ্য!"</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে</p>
-        </motion.div>
+          <p className="text-muted-foreground text-base md:text-lg mb-4">শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে</p>
+          <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center gap-2 glass rounded-full px-5 py-2.5">
+              <Star className="w-5 h-5 text-[#FF7A18] fill-[#FF7A18]" />
+              <span className="text-lg font-bold text-foreground">{stats.avgRating}</span>
+              <span className="text-sm text-muted-foreground">/৫ গড় রেটিং</span>
+            </div>
+            <div className="glass rounded-full px-5 py-2.5">
+              <span className="text-lg font-bold text-foreground">{stats.totalCount}+</span>
+              <span className="text-sm text-muted-foreground ml-1">রিভিউ</span>
+            </div>
+          </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
           {reviews.map((t, i) => (
