@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,24 +36,34 @@ const Testimonials = () => {
   const [reviews, setReviews] = useState<Review[]>(defaultTestimonials);
   const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      const { data } = await supabase
-        .from("reviews")
-        .select("id, name, rating, text")
-        .eq("is_approved", true)
-        .order("created_at", { ascending: false })
-        .limit(12);
-      if (data && data.length > 0) {
-        const allReviews = [...(data as Review[]), ...defaultTestimonials].slice(0, 9);
-        const totalCount = data.length + defaultTestimonials.length;
-        const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
-        setReviews(allReviews);
-        setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
-      }
-    };
-    fetchReviews();
+  const fetchReviews = useCallback(async () => {
+    const { data } = await supabase
+      .from("reviews")
+      .select("id, name, rating, text")
+      .eq("is_approved", true)
+      .order("created_at", { ascending: false })
+      .limit(12);
+    if (data && data.length > 0) {
+      const allReviews = [...(data as Review[]), ...defaultTestimonials].slice(0, 9);
+      const totalCount = data.length + defaultTestimonials.length;
+      const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+      setReviews(allReviews);
+      setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
+    }
   }, []);
+
+  useEffect(() => {
+    fetchReviews();
+
+    const channel = supabase
+      .channel("reviews-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, () => {
+        fetchReviews();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [fetchReviews]);
 
   return (
     <section className="py-16 md:py-24 relative">
