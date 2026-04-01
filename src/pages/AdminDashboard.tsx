@@ -380,7 +380,6 @@ const AdminDashboard = () => {
         ) : (
           <AdminPaymentMethods />
         )}
-        )}
       </div>
 
       {/* Status Change Confirmation Dialog */}
