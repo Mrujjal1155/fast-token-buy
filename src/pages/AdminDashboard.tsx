@@ -375,8 +375,11 @@ const AdminDashboard = () => {
           <AdminReserves />
         ) : activeTab === "notifications" ? (
           <AdminNotifications />
+        ) : activeTab === "reviews" ? (
+          <AdminReviews />
         ) : (
           <AdminPaymentMethods />
+        )}
         )}
       </div>
 
