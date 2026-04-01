@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
+import ReviewForm from "@/components/ReviewForm";
 
 type Order = Tables<"orders">;
 
