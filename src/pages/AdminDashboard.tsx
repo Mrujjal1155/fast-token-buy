@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2 } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
@@ -30,6 +30,7 @@ import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
+import AdminReviews from "@/components/AdminReviews";
 
 type Order = Tables<"orders">;
 
@@ -61,7 +62,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -204,6 +205,7 @@ const AdminDashboard = () => {
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
             { id: "notifications" as const, label: "Notifications", icon: Bell },
             { id: "payments" as const, label: "Payments", icon: Wallet },
+            { id: "reviews" as const, label: "Reviews", icon: MessageSquare },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -373,6 +375,8 @@ const AdminDashboard = () => {
           <AdminReserves />
         ) : activeTab === "notifications" ? (
           <AdminNotifications />
+        ) : activeTab === "reviews" ? (
+          <AdminReviews />
         ) : (
           <AdminPaymentMethods />
         )}

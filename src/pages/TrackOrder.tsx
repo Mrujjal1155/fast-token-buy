@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
+import ReviewForm from "@/components/ReviewForm";
 
 type Order = Tables<"orders">;
 
@@ -191,6 +192,11 @@ const TrackOrder = () => {
                 <span className="text-sm text-muted-foreground">তারিখ</span>
                 <span className="text-foreground text-sm">{new Date(order.created_at).toLocaleDateString("bn-BD")}</span>
               </div>
+
+              {/* Review Form - only for completed orders */}
+              {order.status === "completed" && (
+                <ReviewForm orderId={order.order_id} />
+              )}
             </motion.div>
           )}
         </motion.div>
