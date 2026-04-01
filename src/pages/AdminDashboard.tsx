@@ -11,8 +11,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, CreditCard, Wallet } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
@@ -22,6 +33,33 @@ import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 
 type Order = Tables<"orders">;
 
+const statusConfig: Record<string, { label: string; icon: React.ReactNode; color: string; badgeClass: string }> = {
+  pending: {
+    label: "পেন্ডিং",
+    icon: <Clock className="w-3.5 h-3.5" />,
+    color: "text-yellow-400",
+    badgeClass: "bg-yellow-400/15 text-yellow-400 border-yellow-400/30",
+  },
+  processing: {
+    label: "প্রক্রিয়াধীন",
+    icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,
+    color: "text-blue-400",
+    badgeClass: "bg-blue-400/15 text-blue-400 border-blue-400/30",
+  },
+  completed: {
+    label: "সম্পন্ন",
+    icon: <CheckCircle className="w-3.5 h-3.5" />,
+    color: "text-primary",
+    badgeClass: "bg-primary/15 text-primary border-primary/30",
+  },
+  failed: {
+    label: "ব্যর্থ",
+    icon: <AlertTriangle className="w-3.5 h-3.5" />,
+    color: "text-destructive",
+    badgeClass: "bg-destructive/15 text-destructive border-destructive/30",
+  },
+};
+
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
@@ -30,6 +68,8 @@ const AdminDashboard = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [operatorOnline, setOperatorOnline] = useState(true);
+  const [statusChangeDialog, setStatusChangeDialog] = useState<{ open: boolean; orderId: string; orderDisplayId: string; newStatus: string }>({ open: false, orderId: "", orderDisplayId: "", newStatus: "" });
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -84,15 +124,29 @@ const AdminDashboard = () => {
     setLoading(false);
   };
 
-  const updateStatus = async (id: string, status: string) => {
+  const confirmStatusChange = (id: string, orderDisplayId: string, newStatus: string) => {
+    setStatusChangeDialog({ open: true, orderId: id, orderDisplayId, newStatus });
+  };
+
+  const updateStatus = async () => {
+    const { orderId, newStatus, orderDisplayId } = statusChangeDialog;
+    setStatusChangeDialog({ open: false, orderId: "", orderDisplayId: "", newStatus: "" });
+    setUpdatingStatus(orderId);
+
     const { error } = await supabase
       .from("orders")
-      .update({ status: status as Order["status"] })
-      .eq("id", id);
+      .update({ status: newStatus as Order["status"] })
+      .eq("id", orderId);
+
+    setUpdatingStatus(null);
+
     if (error) {
-      toast({ title: "Failed to update", variant: "destructive" });
+      toast({ title: "স্ট্যাটাস আপডেট ব্যর্থ", variant: "destructive" });
     } else {
-      toast({ title: "Status updated" });
+      toast({
+        title: "স্ট্যাটাস আপডেট হয়েছে",
+        description: `${orderDisplayId} → ${statusConfig[newStatus]?.label || newStatus}`,
+      });
       fetchOrders();
     }
   };
@@ -125,13 +179,6 @@ const AdminDashboard = () => {
     revenue: orders.filter((o) => o.status === "completed").reduce((s, o) => s + Number(o.amount), 0),
   };
 
-  const statusColors: Record<string, string> = {
-    pending: "text-yellow-400 bg-yellow-400/10",
-    processing: "text-blue-400 bg-blue-400/10",
-    completed: "text-primary bg-primary/10",
-    failed: "text-destructive bg-destructive/10",
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -149,7 +196,7 @@ const AdminDashboard = () => {
             </Button>
           </div>
         </div>
-        <div className="container flex gap-1 -mb-px">
+        <div className="container flex gap-1 -mb-px overflow-x-auto">
           {[
             { id: "orders" as const, label: "Orders", icon: Package },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
@@ -161,7 +208,7 @@ const AdminDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -246,55 +293,70 @@ const AdminDashboard = () => {
                       <th className="text-left p-4 font-medium">Payment</th>
                       <th className="text-left p-4 font-medium">Txn ID</th>
                       <th className="text-left p-4 font-medium">Status</th>
+                      <th className="text-left p-4 font-medium">Action</th>
                       <th className="text-left p-4 font-medium">Notes</th>
                       <th className="text-left p-4 font-medium">Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
-                      <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">Loading...</td></tr>
+                      <tr><td colSpan={10} className="p-8 text-center text-muted-foreground">Loading...</td></tr>
                     ) : filtered.length === 0 ? (
-                      <tr><td colSpan={9} className="p-8 text-center text-muted-foreground">No orders found</td></tr>
+                      <tr><td colSpan={10} className="p-8 text-center text-muted-foreground">No orders found</td></tr>
                     ) : (
-                      filtered.map((order) => (
-                        <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
-                          <td className="p-4 font-mono text-xs text-foreground">
-                            <button onClick={() => { navigator.clipboard.writeText(order.order_id); }} className="hover:text-primary transition" title="Copy">{order.order_id}</button>
-                          </td>
-                          <td className="p-4 text-foreground">{order.email}</td>
-                          <td className="p-4 text-foreground">{order.credits}</td>
-                          <td className="p-4 text-foreground">৳{order.amount}</td>
-                          <td className="p-4 text-foreground capitalize">{order.payment_method}</td>
-                          <td className="p-4 font-mono text-xs text-muted-foreground">{order.transaction_id}</td>
-                          <td className="p-4">
-                            <Select
-                              value={order.status}
-                              onValueChange={(val) => updateStatus(order.id, val)}
-                            >
-                              <SelectTrigger className={`w-32 h-8 text-xs border-0 ${statusColors[order.status]}`}>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="processing">Processing</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                                <SelectItem value="failed">Failed</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="p-4">
-                            <Input
-                              defaultValue={order.admin_notes || ""}
-                              placeholder="Add note..."
-                              className="h-8 text-xs bg-transparent border-border/30 w-32"
-                              onBlur={(e) => updateNotes(order.id, e.target.value)}
-                            />
-                          </td>
-                          <td className="p-4 text-xs text-muted-foreground whitespace-nowrap">
-                            {new Date(order.created_at).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))
+                      filtered.map((order) => {
+                        const config = statusConfig[order.status];
+                        const isUpdating = updatingStatus === order.id;
+                        return (
+                          <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
+                            <td className="p-4 font-mono text-xs text-foreground">
+                              <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!" }); }} className="hover:text-primary transition" title="Copy">{order.order_id}</button>
+                            </td>
+                            <td className="p-4 text-foreground">{order.email}</td>
+                            <td className="p-4 text-foreground">{order.credits}</td>
+                            <td className="p-4 text-foreground">৳{order.amount}</td>
+                            <td className="p-4 text-foreground capitalize">{order.payment_method}</td>
+                            <td className="p-4 font-mono text-xs text-muted-foreground">{order.transaction_id}</td>
+                            <td className="p-4">
+                              <Badge variant="outline" className={`gap-1.5 px-3 py-1 text-xs font-semibold border ${config?.badgeClass || ""} ${isUpdating ? "animate-pulse" : ""}`}>
+                                {config?.icon}
+                                {config?.label || order.status}
+                              </Badge>
+                            </td>
+                            <td className="p-4">
+                              <Select
+                                value=""
+                                onValueChange={(val) => confirmStatusChange(order.id, order.order_id, val)}
+                              >
+                                <SelectTrigger className="w-36 h-8 text-xs bg-secondary/50 border-border/30 hover:border-primary/50 transition">
+                                  <span className="text-muted-foreground">পরিবর্তন করুন</span>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Object.entries(statusConfig).filter(([key]) => key !== order.status).map(([key, cfg]) => (
+                                    <SelectItem key={key} value={key}>
+                                      <span className={`flex items-center gap-2 ${cfg.color}`}>
+                                        {cfg.icon}
+                                        {cfg.label}
+                                      </span>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </td>
+                            <td className="p-4">
+                              <Input
+                                defaultValue={order.admin_notes || ""}
+                                placeholder="নোট..."
+                                className="h-8 text-xs bg-transparent border-border/30 w-32"
+                                onBlur={(e) => updateNotes(order.id, e.target.value)}
+                              />
+                            </td>
+                            <td className="p-4 text-xs text-muted-foreground whitespace-nowrap">
+                              {new Date(order.created_at).toLocaleDateString("bn-BD")}
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
@@ -313,6 +375,34 @@ const AdminDashboard = () => {
           <AdminPaymentMethods />
         )}
       </div>
+
+      {/* Status Change Confirmation Dialog */}
+      <AlertDialog open={statusChangeDialog.open} onOpenChange={(open) => !open && setStatusChangeDialog({ open: false, orderId: "", orderDisplayId: "", newStatus: "" })}>
+        <AlertDialogContent className="bg-card border-border/50">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">স্ট্যাটাস পরিবর্তন নিশ্চিত করুন</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <span className="block text-muted-foreground">
+                আপনি কি <span className="font-semibold text-foreground">{statusChangeDialog.orderDisplayId}</span> অর্ডারের স্ট্যাটাস পরিবর্তন করতে চান?
+              </span>
+              {statusChangeDialog.newStatus && (
+                <div className="flex items-center justify-center gap-3 py-3">
+                  <Badge variant="outline" className={`gap-1.5 px-3 py-1.5 text-sm font-semibold border ${statusConfig[statusChangeDialog.newStatus]?.badgeClass}`}>
+                    {statusConfig[statusChangeDialog.newStatus]?.icon}
+                    {statusConfig[statusChangeDialog.newStatus]?.label}
+                  </Badge>
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-border/50">বাতিল</AlertDialogCancel>
+            <AlertDialogAction onClick={updateStatus} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              নিশ্চিত করুন
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
