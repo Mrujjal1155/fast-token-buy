@@ -64,11 +64,16 @@ const Footer = () => (
         <div>
           <h4 className="font-display font-semibold text-foreground mb-4">সহায়তা</h4>
           <ul className="space-y-2.5">
-            {["সচরাচর জিজ্ঞাসা", "সেবার শর্তাবলী", "গোপনীয়তা নীতি", "ফেরত নীতি"].map((item) => (
-              <li key={item}>
-                <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">
-                  {item}
-                </a>
+            {[
+              { label: "সচরাচর জিজ্ঞাসা", to: "/faq" },
+              { label: "সেবার শর্তাবলী", to: "/terms" },
+              { label: "গোপনীয়তা নীতি", to: "/privacy" },
+              { label: "ফেরত নীতি", to: "/refund" },
+            ].map(({ label, to }) => (
+              <li key={label}>
+                <Link to={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">
+                  {label}
+                </Link>
               </li>
             ))}
           </ul>
