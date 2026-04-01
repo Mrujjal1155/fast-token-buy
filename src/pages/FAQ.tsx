@@ -1,6 +1,9 @@
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const faqs = [
   {
@@ -29,30 +32,54 @@ const faqs = [
   },
 ];
 
-const FAQ = () => (
-  <div className="min-h-screen bg-background">
-    <Navbar />
-    <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
-      <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">
-        সচরাচর জিজ্ঞাসা
-      </h1>
-      <p className="text-muted-foreground text-center mb-10">আপনার সাধারণ প্রশ্নের উত্তর</p>
+const FAQ = () => {
+  const [search, setSearch] = useState("");
 
-      <Accordion type="single" collapsible className="space-y-3">
-        {faqs.map((faq, i) => (
-          <AccordionItem key={i} value={`item-${i}`} className="glass rounded-xl px-5 border-none">
-            <AccordionTrigger className="text-foreground font-medium text-left py-4 hover:no-underline">
-              {faq.q}
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground pb-4">
-              {faq.a}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+  const filtered = faqs.filter(
+    (faq) =>
+      faq.q.toLowerCase().includes(search.toLowerCase()) ||
+      faq.a.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
+        <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">
+          সচরাচর জিজ্ঞাসা
+        </h1>
+        <p className="text-muted-foreground text-center mb-8">আপনার সাধারণ প্রশ্নের উত্তর</p>
+
+        <div className="relative mb-8">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="প্রশ্ন খুঁজুন..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 glass border-border/30 focus-visible:ring-primary/50"
+          />
+        </div>
+
+        {filtered.length === 0 ? (
+          <p className="text-center text-muted-foreground py-10">কোনো ফলাফল পাওয়া যায়নি</p>
+        ) : (
+          <Accordion type="single" collapsible className="space-y-3">
+            {filtered.map((faq, i) => (
+              <AccordionItem key={i} value={`item-${i}`} className="glass rounded-xl px-5 border-none">
+                <AccordionTrigger className="text-foreground font-medium text-left py-4 hover:no-underline">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        )}
+      </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
+};
 
 export default FAQ;
