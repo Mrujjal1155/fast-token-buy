@@ -82,6 +82,7 @@ const Testimonials = () => {
               <span className="text-sm text-muted-foreground ml-1">রিভিউ</span>
             </div>
           </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
           {reviews.map((t, i) => (
