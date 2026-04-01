@@ -30,6 +30,7 @@ import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
+import AdminReviews from "@/components/AdminReviews";
 
 type Order = Tables<"orders">;
 
