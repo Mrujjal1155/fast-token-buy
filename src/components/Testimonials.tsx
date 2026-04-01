@@ -10,6 +10,11 @@ interface Review {
   text: string;
 }
 
+interface ReviewStats {
+  totalCount: number;
+  avgRating: number;
+}
+
 const defaultTestimonials = [
   { id: "d1", name: "রাকিব হাসান", rating: 5, text: "ভাই ৫ মিনিটে ক্রেডিট পেয়ে গেলাম! বিশ্বাসই হচ্ছিল না এত ফাস্ট। সাপোর্ট টিমও সুপার ফ্রেন্ডলি।" },
   { id: "d2", name: "ফারহানা আক্তার", rating: 5, text: "বিকাশে পে করলাম, সাথে সাথে ক্রেডিট চলে আসলো। এত ঝামেলাহীন সার্ভিস আগে পাইনি! ১০/১০" },
