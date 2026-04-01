@@ -10,6 +10,11 @@ interface Review {
   text: string;
 }
 
+interface ReviewStats {
+  totalCount: number;
+  avgRating: number;
+}
+
 const defaultTestimonials = [
   { id: "d1", name: "রাকিব হাসান", rating: 5, text: "ভাই ৫ মিনিটে ক্রেডিট পেয়ে গেলাম! বিশ্বাসই হচ্ছিল না এত ফাস্ট। সাপোর্ট টিমও সুপার ফ্রেন্ডলি।" },
   { id: "d2", name: "ফারহানা আক্তার", rating: 5, text: "বিকাশে পে করলাম, সাথে সাথে ক্রেডিট চলে আসলো। এত ঝামেলাহীন সার্ভিস আগে পাইনি! ১০/১০" },
@@ -29,6 +34,7 @@ const StarRating = ({ rating }: { rating: number }) => (
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState<Review[]>(defaultTestimonials);
+  const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -39,7 +45,11 @@ const Testimonials = () => {
         .order("created_at", { ascending: false })
         .limit(12);
       if (data && data.length > 0) {
-        setReviews([...(data as Review[]), ...defaultTestimonials].slice(0, 9));
+        const allReviews = [...(data as Review[]), ...defaultTestimonials].slice(0, 9);
+        const totalCount = data.length + defaultTestimonials.length;
+        const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+        setReviews(allReviews);
+        setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
       }
     };
     fetchReviews();
@@ -60,7 +70,18 @@ const Testimonials = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
             তারা বলছে — <span className="text-gradient-primary">"বিশ্বাসযোগ্য!"</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে</p>
+          <p className="text-muted-foreground text-base md:text-lg mb-4">শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে</p>
+          <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center gap-2 glass rounded-full px-5 py-2.5">
+              <Star className="w-5 h-5 text-[#FF7A18] fill-[#FF7A18]" />
+              <span className="text-lg font-bold text-foreground">{stats.avgRating}</span>
+              <span className="text-sm text-muted-foreground">/৫ গড় রেটিং</span>
+            </div>
+            <div className="glass rounded-full px-5 py-2.5">
+              <span className="text-lg font-bold text-foreground">{stats.totalCount}+</span>
+              <span className="text-sm text-muted-foreground ml-1">রিভিউ</span>
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
