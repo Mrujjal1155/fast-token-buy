@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Quote, ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Review {
@@ -24,6 +25,9 @@ const defaultTestimonials = [
   { id: "d6", name: "মেহজাবিন চৌধুরী", rating: 5, text: "রাত ২টায় মেসেজ দিলাম, ১০ মিনিটে রিপ্লাই পেলাম! ২৪/৭ সাপোর্ট মিথ্যা না, সত্যিই আছে।" },
 ];
 
+const INITIAL_COUNT = 6;
+const LOAD_MORE_COUNT = 6;
+
 const StarRating = ({ rating }: { rating: number }) => (
   <div className="flex gap-0.5">
     {Array.from({ length: 5 }).map((_, i) => (
@@ -33,7 +37,8 @@ const StarRating = ({ rating }: { rating: number }) => (
 );
 
 const Testimonials = () => {
-  const [reviews, setReviews] = useState<Review[]>(defaultTestimonials);
+  const [allReviews, setAllReviews] = useState<Review[]>(defaultTestimonials);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
 
   const fetchReviews = useCallback(async () => {
@@ -42,12 +47,12 @@ const Testimonials = () => {
       .select("id, name, rating, text")
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
-      .limit(12);
+      .limit(50);
     if (data && data.length > 0) {
-      const allReviews = [...(data as Review[]), ...defaultTestimonials].slice(0, 9);
-      const totalCount = data.length + defaultTestimonials.length;
-      const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
-      setReviews(allReviews);
+      const combined = [...(data as Review[]), ...defaultTestimonials];
+      const totalCount = combined.length;
+      const avgRating = combined.reduce((sum, r) => sum + r.rating, 0) / combined.length;
+      setAllReviews(combined);
       setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
     }
   }, []);
@@ -64,6 +69,10 @@ const Testimonials = () => {
 
     return () => { supabase.removeChannel(channel); };
   }, [fetchReviews]);
+
+  const visibleReviews = allReviews.slice(0, visibleCount);
+  const hasMore = visibleCount < allReviews.length;
+  const isExpanded = visibleCount > INITIAL_COUNT;
 
   return (
     <section className="py-16 md:py-24 relative">
@@ -95,35 +104,63 @@ const Testimonials = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
-          {reviews.map((t, i) => (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="glass rounded-2xl p-5 md:p-6 flex flex-col gap-4 hover:shadow-glow-purple transition-shadow duration-300"
+          <AnimatePresence>
+            {visibleReviews.map((t, i) => (
+              <motion.div
+                key={t.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: i < INITIAL_COUNT ? i * 0.1 : (i - visibleCount + LOAD_MORE_COUNT) * 0.08, duration: 0.5 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="glass rounded-2xl p-5 md:p-6 flex flex-col gap-4 hover:shadow-glow-purple transition-shadow duration-300"
+              >
+                <div className="flex items-start justify-between">
+                  <StarRating rating={t.rating} />
+                  <Quote className="w-5 h-5 text-[#7B61FF]/30" />
+                </div>
+
+                <p className="text-sm md:text-base text-secondary-foreground leading-relaxed flex-1">
+                  "{t.text}"
+                </p>
+
+                <div className="flex items-center gap-3 pt-2 border-t border-border/20">
+                  <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {/* Load More / Show Less Buttons */}
+        <div className="flex justify-center mt-8 gap-3">
+          {hasMore && (
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setVisibleCount((prev) => Math.min(prev + LOAD_MORE_COUNT, allReviews.length))}
+              className="gap-2 glass border-border/30 hover:border-primary/50"
             >
-              <div className="flex items-start justify-between">
-                <StarRating rating={t.rating} />
-                <Quote className="w-5 h-5 text-[#7B61FF]/30" />
-              </div>
-
-              <p className="text-sm md:text-base text-secondary-foreground leading-relaxed flex-1">
-                "{t.text}"
-              </p>
-
-              <div className="flex items-center gap-3 pt-2 border-t border-border/20">
-                <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              <ChevronDown className="w-4 h-4" />
+              আরও দেখুন ({allReviews.length - visibleCount}টি বাকি)
+            </Button>
+          )}
+          {isExpanded && (
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => setVisibleCount(INITIAL_COUNT)}
+              className="gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronUp className="w-4 h-4" />
+              কম দেখুন
+            </Button>
+          )}
         </div>
       </div>
     </section>
