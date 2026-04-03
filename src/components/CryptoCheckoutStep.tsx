@@ -78,7 +78,7 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
         <div className="flex items-center justify-center gap-2">
           <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
           <button
-            onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }}
+            onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!", variant: "success" }); }}
             className="p-1.5 rounded-lg hover:bg-secondary transition"
           >
             <Copy className="w-4 h-4 text-muted-foreground" />

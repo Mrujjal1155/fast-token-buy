@@ -53,7 +53,7 @@ const AdminReserves = () => {
       toast({ title: "যোগ করা যায়নি", variant: "destructive" });
     } else if (data) {
       setReserves((prev) => [...prev, data as Reserve]);
-      toast({ title: "নতুন প্যাকেজ স্টক যোগ হয়েছে" });
+      toast({ title: "নতুন প্যাকেজ স্টক যোগ হয়েছে", variant: "success" });
     }
   };
 
@@ -63,7 +63,7 @@ const AdminReserves = () => {
       toast({ title: "মুছতে পারা যায়নি", variant: "destructive" });
     } else {
       setReserves((prev) => prev.filter((r) => r.id !== id));
-      toast({ title: "মুছে ফেলা হয়েছে" });
+      toast({ title: "মুছে ফেলা হয়েছে", variant: "success" });
     }
   };
 

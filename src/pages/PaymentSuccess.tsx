@@ -49,7 +49,7 @@ const PaymentSuccess = () => {
             <p className="text-sm text-muted-foreground mb-1">Order ID</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-2xl font-bold font-mono text-primary">{orderId}</p>
-              <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
+              <button onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!", variant: "success" }); }} className="p-1.5 rounded-lg hover:bg-secondary transition"><Copy className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">এটি সেভ করে রাখুন</p>
           </div>

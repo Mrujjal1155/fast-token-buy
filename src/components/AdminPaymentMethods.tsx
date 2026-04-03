@@ -108,7 +108,7 @@ const AdminPaymentMethods = () => {
 
     const { data: urlData } = supabase.storage.from("payment-icons").getPublicUrl(filePath);
     updateMethod(methodId, "iconUrl", `${urlData.publicUrl}?t=${Date.now()}`);
-    toast({ title: "আইকন আপলোড হয়েছে ✅" });
+    toast({ title: "আইকন আপলোড হয়েছে ✅", variant: "success" });
     setUploading(null);
   };
 
@@ -116,7 +116,7 @@ const AdminPaymentMethods = () => {
     const extensions = ["png", "jpg", "jpeg", "webp", "svg"];
     await supabase.storage.from("payment-icons").remove(extensions.map((ext) => `${methodId}.${ext}`));
     updateMethod(methodId, "iconUrl", null);
-    toast({ title: "আইকন মুছে ফেলা হয়েছে" });
+    toast({ title: "আইকন মুছে ফেলা হয়েছে", variant: "success" });
   };
 
   const saveSetting = async (key: string, value: string) => {
@@ -142,7 +142,7 @@ const AdminPaymentMethods = () => {
       saveSetting("ajkerpay_brand_key", ajkerpay.brandKey),
     ];
     await Promise.all(promises);
-    toast({ title: "পেমেন্ট সেটিংস সেভ হয়েছে ✅" });
+    toast({ title: "পেমেন্ট সেটিংস সেভ হয়েছে ✅", variant: "success" });
     setSaving(false);
   };
 

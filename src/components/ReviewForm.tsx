@@ -37,7 +37,7 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
       toast({ title: "রিভিউ পাঠানো যায়নি", variant: "destructive" });
     } else {
       setSubmitted(true);
-      toast({ title: "ধন্যবাদ! আপনার রিভিউ পাঠানো হয়েছে।" });
+      toast({ title: "ধন্যবাদ! আপনার রিভিউ পাঠানো হয়েছে।", variant: "success" });
     }
   };
 

@@ -121,7 +121,7 @@ const TrackOrder = () => {
                 <span className="text-sm text-muted-foreground">অর্ডার</span>
                 <div className="flex items-center gap-1.5">
                   <span className="font-mono font-bold text-foreground">{order.order_id}</span>
-                  <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!" }); }} className="p-1 rounded hover:bg-secondary transition"><Copy className="w-3.5 h-3.5 text-muted-foreground" /></button>
+                  <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!", variant: "success" }); }} className="p-1 rounded hover:bg-secondary transition"><Copy className="w-3.5 h-3.5 text-muted-foreground" /></button>
                 </div>
               </div>
 

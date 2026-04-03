@@ -40,7 +40,7 @@ const AdminNotifications = () => {
       toast({ title: "যোগ করা যায়নি", variant: "destructive" });
     } else if (data) {
       setNotifications((prev) => [data as Notification, ...prev]);
-      toast({ title: "নোটিফিকেশন যোগ হয়েছে" });
+      toast({ title: "নোটিফিকেশন যোগ হয়েছে", variant: "success" });
     }
   };
 
@@ -62,7 +62,7 @@ const AdminNotifications = () => {
       toast({ title: "মুছতে পারা যায়নি", variant: "destructive" });
     } else {
       setNotifications((prev) => prev.filter((n) => n.id !== id));
-      toast({ title: "মুছে ফেলা হয়েছে" });
+      toast({ title: "মুছে ফেলা হয়েছে", variant: "success" });
     }
   };
 

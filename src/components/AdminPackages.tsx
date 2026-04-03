@@ -47,7 +47,7 @@ const AdminPackages = () => {
     if (error) {
       toast({ title: "যোগ করা যায়নি", variant: "destructive" });
     } else {
-      toast({ title: "নতুন প্যাকেজ যোগ হয়েছে" });
+      toast({ title: "নতুন প্যাকেজ যোগ হয়েছে", variant: "success" });
       fetchPackages();
     }
   };
@@ -68,7 +68,7 @@ const AdminPackages = () => {
     if (error) {
       toast({ title: "আপডেট ব্যর্থ", variant: "destructive" });
     } else {
-      toast({ title: "প্যাকেজ আপডেট হয়েছে" });
+      toast({ title: "প্যাকেজ আপডেট হয়েছে", variant: "success" });
     }
   };
 
@@ -77,7 +77,7 @@ const AdminPackages = () => {
     if (error) {
       toast({ title: "ডিলিট ব্যর্থ", variant: "destructive" });
     } else {
-      toast({ title: "প্যাকেজ ডিলিট হয়েছে" });
+      toast({ title: "প্যাকেজ ডিলিট হয়েছে", variant: "success" });
       fetchPackages();
     }
   };
