@@ -78,9 +78,7 @@ const OperatorStatus = () => {
             কর্মসময়: সকাল ৯:০০ - রাত ১১:৫৯ (GMT+06)
           </span>
           <span className="text-[11px] md:text-xs font-medium text-gradient-primary">{bengaliDate}</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </motion.div>
   );
 };
 
