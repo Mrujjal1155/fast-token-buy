@@ -17,9 +17,8 @@ const Footer = () => (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
         {/* লোগো + বিবরণ */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo-icon.png" alt="Lovable Credits" className="w-8 h-8" />
-            <span className="font-display font-bold text-lg text-foreground">Lovable Credits</span>
+          <div className="flex items-center">
+            <img src="/logo.png" alt="LovableCredit.com" className="h-9 w-auto" />
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             বাংলাদেশের সবচেয়ে বিশ্বস্ত Lovable ক্রেডিট সেলার। দ্রুত ডেলিভারি, সেরা দাম, শত শত সন্তুষ্ট গ্রাহক।
