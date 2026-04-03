@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
