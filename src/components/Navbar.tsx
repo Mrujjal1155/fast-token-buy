@@ -9,8 +9,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
       <div className="container flex items-center justify-between py-2 md:py-4 px-3 md:px-6">
         <Link to="/" className="flex items-center gap-2 md:gap-3 min-w-0">
-          <img src="/logo-icon.png" alt="Lovable Credits" className="w-6 h-6 md:w-10 md:h-10 flex-shrink-0" />
-          <span className="font-display font-bold text-sm md:text-2xl text-foreground truncate">Lovable Credits</span>
+          <img src="/logo.png" alt="LovableCredit.com" className="h-7 md:h-10 w-auto flex-shrink-0" />
         </Link>
         <div className="hidden md:flex flex-1 justify-center">
           <OperatorStatus />
