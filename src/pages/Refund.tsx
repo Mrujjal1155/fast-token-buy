@@ -1,8 +1,10 @@
+import SEOHead from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Refund = () => (
   <div className="min-h-screen bg-background">
+    <SEOHead title="ফেরত নীতি" description="LovableCredit.com এর রিফান্ড পলিসি। কখন ও কিভাবে ফেরত পাবেন।" path="/refund" />
     <Navbar />
     <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
       <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">

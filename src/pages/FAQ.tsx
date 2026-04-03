@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -43,6 +44,7 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="সচরাচর জিজ্ঞাসা (FAQ)" description="Lovable ক্রেডিট কেনার প্রশ্ন ও উত্তর। পেমেন্ট, ডেলিভারি, রিফান্ড সম্পর্কে জানুন।" path="/faq" keywords="lovable credits faq, lovable credit প্রশ্ন, lovable help" />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">
