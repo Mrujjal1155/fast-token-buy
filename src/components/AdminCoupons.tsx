@@ -105,7 +105,7 @@ const AdminCoupons = () => {
     if (error) {
       toast({ title: "Failed to save", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: editingId ? "Coupon updated" : "Coupon created" });
+      toast({ title: editingId ? "Coupon updated" : "Coupon created", variant: "success" });
       setShowForm(false);
       fetchCoupons();
     }
@@ -122,7 +122,7 @@ const AdminCoupons = () => {
     if (error) {
       toast({ title: "Failed to delete", variant: "destructive" });
     } else {
-      toast({ title: "Coupon deleted" });
+      toast({ title: "Coupon deleted", variant: "success" });
       fetchCoupons();
     }
   };

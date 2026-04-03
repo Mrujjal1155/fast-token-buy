@@ -38,7 +38,7 @@ const AdminReviews = () => {
     if (error) {
       toast({ title: "আপডেট ব্যর্থ", variant: "destructive" });
     } else {
-      toast({ title: !current ? "রিভিউ অনুমোদিত" : "রিভিউ লুকানো হয়েছে" });
+      toast({ title: !current ? "রিভিউ অনুমোদিত" : "রিভিউ লুকানো হয়েছে", variant: "success" });
       fetchReviews();
     }
   };
@@ -48,7 +48,7 @@ const AdminReviews = () => {
     if (error) {
       toast({ title: "ডিলিট ব্যর্থ", variant: "destructive" });
     } else {
-      toast({ title: "রিভিউ ডিলিট হয়েছে" });
+      toast({ title: "রিভিউ ডিলিট হয়েছে", variant: "success" });
       fetchReviews();
     }
   };
