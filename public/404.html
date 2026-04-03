@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+    <script>
+      (function () {
+        var redirectPath = window.location.pathname + window.location.search + window.location.hash;
+
+        if (redirectPath && redirectPath !== "/") {
+          try {
+            window.sessionStorage.setItem("spa-redirect-path", redirectPath);
+          } catch (error) {
+            // Ignore storage errors and still try to return to the app root.
+          }
+        }
+
+        window.location.replace("/");
+      })();
+    </script>
+  </head>
+  <body>
+    <p>পৃষ্ঠা রিডাইরেক্ট করা হচ্ছে...</p>
+  </body>
+</html>
