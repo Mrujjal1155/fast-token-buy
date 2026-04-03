@@ -147,7 +147,7 @@ const AdminDashboard = () => {
       toast({
         title: "স্ট্যাটাস আপডেট হয়েছে",
         description: `${orderDisplayId} → ${statusConfig[newStatus]?.label || newStatus}`,
-      });
+      variant: "success" });
       fetchOrders();
     }
   };
@@ -312,10 +312,10 @@ const AdminDashboard = () => {
                         return (
                           <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
                             <td className="p-4 font-mono text-xs text-foreground">
-                              <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!" }); }} className="hover:text-primary transition" title="Copy">{order.order_id}</button>
+                              <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!", variant: "success" }); }} className="hover:text-primary transition" title="Copy">{order.order_id}</button>
                             </td>
                             <td className="p-4 text-foreground">
-                              <button onClick={() => { navigator.clipboard.writeText(order.email); toast({ title: "ইমেইল কপি হয়েছে!" }); }} className="hover:text-primary transition" title="Copy email">{order.email}</button>
+                              <button onClick={() => { navigator.clipboard.writeText(order.email); toast({ title: "ইমেইল কপি হয়েছে!", variant: "success" }); }} className="hover:text-primary transition" title="Copy email">{order.email}</button>
                             </td>
                             <td className="p-4 text-foreground">{order.credits}</td>
                             <td className="p-4 text-foreground">৳{order.amount}</td>
