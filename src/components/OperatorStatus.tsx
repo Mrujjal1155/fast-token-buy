@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, UserCircle, X } from "lucide-react";
+import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 
