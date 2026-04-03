@@ -424,21 +424,31 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         </div>
 
         {/* Payment method tabs */}
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {activePaymentMethods.map((m) => (
             <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
-              className={`flex-1 min-w-[70px] py-3 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+              className={`relative py-4 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2.5 ${
                 selectedPayment === m.id
-                  ? "bg-primary/10 border-2 border-primary text-primary"
-                  : "bg-secondary border-2 border-transparent text-muted-foreground hover:text-foreground"
+                  ? "bg-gradient-to-br from-primary/15 to-primary/5 border-2 border-primary text-primary shadow-[0_0_20px_-5px_hsl(var(--primary)/0.4)]"
+                  : "bg-secondary/60 border-2 border-border/30 text-muted-foreground hover:text-foreground hover:border-border/60 hover:bg-secondary/80"
               }`}
             >
+              {selectedPayment === m.id && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary animate-pulse" />
+              )}
               {m.iconUrl ? (
-                <img src={m.iconUrl} alt={m.name} className="w-5 h-5 rounded object-contain" />
-              ) : null}
-              {m.name}
+                <img src={m.iconUrl} alt={m.name} className="w-7 h-7 rounded-md object-contain drop-shadow-md" />
+              ) : (
+                <span
+                  className="w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-bold text-white shadow-md"
+                  style={{ background: m.color }}
+                >
+                  {m.name.charAt(0)}
+                </span>
+              )}
+              <span className="text-sm">{m.name}</span>
             </button>
           ))}
         </div>
