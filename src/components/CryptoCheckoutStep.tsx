@@ -26,7 +26,7 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
 
     if (data?.status === "completed") {
       setState("success");
-      toast({ title: "পেমেন্ট সফল হয়েছে! 🎉" });
+      toast({ title: "পেমেন্ট সফল হয়েছে! 🎉", variant: "success" });
       onSuccess();
     } else if (data?.status === "failed") {
       setState("failed");
