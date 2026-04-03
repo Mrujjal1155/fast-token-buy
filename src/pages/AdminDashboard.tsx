@@ -99,7 +99,7 @@ const AdminDashboard = () => {
       toast({ title: "Failed to update", variant: "destructive" });
       setOperatorOnline(!checked);
     } else {
-      toast({ title: checked ? "অপারেটর অনলাইন" : "অপারেটর অফলাইন" });
+      toast({ title: checked ? "অপারেটর অনলাইন" : "অপারেটর অফলাইন", variant: "success" });
     }
   };
 
