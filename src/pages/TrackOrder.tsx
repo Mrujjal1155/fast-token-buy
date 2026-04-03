@@ -63,7 +63,7 @@ const TrackOrder = () => {
           const updated = payload.new as Order;
           setOrder(updated);
           if (updated.status !== order.status) {
-            toast({ title: "স্ট্যাটাস আপডেট!", description: `আপনার অর্ডার এখন: ${statusConfig[updated.status]?.label || updated.status}` });
+            toast({ title: "স্ট্যাটাস আপডেট!", description: `আপনার অর্ডার এখন: ${statusConfig[updated.status]?.label || updated.status}`, variant: "success" });
           }
         }
       )
