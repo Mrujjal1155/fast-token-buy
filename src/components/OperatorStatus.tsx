@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed] = useState(false);
 
   const bengaliDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
