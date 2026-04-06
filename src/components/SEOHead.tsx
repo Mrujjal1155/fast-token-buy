@@ -7,7 +7,7 @@ interface SEOHeadProps {
   keywords?: string;
 }
 
-const BASE_URL = "https://fast-token-buy.lovable.app";
+const BASE_URL = "https://lovablecredit.com";
 
 const SEOHead = ({
   title = "Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায়",
