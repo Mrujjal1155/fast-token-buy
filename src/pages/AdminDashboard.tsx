@@ -31,6 +31,7 @@ import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 import AdminReviews from "@/components/AdminReviews";
+import AdminUsers from "@/components/AdminUsers";
 
 type Order = Tables<"orders">;
 
