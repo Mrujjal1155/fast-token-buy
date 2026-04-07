@@ -207,6 +207,7 @@ const AdminDashboard = () => {
             { id: "notifications" as const, label: "Notifications", icon: Bell },
             { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "reviews" as const, label: "Reviews", icon: MessageSquare },
+            { id: "admins" as const, label: "Admins", icon: Users },
           ].map((tab) => (
             <button
               key={tab.id}
