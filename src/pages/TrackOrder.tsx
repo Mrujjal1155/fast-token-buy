@@ -154,7 +154,7 @@ const TrackOrder = () => {
             <div className="grid grid-cols-2 gap-3 text-sm">
               {[
                 { label: t("track.email"), value: order.email },
-                { label: t("track.credits"), value: `${order.credits} Credits` },
+                { label: t("track.credits"), value: `${order.credits} ${t("pricing.credits")}` },
                 { label: t("track.price"), value: `৳${order.amount}` },
                 { label: t("track.payment"), value: order.payment_method },
                 { label: t("track.transactionId"), value: order.transaction_id },
