@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Facebook, Youtube, Instagram } from "lucide-react";
 import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
