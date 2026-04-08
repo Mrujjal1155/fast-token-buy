@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Star, Quote, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 interface Review {
   id: string;
@@ -40,6 +41,8 @@ const Testimonials = () => {
   const [allReviews, setAllReviews] = useState<Review[]>(defaultTestimonials);
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
+  const { content } = useSiteContent();
+  const c = content.testimonials;
 
   const fetchReviews = useCallback(async () => {
     const { data } = await supabase
@@ -59,14 +62,12 @@ const Testimonials = () => {
 
   useEffect(() => {
     fetchReviews();
-
     const channel = supabase
       .channel("reviews-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, () => {
         fetchReviews();
       })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [fetchReviews]);
 
@@ -87,9 +88,9 @@ const Testimonials = () => {
           className="text-center mb-10 md:mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            তারা বলছে — <span className="text-gradient-primary">"বিশ্বাসযোগ্য!"</span>
+            {c.heading} <span className="text-gradient-primary">{c.headingHighlight}</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg mb-4">শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে</p>
+          <p className="text-muted-foreground text-base md:text-lg mb-4">{c.subtext}</p>
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-2 glass rounded-full px-5 py-2.5">
               <Star className="w-5 h-5 text-[#FF7A18] fill-[#FF7A18]" />
@@ -119,11 +120,9 @@ const Testimonials = () => {
                   <StarRating rating={t.rating} />
                   <Quote className="w-5 h-5 text-[#7B61FF]/30" />
                 </div>
-
                 <p className="text-sm md:text-base text-secondary-foreground leading-relaxed flex-1">
                   "{t.text}"
                 </p>
-
                 <div className="flex items-center gap-3 pt-2 border-t border-border/20">
                   <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
                     {t.name.charAt(0)}
@@ -137,7 +136,6 @@ const Testimonials = () => {
           </AnimatePresence>
         </div>
 
-        {/* Load More / Show Less Buttons */}
         <div className="flex justify-center mt-8 gap-3">
           {hasMore && (
             <Button
