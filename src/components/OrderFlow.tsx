@@ -40,6 +40,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [activePaymentMethods, setActivePaymentMethods] = useState<Array<{ id: string; name: string; color: string; type: "auto" | "crypto"; iconUrl?: string }>>(paymentMethods.map((m) => ({ ...m })));
 
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Fetch payment settings
   useEffect(() => {
