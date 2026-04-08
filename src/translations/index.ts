@@ -76,6 +76,10 @@ const en = {
   "order.orderFailed": "Could not create order",
   "order.paymentFailed": "Could not create payment",
   "order.back": "Back",
+  "order.autoPaymentOn": "Auto payment enabled",
+  "order.autoPayDesc": "Pay {amount} with {method}. You will be redirected to a secure AjkerPay payment page.",
+  "order.cryptoSelectToken": "Select token & network:",
+  "order.cryptoPayDesc": "Pay equivalent of {amount} with {method}. You will be redirected to secure BlinkPay checkout.",
 
   // Payment Success
   "success.verifying": "Verifying Payment...",
@@ -182,6 +186,23 @@ const en = {
   "refund.s4title": "4. Contact",
   "refund.s4text": "For any refund-related questions, email us at: support@lovablecredits.com",
 
+  // Crypto Checkout
+  "crypto.completePayment": "Complete Payment",
+  "crypto.paymentSuccess": "Payment Successful!",
+  "crypto.paymentFailed": "Payment Failed",
+  "crypto.checkingDesc": "Click the button below to make payment. It will auto-advance once payment is confirmed.",
+  "crypto.successDesc": "Your payment has been verified!",
+  "crypto.failedDesc": "Payment was not completed. Try again or use a different method.",
+  "crypto.yourOrderId": "Your Order ID",
+  "crypto.copied": "Copied!",
+  "crypto.openPaymentPage": "Open Payment Page",
+  "crypto.checkingPayment": "Checking payment... auto-updating",
+  "crypto.retryPayment": "Retry Payment",
+  "crypto.useDifferentMethod": "Use a different payment method",
+  "crypto.goHome": "Go back home",
+  "crypto.toastSuccess": "Payment successful!",
+  "crypto.toastFailed": "Payment failed",
+
   // WhatsApp
   "whatsapp.chat": "Chat with us",
 } as const;
@@ -264,6 +285,10 @@ const bn: Record<keyof typeof en, string> = {
   "order.orderFailed": "অর্ডার তৈরি করা যায়নি",
   "order.paymentFailed": "পেমেন্ট তৈরি করা যায়নি",
   "order.back": "পেছনে",
+  "order.autoPaymentOn": "অটো পেমেন্ট চালু",
+  "order.autoPayDesc": "{method} দিয়ে ৳{amount} পে করুন। সিকিউর AjkerPay পেমেন্ট পেজে রিডাইরেক্ট হবেন।",
+  "order.cryptoSelectToken": "টোকেন ও নেটওয়ার্ক বাছুন:",
+  "order.cryptoPayDesc": "{method} দিয়ে ৳{amount} সমপরিমাণ পে করবেন। সিকিউর BlinkPay চেকআউটে রিডাইরেক্ট হবেন।",
 
   // Payment Success
   "success.verifying": "পেমেন্ট ভেরিফাই হচ্ছে...",
@@ -369,6 +394,23 @@ const bn: Record<keyof typeof en, string> = {
   "refund.s3text": "কোনো বিরোধের ক্ষেত্রে প্রথমে আমাদের সাপোর্ট টিমের সাথে যোগাযোগ করুন। আমরা সবসময় গ্রাহক সন্তুষ্টিকে অগ্রাধিকার দিই।",
   "refund.s4title": "৪. যোগাযোগ",
   "refund.s4text": "ফেরত সংক্রান্ত যেকোনো প্রশ্নের জন্য আমাদের ইমেইলে যোগাযোগ করুন: support@lovablecredits.com",
+
+  // Crypto Checkout
+  "crypto.completePayment": "পেমেন্ট সম্পন্ন করুন",
+  "crypto.paymentSuccess": "পেমেন্ট সফল!",
+  "crypto.paymentFailed": "পেমেন্ট ব্যর্থ হয়েছে",
+  "crypto.checkingDesc": "নিচের বাটনে ক্লিক করে পেমেন্ট করুন। পেমেন্ট হলে অটো নেক্সট স্টেপে যাবে।",
+  "crypto.successDesc": "আপনার পেমেন্ট ভেরিফাই হয়েছে!",
+  "crypto.failedDesc": "পেমেন্ট সম্পন্ন হয়নি। আবার চেষ্টা করুন অথবা অন্য মেথড ব্যবহার করুন।",
+  "crypto.yourOrderId": "আপনার অর্ডার আইডি",
+  "crypto.copied": "কপি হয়েছে!",
+  "crypto.openPaymentPage": "পেমেন্ট পেজ খুলুন",
+  "crypto.checkingPayment": "পেমেন্ট চেক করা হচ্ছে... অটো আপডেট হবে",
+  "crypto.retryPayment": "আবার পেমেন্ট করুন",
+  "crypto.useDifferentMethod": "অন্য পেমেন্ট মেথড ব্যবহার করুন",
+  "crypto.goHome": "হোমে ফিরে যান",
+  "crypto.toastSuccess": "পেমেন্ট সফল হয়েছে!",
+  "crypto.toastFailed": "পেমেন্ট ব্যর্থ হয়েছে",
 
   // WhatsApp
   "whatsapp.chat": "আমাদের সাথে চ্যাট করুন",
