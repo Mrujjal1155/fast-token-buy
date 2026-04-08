@@ -4,6 +4,11 @@ import { Package, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  buildReserveLabelFallback,
+  getReserveLabelText,
+  loadReserveTextMaps,
+} from "@/lib/catalogLocalization";
 
 interface Reserve {
   id: string;
@@ -17,19 +22,45 @@ const OurReserves = () => {
   const [reserves, setReserves] = useState<Reserve[]>([]);
   const { content } = useSiteContent();
   const c = content.reserves;
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
+    let ignore = false;
+
     const fetch = async () => {
-      const { data } = await supabase
-        .from("reserves")
-        .select("id, label, amount, icon, sort_order")
-        .eq("is_visible", true)
-        .order("sort_order");
-      if (data) setReserves(data);
+      const [{ data }, textMaps] = await Promise.all([
+        supabase
+          .from("reserves")
+          .select("id, label, amount, icon, sort_order")
+          .eq("is_visible", true)
+          .order("sort_order"),
+        loadReserveTextMaps(),
+      ]);
+
+      if (ignore) return;
+
+      if (data) {
+        setReserves(
+          data.map((reserve) => ({
+            ...reserve,
+            label: getReserveLabelText(
+              textMaps[lang],
+              reserve.id,
+              buildReserveLabelFallback({ value: reserve.label, lang })
+            ),
+          }))
+        );
+      } else {
+        setReserves([]);
+      }
     };
+
     fetch();
-  }, []);
+
+    return () => {
+      ignore = true;
+    };
+  }, [lang]);
 
   if (reserves.length === 0) return null;
 
