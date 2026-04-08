@@ -10,10 +10,12 @@ import RecentPurchases from "@/components/RecentPurchases";
 import Footer from "@/components/Footer";
 import OrderFlow from "@/components/OrderFlow";
 import { type CreditPackage } from "@/lib/packages";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [showOrderFlow, setShowOrderFlow] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null);
+  const { t } = useLanguage();
 
   if (showOrderFlow) {
     return (
@@ -27,9 +29,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায়"
-        description="bKash, Nagad, Rocket ও Crypto দিয়ে Lovable AI ক্রেডিট কিনুন। মাত্র ৳৪০ থেকে শুরু। ৫ মিনিটে ডেলিভারি। ২৪% পর্যন্ত সাশ্রয়! হাজারো সন্তুষ্ট গ্রাহক।"
-        keywords="lovable credits, lovable credit buy, buy lovable credits bangladesh, lovable ক্রেডিট কিনুন, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits, লাভেবল ক্রেডিট, lovable credit বাংলাদেশ"
+        title={t("seo.title")}
+        description={t("seo.description")}
+        keywords={t("seo.keywords")}
         path="/"
       />
       <Navbar />

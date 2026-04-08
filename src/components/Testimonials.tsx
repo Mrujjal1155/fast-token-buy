@@ -18,15 +18,6 @@ interface ReviewStats {
   avgRating: number;
 }
 
-const defaultTestimonials = [
-  { id: "d1", name: "রাকিব হাসান", rating: 5, text: "ভাই ৫ মিনিটে ক্রেডিট পেয়ে গেলাম! বিশ্বাসই হচ্ছিল না এত ফাস্ট। সাপোর্ট টিমও সুপার ফ্রেন্ডলি।" },
-  { id: "d2", name: "ফারহানা আক্তার", rating: 5, text: "বিকাশে পে করলাম, সাথে সাথে ক্রেডিট চলে আসলো। এত ঝামেলাহীন সার্ভিস আগে পাইনি! ১০/১০" },
-  { id: "d3", name: "তানভীর আহমেদ", rating: 5, text: "অন্য জায়গায় দ্বিগুণ দাম নেয়। এখানে কম খরচে বেশি ক্রেডিট, রেগুলার কাস্টমার হয়ে গেছি।" },
-  { id: "d4", name: "নুসরাত জাহান", rating: 5, text: "প্রথমে ভরসা পাচ্ছিলাম না, কিন্তু অর্ডার দেওয়ার পর বুঝলাম — এরা সত্যিই বিশ্বস্ত। ধন্যবাদ!" },
-  { id: "d5", name: "সাকিব রহমান", rating: 5, text: "৩ বার কিনেছি, কোনোদিন সমস্যা হয়নি। ক্রিপ্টো অপশনটা বোনাস — সুপার কনভেনিয়েন্ট!" },
-  { id: "d6", name: "মেহজাবিন চৌধুরী", rating: 5, text: "রাত ২টায় মেসেজ দিলাম, ১০ মিনিটে রিপ্লাই পেলাম! ২৪/৭ সাপোর্ট মিথ্যা না, সত্যিই আছে।" },
-];
-
 const INITIAL_COUNT = 6;
 const LOAD_MORE_COUNT = 6;
 
@@ -39,12 +30,22 @@ const StarRating = ({ rating }: { rating: number }) => (
 );
 
 const Testimonials = () => {
+  const { t } = useLanguage();
+
+  const defaultTestimonials: Review[] = [
+    { id: "d1", name: t("testimonial.d1.name"), rating: 5, text: t("testimonial.d1.text") },
+    { id: "d2", name: t("testimonial.d2.name"), rating: 5, text: t("testimonial.d2.text") },
+    { id: "d3", name: t("testimonial.d3.name"), rating: 5, text: t("testimonial.d3.text") },
+    { id: "d4", name: t("testimonial.d4.name"), rating: 5, text: t("testimonial.d4.text") },
+    { id: "d5", name: t("testimonial.d5.name"), rating: 5, text: t("testimonial.d5.text") },
+    { id: "d6", name: t("testimonial.d6.name"), rating: 5, text: t("testimonial.d6.text") },
+  ];
+
   const [allReviews, setAllReviews] = useState<Review[]>(defaultTestimonials);
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
   const { content } = useSiteContent();
   const c = content.testimonials;
-  const { t } = useLanguage();
 
   const fetchReviews = useCallback(async () => {
     const { data } = await supabase
@@ -59,8 +60,11 @@ const Testimonials = () => {
       const avgRating = combined.reduce((sum, r) => sum + r.rating, 0) / combined.length;
       setAllReviews(combined);
       setStats({ totalCount, avgRating: Math.round(avgRating * 10) / 10 });
+    } else {
+      setAllReviews(defaultTestimonials);
+      setStats({ totalCount: defaultTestimonials.length, avgRating: 5 });
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchReviews();
