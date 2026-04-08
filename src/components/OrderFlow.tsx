@@ -459,7 +459,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           /* Crypto payment UI */
           <div className="space-y-4">
             <div className="bg-secondary/50 rounded-xl p-4 space-y-3">
-              <p className="text-sm font-medium text-foreground">টোকেন ও নেটওয়ার্ক বাছুন:</p>
+              <p className="text-sm font-medium text-foreground">{t("order.cryptoSelectToken")}</p>
               <div className="grid grid-cols-2 gap-2">
                 {cryptoTokens.map((ct, i) => (
                   <button
@@ -478,9 +478,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             </div>
             <div className="bg-secondary/50 rounded-xl p-4">
               <p className="text-sm text-muted-foreground">
-                <span className="text-foreground font-semibold">{selectedCrypto.label}</span> দিয়ে{" "}
-                <span className="text-primary font-bold">৳{finalPrice}</span> সমপরিমাণ পে করবেন।
-                সিকিউর BlinkPay চেকআউটে রিডাইরেক্ট হবেন।
+                {t("order.cryptoPayDesc").replace("{method}", selectedCrypto.label).replace("{amount}", String(finalPrice))}
               </p>
             </div>
             <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
@@ -497,12 +495,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-sm font-medium text-emerald-400">অটো পেমেন্ট চালু</span>
+                <span className="text-sm font-medium text-emerald-400">{t("order.autoPaymentOn")}</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                <span className="text-foreground font-semibold">{currentPayment.name}</span> দিয়ে{" "}
-                <span className="text-primary font-bold">৳{finalPrice}</span> পে করুন।
-                সিকিউর AjkerPay পেমেন্ট পেজে রিডাইরেক্ট হবেন।
+                {t("order.autoPayDesc").replace("{method}", currentPayment.name).replace("{amount}", String(finalPrice))}
               </p>
             </div>
             <Button variant="hero" size="lg" className="w-full py-6" onClick={handleSubmitOrder} disabled={submitting}>
