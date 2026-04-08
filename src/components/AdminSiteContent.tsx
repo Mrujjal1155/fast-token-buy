@@ -11,13 +11,13 @@ type SectionKey = keyof SiteContent;
 type EditLang = "en" | "bn";
 
 const sectionLabels: Record<SectionKey, string> = {
-  hero: "🏠 Hero Section",
-  trustBadges: "🛡️ Trust Badges",
-  pricing: "💰 Pricing Section",
-  testimonials: "⭐ Testimonials",
-  reserves: "📦 Stock Reserve",
-  footer: "📋 Footer",
-  operator: "👤 Operator Status",
+  hero: "Hero Section",
+  trustBadges: "Trust Badges",
+  pricing: "Pricing Section",
+  testimonials: "Testimonials",
+  reserves: "Stock Reserve",
+  footer: "Footer",
+  operator: "Operator Status",
 };
 
 const fieldLabels: Record<string, Record<EditLang, string>> = {
@@ -53,14 +53,14 @@ const fieldLabels: Record<string, Record<EditLang, string>> = {
   email: { en: "Email", bn: "ইমেইল" },
   chatText: { en: "Chat Text", bn: "চ্যাট টেক্সট" },
   website: { en: "Website", bn: "ওয়েবসাইট" },
-  socialWebsite: { en: "🔗 Website Link", bn: "🔗 ওয়েবসাইট লিংক" },
-  socialTelegram: { en: "📨 Telegram Link", bn: "📨 টেলিগ্রাম লিংক" },
-  socialWhatsapp: { en: "💬 WhatsApp Link", bn: "💬 হোয়াটসঅ্যাপ লিংক" },
-  socialEmail: { en: "📧 Email Link (mailto:...)", bn: "📧 ইমেইল লিংক (mailto:...)" },
-  socialFacebook: { en: "📘 Facebook Link", bn: "📘 Facebook লিংক" },
-  socialYoutube: { en: "🎬 YouTube Link", bn: "🎬 YouTube লিংক" },
-  socialInstagram: { en: "📸 Instagram Link", bn: "📸 Instagram লিংক" },
-  whatsappNumber: { en: "📱 WhatsApp Number (e.g. 8801XXXXXXXXX)", bn: "📱 WhatsApp নম্বর (যেমন: 8801XXXXXXXXX)" },
+  socialWebsite: { en: "Website Link", bn: "ওয়েবসাইট লিংক" },
+  socialTelegram: { en: "Telegram Link", bn: "টেলিগ্রাম লিংক" },
+  socialWhatsapp: { en: "WhatsApp Link", bn: "হোয়াটসঅ্যাপ লিংক" },
+  socialEmail: { en: "Email Link (mailto:...)", bn: "ইমেইল লিংক (mailto:...)" },
+  socialFacebook: { en: "Facebook Link", bn: "Facebook লিংক" },
+  socialYoutube: { en: "YouTube Link", bn: "YouTube লিংক" },
+  socialInstagram: { en: "Instagram Link", bn: "Instagram লিংক" },
+  whatsappNumber: { en: "WhatsApp Number (e.g. 8801XXXXXXXXX)", bn: "WhatsApp নম্বর (যেমন: 8801XXXXXXXXX)" },
   label: { en: "Label", bn: "লেবেল" },
   workingHours: { en: "Working Hours", bn: "কর্মসময়" },
 };
@@ -633,8 +633,8 @@ const AdminSiteContent = () => {
 
         {showPreview ? (
           <div className="border border-dashed border-primary/30 rounded-xl p-4 bg-background">
-            <p className="text-[10px] text-primary font-medium mb-3 text-center">
-              📱 {editLang === "en" ? "Live Preview — see how it looks before saving" : "লাইভ প্রিভিউ — সেভ করার আগে দেখুন কেমন দেখাবে"}
+            <p className="text-[10px] text-primary font-medium mb-3 text-center flex items-center justify-center gap-1">
+              <Eye className="w-3.5 h-3.5" /> {editLang === "en" ? "Live Preview — see how it looks before saving" : "লাইভ প্রিভিউ — সেভ করার আগে দেখুন কেমন দেখাবে"}
             </p>
             {previewComponents[activeSection](editData[activeSection])}
           </div>

@@ -108,7 +108,7 @@ const AdminPaymentMethods = () => {
 
     const { data: urlData } = supabase.storage.from("payment-icons").getPublicUrl(filePath);
     updateMethod(methodId, "iconUrl", `${urlData.publicUrl}?t=${Date.now()}`);
-    toast({ title: "আইকন আপলোড হয়েছে ✅", variant: "success" });
+    toast({ title: "আইকন আপলোড হয়েছে", variant: "success" });
     setUploading(null);
   };
 
@@ -142,7 +142,7 @@ const AdminPaymentMethods = () => {
       saveSetting("ajkerpay_brand_key", ajkerpay.brandKey),
     ];
     await Promise.all(promises);
-    toast({ title: "পেমেন্ট সেটিংস সেভ হয়েছে ✅", variant: "success" });
+    toast({ title: "পেমেন্ট সেটিংস সেভ হয়েছে", variant: "success" });
     setSaving(false);
   };
 
@@ -301,7 +301,7 @@ const AdminPaymentMethods = () => {
       </div>
 
       <div className="bg-secondary/30 border border-border/20 rounded-xl p-4 text-sm text-muted-foreground space-y-2">
-        <p className="font-medium text-foreground">💡 টিপস:</p>
+        <p className="font-medium text-foreground">Tips:</p>
         <ul className="list-disc list-inside space-y-1">
           <li>বন্ধ করা মেথড কাস্টমারদের কাছে দেখাবে না</li>
           <li>অন্তত একটি পেমেন্ট মেথড চালু রাখুন</li>
