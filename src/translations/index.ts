@@ -76,6 +76,10 @@ const en = {
   "order.orderFailed": "Could not create order",
   "order.paymentFailed": "Could not create payment",
   "order.back": "Back",
+  "order.autoPaymentOn": "Auto payment enabled",
+  "order.autoPayDesc": "Pay {amount} with {method}. You will be redirected to a secure AjkerPay payment page.",
+  "order.cryptoSelectToken": "Select token & network:",
+  "order.cryptoPayDesc": "Pay equivalent of {amount} with {method}. You will be redirected to secure BlinkPay checkout.",
 
   // Payment Success
   "success.verifying": "Verifying Payment...",
@@ -264,6 +268,10 @@ const bn: Record<keyof typeof en, string> = {
   "order.orderFailed": "অর্ডার তৈরি করা যায়নি",
   "order.paymentFailed": "পেমেন্ট তৈরি করা যায়নি",
   "order.back": "পেছনে",
+  "order.autoPaymentOn": "অটো পেমেন্ট চালু",
+  "order.autoPayDesc": "{method} দিয়ে ৳{amount} পে করুন। সিকিউর AjkerPay পেমেন্ট পেজে রিডাইরেক্ট হবেন।",
+  "order.cryptoSelectToken": "টোকেন ও নেটওয়ার্ক বাছুন:",
+  "order.cryptoPayDesc": "{method} দিয়ে ৳{amount} সমপরিমাণ পে করবেন। সিকিউর BlinkPay চেকআউটে রিডাইরেক্ট হবেন।",
 
   // Payment Success
   "success.verifying": "পেমেন্ট ভেরিফাই হচ্ছে...",
