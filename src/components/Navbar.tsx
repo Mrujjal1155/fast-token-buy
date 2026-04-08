@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Package, Globe } from "lucide-react";
+import { Package } from "lucide-react";
 import OperatorStatus from "@/components/OperatorStatus";
 import NotificationBell from "@/components/NotificationBell";
 import { useSiteImages } from "@/hooks/useSiteImages";
