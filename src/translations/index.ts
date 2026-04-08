@@ -186,7 +186,7 @@ const en = {
   "whatsapp.chat": "Chat with us",
 } as const;
 
-const bn: typeof en = {
+const bn: Record<keyof typeof en, string> = {
   // Navbar
   "nav.trackOrder": "অর্ডার ট্র্যাক করুন",
   "nav.orderTrack": "অর্ডার ট্র্যাক",
