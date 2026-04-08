@@ -32,6 +32,7 @@ import AdminPackages from "@/components/AdminPackages";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 import AdminReviews from "@/components/AdminReviews";
 import AdminSiteContent from "@/components/AdminSiteContent";
+import AdminImages from "@/components/AdminImages";
 
 type Order = Tables<"orders">;
 
@@ -63,7 +64,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -208,6 +209,7 @@ const AdminDashboard = () => {
             { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "reviews" as const, label: "Reviews", icon: MessageSquare },
             { id: "content" as const, label: "Content", icon: Globe },
+            { id: "images" as const, label: "Images", icon: ImageIcon },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -381,6 +383,8 @@ const AdminDashboard = () => {
           <AdminReviews />
         ) : activeTab === "content" ? (
           <AdminSiteContent />
+        ) : activeTab === "images" ? (
+          <AdminImages />
         ) : (
           <AdminPaymentMethods />
         )}
