@@ -4,7 +4,12 @@ import Footer from "@/components/Footer";
 
 const Privacy = () => (
   <div className="min-h-screen bg-background">
-    <SEOHead title="গোপনীয়তা নীতি" description="LovableCredit.com এর গোপনীয়তা নীতি। আপনার তথ্য কিভাবে সুরক্ষিত রাখা হয়।" path="/privacy" />
+    <SEOHead
+      title="গোপনীয়তা নীতি — Lovable Credits"
+      description="LovableCredit.com এর গোপনীয়তা নীতি। আপনার ব্যক্তিগত তথ্য কিভাবে সংগ্রহ, ব্যবহার ও সুরক্ষিত রাখা হয় জানুন।"
+      path="/privacy"
+      keywords="lovable credit privacy policy, গোপনীয়তা নীতি, lovable credit data protection"
+    />
     <Navbar />
     <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
       <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">

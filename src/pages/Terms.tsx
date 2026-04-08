@@ -4,7 +4,12 @@ import Footer from "@/components/Footer";
 
 const Terms = () => (
   <div className="min-h-screen bg-background">
-    <SEOHead title="সেবার শর্তাবলী" description="LovableCredit.com এর সেবার শর্তাবলী পড়ুন।" path="/terms" />
+    <SEOHead
+      title="সেবার শর্তাবলী — Lovable Credits"
+      description="LovableCredit.com এর সেবার শর্তাবলী। ক্রেডিট ক্রয়, ডেলিভারি, ব্যবহার ও দায়িত্ব সংক্রান্ত বিস্তারিত।"
+      path="/terms"
+      keywords="lovable credit terms, সেবার শর্তাবলী, lovable credit ব্যবহার শর্ত"
+    />
     <Navbar />
     <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
       <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">
