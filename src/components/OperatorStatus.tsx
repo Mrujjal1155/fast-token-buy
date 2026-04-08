@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
+  const { content } = useSiteContent();
+  const c = content.operator;
 
   const bengaliDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
@@ -20,7 +23,6 @@ const OperatorStatus = () => {
         .select("value")
         .eq("key", "operator_status")
         .maybeSingle();
-
       if (data) setIsOnline(data.value === "online");
     };
 
@@ -54,10 +56,9 @@ const OperatorStatus = () => {
       animate={{ opacity: 1, y: 0 }}
       className="relative flex flex-col items-center gap-1.5 md:flex-row md:gap-3 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-[hsl(222_40%_10%/0.9)] backdrop-blur-xl border border-border/30 shadow-card w-full md:w-auto"
     >
-
           <div className="flex items-center gap-2 pr-6 md:pr-0">
             <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
-            <span className="text-xs md:text-sm text-muted-foreground">অপারেটর:</span>
+            <span className="text-xs md:text-sm text-muted-foreground">{c.label}</span>
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] md:text-xs font-semibold border ${
                 isOnline
@@ -75,7 +76,7 @@ const OperatorStatus = () => {
           </div>
           <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-muted-foreground">
             <Clock className="w-3.5 h-3.5" />
-            কর্মসময়: সকাল ৯:০০ - রাত ১১:৫৯ (GMT+06)
+            {c.workingHours}
           </span>
           <span className="text-[11px] md:text-xs font-medium text-gradient-primary">{bengaliDate}</span>
     </motion.div>

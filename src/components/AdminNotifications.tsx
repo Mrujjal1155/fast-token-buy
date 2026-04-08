@@ -45,9 +45,10 @@ const AdminNotifications = () => {
   };
 
   const handleUpdate = async (id: string, field: string, value: string | boolean) => {
+    const updateData: Record<string, string | boolean> = { [field]: value };
     const { error } = await supabase
       .from("notifications")
-      .update({ [field]: value })
+      .update(updateData as any)
       .eq("id", id);
     if (error) {
       toast({ title: "আপডেট করা যায়নি", variant: "destructive" });

@@ -3,6 +3,7 @@ import { Check, Star, Flame, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type CreditPackage } from "@/lib/packages";
 import { usePackages } from "@/hooks/usePackages";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 interface PricingSectionProps {
   onSelectPackage: (pkg: CreditPackage) => void;
@@ -10,6 +11,8 @@ interface PricingSectionProps {
 
 const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   const { packages, loading } = usePackages();
+  const { content } = useSiteContent();
+  const c = content.pricing;
 
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
@@ -23,9 +26,9 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
           className="text-center mb-10 md:mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
-            কম খরচে <span className="text-gradient-primary">বেশি ক্রেডিট</span>
+            {c.heading} <span className="text-gradient-primary">{c.headingHighlight}</span>
           </h2>
-          <p className="text-muted-foreground text-base md:text-lg">স্মার্ট ইউজাররা সেরা ডিলটা বেছে নিচ্ছে — আপনিও নিন!</p>
+          <p className="text-muted-foreground text-base md:text-lg">{c.subtext}</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
@@ -46,7 +49,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
               {pkg.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                   <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold shadow-glow">
-                    <Flame className="w-3 h-3" /> সবাই এটাই নিচ্ছে!
+                    <Flame className="w-3 h-3" /> {c.popularBadge}
                   </div>
                 </div>
               )}
@@ -72,11 +75,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                 </div>
 
                 <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
-                  {[
-                    "৫ মিনিটে ডেলিভারি গ্যারান্টি",
-                    "২৪/৭ লাইভ সাপোর্ট",
-                    "১০০% নিরাপদ পেমেন্ট",
-                  ].map((f) => (
+                  {[c.feature1, c.feature2, c.feature3].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
                       <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                       {f}
@@ -90,7 +89,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                   className="w-full"
                   onClick={() => onSelectPackage(pkg)}
                 >
-                  {pkg.popular ? "এখনই অর্ডার করুন" : "এখনই নিন"}
+                  {pkg.popular ? c.btnPopular : c.btnNormal}
                 </Button>
               </div>
             </motion.div>

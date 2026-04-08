@@ -31,9 +31,10 @@ const AdminReserves = () => {
   useEffect(() => { fetchReserves(); }, []);
 
   const handleUpdate = async (id: string, field: string, value: string | number | boolean) => {
+    const updateData: Record<string, string | number | boolean> = { [field]: value, updated_at: new Date().toISOString() };
     const { error } = await supabase
       .from("reserves")
-      .update({ [field]: value, updated_at: new Date().toISOString() })
+      .update(updateData as any)
       .eq("id", id);
     if (error) {
       toast({ title: "আপডেট করা যায়নি", variant: "destructive" });

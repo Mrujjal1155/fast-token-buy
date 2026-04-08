@@ -1,20 +1,24 @@
 import { Shield, Zap, Headphones } from "lucide-react";
 import { motion } from "framer-motion";
-
-const badges = [
-  { icon: Zap, title: "৫ মিনিটে ডেলিভারি", desc: "অর্ডার দিন, মিনিটে পান — গ্যারান্টি!", color: "#FF7A18" },
-  { icon: Shield, title: "১০০% নিরাপদ", desc: "আপনার টাকা ও তথ্য সম্পূর্ণ সুরক্ষিত", color: "#7B61FF" },
-  { icon: Headphones, title: "২৪/৭ লাইভ সাপোর্ট", desc: "যেকোনো সমস্যায় আমরা পাশে আছি", color: "#4D8DFF" },
-];
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const TrustBadges = () => {
+  const { content } = useSiteContent();
+  const c = content.trustBadges;
+
+  const badges = [
+    { icon: Zap, title: c.badge1Title, desc: c.badge1Desc, color: "#FF7A18" },
+    { icon: Shield, title: c.badge2Title, desc: c.badge2Desc, color: "#7B61FF" },
+    { icon: Headphones, title: c.badge3Title, desc: c.badge3Desc, color: "#4D8DFF" },
+  ];
+
   return (
     <section className="py-10 md:py-16 border-y border-border/20">
       <div className="container px-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8">
           {badges.map((badge, i) => (
             <motion.div
-              key={badge.title}
+              key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
