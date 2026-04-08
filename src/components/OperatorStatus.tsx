@@ -3,13 +3,16 @@ import { Clock, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const OperatorStatus = () => {
   const [isOnline, setIsOnline] = useState(true);
   const { content } = useSiteContent();
   const c = content.operator;
+  const { lang, t } = useLanguage();
 
-  const bengaliDate = new Date().toLocaleDateString("bn-BD", {
+  const dateLocale = lang === "bn" ? "bn-BD" : "en-US";
+  const formattedDate = new Date().toLocaleDateString(dateLocale, {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -71,14 +74,14 @@ const OperatorStatus = () => {
                   isOnline ? "bg-green-400 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" : "bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
                 }`}
               />
-              {isOnline ? "অনলাইন" : "অফলাইন"}
+              {isOnline ? t("operator.online") : t("operator.offline")}
             </span>
           </div>
           <span className="inline-flex items-center gap-1.5 text-[11px] md:text-xs text-muted-foreground">
             <Clock className="w-3.5 h-3.5" />
             {c.workingHours}
           </span>
-          <span className="text-[11px] md:text-xs font-medium text-gradient-primary">{bengaliDate}</span>
+          <span className="text-[11px] md:text-xs font-medium text-gradient-primary">{formattedDate}</span>
     </motion.div>
   );
 };

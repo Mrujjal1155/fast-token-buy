@@ -3,15 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Package, Clock, CheckCircle, Loader2, AlertCircle, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Order = Tables<"orders">;
-
-const statusConfig: Record<string, { icon: typeof Clock; label: string; color: string; bgColor: string }> = {
-  pending: { icon: Clock, label: "অপেক্ষমাণ", color: "text-yellow-400", bgColor: "bg-yellow-400/10" },
-  processing: { icon: Loader2, label: "প্রক্রিয়াধীন", color: "text-blue-400", bgColor: "bg-blue-400/10" },
-  completed: { icon: CheckCircle, label: "সম্পন্ন", color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
-  failed: { icon: AlertCircle, label: "ব্যর্থ", color: "text-red-400", bgColor: "bg-red-400/10" },
-};
 
 const maskEmail = (email: string) => {
   const [user, domain] = email.split("@");
@@ -22,6 +16,14 @@ const maskEmail = (email: string) => {
 const RecentPurchases = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
+
+  const statusConfig: Record<string, { icon: typeof Clock; label: string; color: string; bgColor: string }> = {
+    pending: { icon: Clock, label: t("status.pending"), color: "text-yellow-400", bgColor: "bg-yellow-400/10" },
+    processing: { icon: Loader2, label: t("status.processing"), color: "text-blue-400", bgColor: "bg-blue-400/10" },
+    completed: { icon: CheckCircle, label: t("status.completed"), color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
+    failed: { icon: AlertCircle, label: t("status.failed"), color: "text-red-400", bgColor: "bg-red-400/10" },
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -65,12 +67,12 @@ const RecentPurchases = () => {
         <div className="text-center mb-8 md:mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass mb-4 animate-pulse-glow">
             <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-xs font-medium text-emerald-400">লাইভ অর্ডার চলছে</span>
+            <span className="text-xs font-medium text-emerald-400">{t("recent.liveBadge")}</span>
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
-            এইমাত্র <span className="text-gradient-primary">অর্ডার হচ্ছে</span>
+            {t("recent.heading")} <span className="text-gradient-primary">{t("recent.headingHighlight")}</span>
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base">অন্যরা নিচ্ছে — আপনি কি পিছিয়ে থাকবেন?</p>
+          <p className="text-muted-foreground text-sm md:text-base">{t("recent.subtext")}</p>
         </div>
 
         <div className="max-w-2xl mx-auto space-y-2">
@@ -93,7 +95,7 @@ const RecentPurchases = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs md:text-sm font-medium text-foreground truncate">
-                        {maskEmail(order.email)} — {order.credits} ক্রেডিট নিয়েছে
+                        {maskEmail(order.email)} — {order.credits} {t("recent.tookCredits")}
                       </p>
                       <p className="text-[10px] md:text-xs text-muted-foreground font-mono truncate">{order.order_id}</p>
                     </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type CreditPackage } from "@/lib/packages";
 import { usePackages } from "@/hooks/usePackages";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PricingSectionProps {
   onSelectPackage: (pkg: CreditPackage) => void;
@@ -13,6 +14,7 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   const { packages, loading } = usePackages();
   const { content } = useSiteContent();
   const c = content.pricing;
+  const { t } = useLanguage();
 
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
@@ -63,14 +65,14 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
 
                 <div className="mb-4 md:mb-6">
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-1">
-                    {pkg.credits} ক্রেডিট
+                    {pkg.credits} {t("pricing.credits")}
                   </h3>
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl md:text-4xl font-bold text-gradient-primary">৳{pkg.price}</span>
-                    <span className="text-muted-foreground text-sm">টাকা</span>
+                    <span className="text-muted-foreground text-sm">{t("pricing.taka")}</span>
                   </div>
                   <p className="text-muted-foreground text-xs md:text-sm mt-1">
-                    প্রতি ক্রেডিট মাত্র ৳{(pkg.price / pkg.credits).toFixed(2)}
+                    {t("pricing.perCredit")}{(pkg.price / pkg.credits).toFixed(2)}
                   </p>
                 </div>
 

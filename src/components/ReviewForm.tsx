@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ReviewFormProps {
   orderId: string;
@@ -18,10 +19,11 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
   const [hoveredStar, setHoveredStar] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { t } = useLanguage();
 
   const handleSubmit = async () => {
     if (!name.trim() || !text.trim()) {
-      toast({ title: "নাম ও রিভিউ লিখুন", variant: "destructive" });
+      toast({ title: t("review.nameRequired"), variant: "destructive" });
       return;
     }
     setSubmitting(true);
@@ -34,10 +36,10 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
     setSubmitting(false);
 
     if (error) {
-      toast({ title: "রিভিউ পাঠানো যায়নি", variant: "destructive" });
+      toast({ title: t("review.failed"), variant: "destructive" });
     } else {
       setSubmitted(true);
-      toast({ title: "ধন্যবাদ! আপনার রিভিউ পাঠানো হয়েছে।", variant: "success" });
+      toast({ title: t("review.success"), variant: "success" });
     }
   };
 
@@ -49,8 +51,8 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
         className="bg-primary/10 border border-primary/20 rounded-xl p-5 text-center"
       >
         <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-        <p className="text-sm font-medium text-foreground">রিভিউ পাঠানো হয়েছে!</p>
-        <p className="text-xs text-muted-foreground mt-1">অ্যাডমিন অনুমোদনের পর ওয়েবসাইটে দেখাবে।</p>
+        <p className="text-sm font-medium text-foreground">{t("review.submitted")}</p>
+        <p className="text-xs text-muted-foreground mt-1">{t("review.approval")}</p>
       </motion.div>
     );
   }
@@ -62,11 +64,10 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
       className="bg-secondary/30 border border-border/30 rounded-xl p-5 space-y-4"
     >
       <div>
-        <p className="text-sm font-semibold text-foreground mb-1">⭐ আপনার অভিজ্ঞতা জানান</p>
-        <p className="text-xs text-muted-foreground">আপনার রিভিউ অন্যদের সাহায্য করবে</p>
+        <p className="text-sm font-semibold text-foreground mb-1">{t("review.heading")}</p>
+        <p className="text-xs text-muted-foreground">{t("review.subtext")}</p>
       </div>
 
-      {/* Star Rating */}
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
@@ -89,7 +90,7 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
       </div>
 
       <Input
-        placeholder="আপনার নাম"
+        placeholder={t("review.namePlaceholder")}
         value={name}
         onChange={(e) => setName(e.target.value)}
         maxLength={100}
@@ -97,7 +98,7 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
       />
 
       <Textarea
-        placeholder="আপনার অভিজ্ঞতা লিখুন..."
+        placeholder={t("review.textPlaceholder")}
         value={text}
         onChange={(e) => setText(e.target.value)}
         maxLength={500}
@@ -113,7 +114,7 @@ const ReviewForm = ({ orderId }: ReviewFormProps) => {
         className="w-full"
       >
         <Send className="w-4 h-4 mr-2" />
-        {submitting ? "পাঠানো হচ্ছে..." : "রিভিউ পাঠান"}
+        {submitting ? t("review.submitting") : t("review.submit")}
       </Button>
     </motion.div>
   );
