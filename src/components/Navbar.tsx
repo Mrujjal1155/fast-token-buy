@@ -21,14 +21,32 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
           {/* Language Switch */}
-          <button
-            onClick={() => setLang(lang === "en" ? "bn" : "en")}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full glass text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground hover:shadow-glow transition-all duration-300"
-            title={lang === "en" ? "বাংলায় দেখুন" : "Switch to English"}
-          >
-            <Globe className="w-3.5 h-3.5 md:w-4 md:h-4" />
-            <span>{lang === "en" ? "বাং" : "EN"}</span>
-          </button>
+          <div className="flex items-center p-0.5 rounded-full glass border border-border/30">
+            <button
+              onClick={() => setLang("en")}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] md:text-xs font-semibold transition-all duration-300 ${
+                lang === "en"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title="Switch to English"
+            >
+              <span className="text-sm leading-none">🇺🇸</span>
+              <span>EN</span>
+            </button>
+            <button
+              onClick={() => setLang("bn")}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] md:text-xs font-semibold transition-all duration-300 ${
+                lang === "bn"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              title="বাংলায় দেখুন"
+            >
+              <span className="text-sm leading-none">🇧🇩</span>
+              <span>বাং</span>
+            </button>
+          </div>
           <NotificationBell />
         </div>
       </div>
