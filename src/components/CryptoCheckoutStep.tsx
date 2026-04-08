@@ -26,7 +26,7 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
       .eq("order_id", orderId)
       .maybeSingle();
 
-    if (data?.status === "completed") {
+    if (data?.status === "completed" || data?.status === "processing") {
       setState("success");
       toast({ title: t("crypto.toastSuccess"), variant: "success" });
       onSuccess();
