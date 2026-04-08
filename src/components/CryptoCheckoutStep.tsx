@@ -3,6 +3,7 @@ import { Loader2, Copy, ExternalLink, CheckCircle, XCircle, RefreshCw, Lock, Par
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type PaymentState = "checking" | "success" | "failed";
 
@@ -16,6 +17,7 @@ interface CryptoCheckoutStepProps {
 
 const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }: CryptoCheckoutStepProps) => {
   const [state, setState] = useState<PaymentState>("checking");
+  const { t } = useLanguage();
 
   const checkStatus = useCallback(async () => {
     const { data } = await supabase
@@ -26,13 +28,13 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
 
     if (data?.status === "completed") {
       setState("success");
-      toast({ title: "পেমেন্ট সফল হয়েছে!", variant: "success" });
+      toast({ title: t("crypto.toastSuccess"), variant: "success" });
       onSuccess();
     } else if (data?.status === "failed") {
       setState("failed");
-      toast({ title: "পেমেন্ট ব্যর্থ হয়েছে", variant: "destructive" });
+      toast({ title: t("crypto.toastFailed"), variant: "destructive" });
     }
-  }, [orderId, onSuccess]);
+  }, [orderId, onSuccess, t]);
 
   useEffect(() => {
     if (!orderId) return;
@@ -45,7 +47,6 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
     if (onRetry) {
       onRetry();
     } else {
-      // Re-open the payment URL
       window.open(paymentUrl, "_blank");
       setState("checking");
     }
@@ -62,23 +63,23 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
       </div>
 
       <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">
-        {state === "checking" && <><Lock className="w-5 h-5 text-primary" /> পেমেন্ট সম্পন্ন করুন</>}
-        {state === "success" && <><PartyPopper className="w-5 h-5 text-primary" /> পেমেন্ট সফল!</>}
-        {state === "failed" && <><ShieldX className="w-5 h-5 text-destructive" /> পেমেন্ট ব্যর্থ হয়েছে</>}
+        {state === "checking" && <><Lock className="w-5 h-5 text-primary" /> {t("crypto.completePayment")}</>}
+        {state === "success" && <><PartyPopper className="w-5 h-5 text-primary" /> {t("crypto.paymentSuccess")}</>}
+        {state === "failed" && <><ShieldX className="w-5 h-5 text-destructive" /> {t("crypto.paymentFailed")}</>}
       </h2>
 
       <p className="text-muted-foreground">
-        {state === "checking" && "নিচের বাটনে ক্লিক করে পেমেন্ট করুন। পেমেন্ট হলে অটো নেক্সট স্টেপে যাবে।"}
-        {state === "success" && "আপনার পেমেন্ট ভেরিফাই হয়েছে!"}
-        {state === "failed" && "পেমেন্ট সম্পন্ন হয়নি। আবার চেষ্টা করুন অথবা অন্য মেথড ব্যবহার করুন।"}
+        {state === "checking" && t("crypto.checkingDesc")}
+        {state === "success" && t("crypto.successDesc")}
+        {state === "failed" && t("crypto.failedDesc")}
       </p>
 
       <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
-        <p className="text-sm text-muted-foreground mb-1">আপনার অর্ডার আইডি</p>
+        <p className="text-sm text-muted-foreground mb-1">{t("crypto.yourOrderId")}</p>
         <div className="flex items-center justify-center gap-2">
           <p className="text-xl font-bold font-mono text-primary">{orderId}</p>
           <button
-            onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: "কপি হয়েছে!", variant: "success" }); }}
+            onClick={() => { navigator.clipboard.writeText(orderId); toast({ title: t("crypto.copied"), variant: "success" }); }}
             className="p-1.5 rounded-lg hover:bg-secondary transition"
           >
             <Copy className="w-4 h-4 text-muted-foreground" />
@@ -90,12 +91,12 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
         <>
           <a href={paymentUrl} target="_blank" rel="noopener noreferrer" className="block">
             <Button variant="hero" size="lg" className="w-full py-6">
-              <ExternalLink className="w-4 h-4 mr-2" /> পেমেন্ট পেজ খুলুন
+              <ExternalLink className="w-4 h-4 mr-2" /> {t("crypto.openPaymentPage")}
             </Button>
           </a>
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <Loader2 className="w-3 h-3 animate-spin" />
-            পেমেন্ট চেক করা হচ্ছে... অটো আপডেট হবে
+            {t("crypto.checkingPayment")}
           </div>
         </>
       )}
@@ -103,17 +104,17 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
       {state === "failed" && (
         <div className="space-y-3">
           <Button variant="hero" size="lg" className="w-full py-6" onClick={handleRetry}>
-            <RefreshCw className="w-4 h-4 mr-2" /> আবার পেমেন্ট করুন
+            <RefreshCw className="w-4 h-4 mr-2" /> {t("crypto.retryPayment")}
           </Button>
           <Button variant="outline" size="sm" className="w-full" onClick={onBack}>
-            অন্য পেমেন্ট মেথড ব্যবহার করুন
+            {t("crypto.useDifferentMethod")}
           </Button>
         </div>
       )}
 
       {state !== "failed" && (
         <Button variant="outline" size="lg" className="w-full" onClick={onBack}>
-          হোমে ফিরে যান
+          {t("crypto.goHome")}
         </Button>
       )}
     </div>
