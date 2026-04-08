@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
   const { content } = useSiteContent();
   const c = content.footer;
   const { logo } = useSiteImages();
+  const { t } = useLanguage();
 
   return (
     <footer className="relative border-t border-border/10 pt-1">
@@ -45,12 +47,12 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display font-semibold text-foreground mb-4">দ্রুত লিংক</h4>
+            <h4 className="font-display font-semibold text-foreground mb-4">{t("footer.quickLinks")}</h4>
             <ul className="space-y-2.5">
               {[
-                { label: "হোম", to: "/" },
-                { label: "মূল্য তালিকা", to: "/#pricing" },
-                { label: "অর্ডার ট্র্যাক", to: "/track" },
+                { label: t("footer.home"), to: "/" },
+                { label: t("footer.pricing"), to: "/#pricing" },
+                { label: t("footer.orderTrack"), to: "/track" },
               ].map(({ label, to }) => (
                 <li key={label}>
                   <Link to={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">{label}</Link>
@@ -60,13 +62,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display font-semibold text-foreground mb-4">সহায়তা</h4>
+            <h4 className="font-display font-semibold text-foreground mb-4">{t("footer.support")}</h4>
             <ul className="space-y-2.5">
               {[
-                { label: "সচরাচর জিজ্ঞাসা", to: "/faq" },
-                { label: "সেবার শর্তাবলী", to: "/terms" },
-                { label: "গোপনীয়তা নীতি", to: "/privacy" },
-                { label: "ফেরত নীতি", to: "/refund" },
+                { label: t("footer.faq"), to: "/faq" },
+                { label: t("footer.terms"), to: "/terms" },
+                { label: t("footer.privacy"), to: "/privacy" },
+                { label: t("footer.refund"), to: "/refund" },
               ].map(({ label, to }) => (
                 <li key={label}>
                   <Link to={to} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">{label}</Link>
@@ -76,7 +78,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display font-semibold text-foreground mb-4">যোগাযোগ</h4>
+            <h4 className="font-display font-semibold text-foreground mb-4">{t("footer.contact")}</h4>
             <ul className="space-y-2.5">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-[#FF7A18]" />

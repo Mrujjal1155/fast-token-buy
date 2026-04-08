@@ -11,21 +11,23 @@ import ReviewForm from "@/components/ReviewForm";
 import SEOHead from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Order = Tables<"orders">;
-
-const statusConfig: Record<string, { icon: React.ElementType; label: string; className: string }> = {
-  pending: { icon: Clock, label: "অপেক্ষমাণ", className: "text-yellow-400 bg-yellow-400/10" },
-  processing: { icon: Loader2, label: "প্রক্রিয়াধীন", className: "text-blue-400 bg-blue-400/10" },
-  completed: { icon: CheckCircle, label: "সম্পন্ন", className: "text-primary bg-primary/10" },
-  failed: { icon: AlertCircle, label: "ব্যর্থ", className: "text-destructive bg-destructive/10" },
-};
 
 const TrackOrder = () => {
   const [query, setQuery] = useState("");
   const [order, setOrder] = useState<Order | null>(null);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { t, lang } = useLanguage();
+
+  const statusConfig: Record<string, { icon: React.ElementType; label: string; className: string }> = {
+    pending: { icon: Clock, label: t("status.pending"), className: "text-yellow-400 bg-yellow-400/10" },
+    processing: { icon: Loader2, label: t("status.processing"), className: "text-blue-400 bg-blue-400/10" },
+    completed: { icon: CheckCircle, label: t("status.completed"), className: "text-primary bg-primary/10" },
+    failed: { icon: AlertCircle, label: t("status.failed"), className: "text-destructive bg-destructive/10" },
+  };
 
   const handleSearch = useCallback(async (searchQuery?: string) => {
     const q = (searchQuery || query).trim();
@@ -65,7 +67,7 @@ const TrackOrder = () => {
         (payload) => {
           setOrder(payload.new as Order);
           if ((payload.new as Order).status === "completed") {
-            toast({ title: "🎉 আপনার অর্ডার সম্পন্ন হয়েছে!", variant: "success" });
+            toast({ title: t("track.orderCompleted"), variant: "success" });
           }
         }
       )
@@ -85,28 +87,28 @@ const TrackOrder = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "কপি হয়েছে!", variant: "success" });
+    toast({ title: t("success.copied"), variant: "success" });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="অর্ডার ট্র্যাক করুন — Lovable Credits"
-        description="আপনার Lovable ক্রেডিট অর্ডারের রিয়েল-টাইম স্ট্যাটাস ট্র্যাক করুন। অর্ডার আইডি বা ইমেইল দিয়ে খুঁজুন।"
+        title="Track Order — Lovable Credits"
+        description="Track your Lovable credit order in real-time. Search by order ID or email."
         path="/track"
-        keywords="order track, lovable credit order track, অর্ডার ট্র্যাক, lovable order status"
+        keywords="order track, lovable credit order track, order status"
       />
       <Navbar />
 
       <div className="container max-w-xl px-4 pt-28 pb-16 md:pt-32">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">অর্ডার ট্র্যাক</h1>
-          <p className="text-muted-foreground">অর্ডার আইডি বা ইমেইল দিয়ে খুঁজুন</p>
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">{t("track.heading")}</h1>
+          <p className="text-muted-foreground">{t("track.subtext")}</p>
         </motion.div>
 
         <div className="flex gap-2 mb-8">
           <Input
-            placeholder="ORD-XXXXXXXX বা email"
+            placeholder={t("track.placeholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -120,17 +122,16 @@ const TrackOrder = () => {
         {searched && !order && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-10 glass rounded-xl">
             <Package className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
-            <p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি</p>
-            <p className="text-xs text-muted-foreground mt-1">আইডি বা ইমেইল চেক করে আবার চেষ্টা করুন</p>
+            <p className="text-muted-foreground">{t("track.notFound")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("track.tryAgain")}</p>
           </motion.div>
         )}
 
         {order && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-xl p-5 md:p-6 space-y-5">
-            {/* Status header */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground mb-1">অর্ডার আইডি</p>
+                <p className="text-xs text-muted-foreground mb-1">{t("track.orderId")}</p>
                 <button
                   onClick={() => copyToClipboard(order.order_id)}
                   className="flex items-center gap-1.5 font-mono text-sm text-foreground hover:text-primary transition"
@@ -150,15 +151,14 @@ const TrackOrder = () => {
               })()}
             </div>
 
-            {/* Details grid */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               {[
-                { label: "ইমেইল", value: order.email },
-                { label: "ক্রেডিট", value: `${order.credits} Credits` },
-                { label: "মূল্য", value: `৳${order.amount}` },
-                { label: "পেমেন্ট", value: order.payment_method },
-                { label: "ট্রানজেকশন আইডি", value: order.transaction_id },
-                { label: "তারিখ", value: new Date(order.created_at).toLocaleDateString("bn-BD") },
+                { label: t("track.email"), value: order.email },
+                { label: t("track.credits"), value: `${order.credits} Credits` },
+                { label: t("track.price"), value: `৳${order.amount}` },
+                { label: t("track.payment"), value: order.payment_method },
+                { label: t("track.transactionId"), value: order.transaction_id },
+                { label: t("track.date"), value: new Date(order.created_at).toLocaleDateString(lang === "bn" ? "bn-BD" : "en-US") },
               ].map((item) => (
                 <div key={item.label} className="bg-secondary/30 rounded-lg p-3">
                   <p className="text-[10px] text-muted-foreground mb-0.5">{item.label}</p>
@@ -169,9 +169,8 @@ const TrackOrder = () => {
 
             {order.status === "completed" && <ReviewForm orderId={order.order_id} />}
 
-            {/* Back link */}
             <div className="text-center pt-2">
-              <Link to="/" className="text-xs text-primary hover:underline">← হোমে ফিরুন</Link>
+              <Link to="/" className="text-xs text-primary hover:underline">{t("track.backHome")}</Link>
             </div>
           </motion.div>
         )}

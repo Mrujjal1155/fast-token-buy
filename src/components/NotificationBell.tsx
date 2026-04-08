@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Bell, X, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Notification {
   id: string;
@@ -15,6 +16,7 @@ const NotificationBell = () => {
   const [open, setOpen] = useState(false);
   const [seen, setSeen] = useState<string[]>([]);
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const stored = localStorage.getItem("seen_notifications");
@@ -54,12 +56,12 @@ const NotificationBell = () => {
   const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "এইমাত্র";
-    if (mins < 60) return `${mins} মিনিট আগে`;
+    if (mins < 1) return t("notification.justNow");
+    if (mins < 60) return `${mins} ${t("notification.minutesAgo")}`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} ঘণ্টা আগে`;
+    if (hours < 24) return `${hours} ${t("notification.hoursAgo")}`;
     const days = Math.floor(hours / 24);
-    return `${days} দিন আগে`;
+    return `${days} ${t("notification.daysAgo")}`;
   };
 
   return (
@@ -85,13 +87,12 @@ const NotificationBell = () => {
             transition={{ duration: 0.2 }}
             className="absolute right-0 top-12 w-80 max-h-96 overflow-y-auto rounded-2xl bg-[hsl(222_40%_8%/0.95)] backdrop-blur-xl border border-border/30 shadow-card z-50"
           >
-            {/* Header with gradient accent */}
             <div className="flex items-center justify-between p-4 border-b border-border/20">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-gradient-primary flex items-center justify-center">
                   <Sparkles className="w-3.5 h-3.5 text-primary-foreground" />
                 </div>
-                <h3 className="font-semibold text-foreground text-sm">নোটিফিকেশন</h3>
+                <h3 className="font-semibold text-foreground text-sm">{t("notification.title")}</h3>
               </div>
               <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-lg hover:bg-secondary/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all">
                 <X className="w-4 h-4" />
@@ -103,7 +104,7 @@ const NotificationBell = () => {
                 <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center mx-auto mb-3">
                   <Bell className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <p className="text-muted-foreground text-sm">কোনো নোটিফিকেশন নেই</p>
+                <p className="text-muted-foreground text-sm">{t("notification.empty")}</p>
               </div>
             ) : (
               <div className="divide-y divide-border/10">

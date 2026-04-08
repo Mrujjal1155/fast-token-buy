@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Package, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Reserve {
   id: string;
@@ -16,6 +17,7 @@ const OurReserves = () => {
   const [reserves, setReserves] = useState<Reserve[]>([]);
   const { content } = useSiteContent();
   const c = content.reserves;
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetch = async () => {
@@ -69,7 +71,7 @@ const OurReserves = () => {
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
               {isOutOfStock && (
                 <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-destructive/20 text-destructive text-[10px] font-bold uppercase tracking-wide">
-                  স্টক শেষ
+                  {t("reserves.outOfStock")}
                 </div>
               )}
               <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 ${isOutOfStock ? "bg-muted" : "bg-primary/10"}`}>
@@ -78,11 +80,11 @@ const OurReserves = () => {
               <p className="text-lg md:text-xl font-bold text-foreground mb-1">{r.label}</p>
               <div className="flex items-center justify-center gap-1.5 mb-2">
                 <span className={`text-3xl md:text-4xl font-bold ${isOutOfStock ? "text-destructive" : "text-gradient-primary"}`}>
-                  {isOutOfStock ? "০" : r.amount}
+                  {isOutOfStock ? "0" : r.amount}
                 </span>
               </div>
               <p className={`text-xs md:text-sm ${isOutOfStock ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
-                {isOutOfStock ? "⚠️ বর্তমানে স্টক নেই" : "প্যাকেজ এভেইলেবল"}
+                {isOutOfStock ? t("reserves.noStock") : t("reserves.available")}
               </p>
               <div className="mt-3 w-full h-1.5 rounded-full bg-border/30 overflow-hidden">
                 <div
@@ -91,7 +93,7 @@ const OurReserves = () => {
                 />
               </div>
               {!isOutOfStock && stock <= 50 && (
-                <p className="text-[10px] text-yellow-400 font-medium mt-2 animate-pulse">⚡ দ্রুত শেষ হচ্ছে!</p>
+                <p className="text-[10px] text-yellow-400 font-medium mt-2 animate-pulse">{t("reserves.sellingFast")}</p>
               )}
             </motion.div>
             );

@@ -4,6 +4,7 @@ import { Star, Quote, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Review {
   id: string;
@@ -43,6 +44,7 @@ const Testimonials = () => {
   const [stats, setStats] = useState<ReviewStats>({ totalCount: defaultTestimonials.length, avgRating: 5 });
   const { content } = useSiteContent();
   const c = content.testimonials;
+  const { t } = useLanguage();
 
   const fetchReviews = useCallback(async () => {
     const { data } = await supabase
@@ -95,20 +97,20 @@ const Testimonials = () => {
             <div className="flex items-center gap-2 glass rounded-full px-5 py-2.5">
               <Star className="w-5 h-5 text-[#FF7A18] fill-[#FF7A18]" />
               <span className="text-lg font-bold text-foreground">{stats.avgRating}</span>
-              <span className="text-sm text-muted-foreground">/৫ গড় রেটিং</span>
+              <span className="text-sm text-muted-foreground">{t("testimonials.avgRating")}</span>
             </div>
             <div className="glass rounded-full px-5 py-2.5">
               <span className="text-lg font-bold text-foreground">{stats.totalCount}+</span>
-              <span className="text-sm text-muted-foreground ml-1">রিভিউ</span>
+              <span className="text-sm text-muted-foreground ml-1">{t("testimonials.reviews")}</span>
             </div>
           </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
           <AnimatePresence>
-            {visibleReviews.map((t, i) => (
+            {visibleReviews.map((review, i) => (
               <motion.div
-                key={t.id}
+                key={review.id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -117,18 +119,18 @@ const Testimonials = () => {
                 className="glass rounded-2xl p-5 md:p-6 flex flex-col gap-4 hover:shadow-glow-purple transition-shadow duration-300"
               >
                 <div className="flex items-start justify-between">
-                  <StarRating rating={t.rating} />
+                  <StarRating rating={review.rating} />
                   <Quote className="w-5 h-5 text-[#7B61FF]/30" />
                 </div>
                 <p className="text-sm md:text-base text-secondary-foreground leading-relaxed flex-1">
-                  "{t.text}"
+                  "{review.text}"
                 </p>
                 <div className="flex items-center gap-3 pt-2 border-t border-border/20">
                   <div className="w-9 h-9 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                    {t.name.charAt(0)}
+                    {review.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                    <p className="text-sm font-semibold text-foreground">{review.name}</p>
                   </div>
                 </div>
               </motion.div>
@@ -145,7 +147,7 @@ const Testimonials = () => {
               className="gap-2 glass border-border/30 hover:border-primary/50"
             >
               <ChevronDown className="w-4 h-4" />
-              আরও দেখুন ({allReviews.length - visibleCount}টি বাকি)
+              {t("testimonials.showMore")} ({allReviews.length - visibleCount} {t("testimonials.remaining")})
             </Button>
           )}
           {isExpanded && (
@@ -156,7 +158,7 @@ const Testimonials = () => {
               className="gap-2 text-muted-foreground hover:text-foreground"
             >
               <ChevronUp className="w-4 h-4" />
-              কম দেখুন
+              {t("testimonials.showLess")}
             </Button>
           )}
         </div>
