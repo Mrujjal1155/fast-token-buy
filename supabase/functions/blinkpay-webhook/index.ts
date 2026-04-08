@@ -35,14 +35,21 @@ serve(async (req) => {
       });
     }
 
-    // Verify payment via BlinkPay GET endpoint (recommended best practice)
+    // Verify payment via BlinkPay GET endpoint (docs recommend this)
     let verified = false;
     const paymentId = payment.id;
+    const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
     if (paymentId) {
       try {
         const verifyRes = await fetch(
           `${BLINKPAY_BASE}/get-public-payment?payment_id=${paymentId}`,
-          { headers: { 'Content-Type': 'application/json' } }
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_ANON_KEY || '',
+            },
+          }
         );
         if (verifyRes.ok) {
           const verifyData = await verifyRes.json();
@@ -55,16 +62,14 @@ serve(async (req) => {
           }
         } else {
           console.warn(`Failed to verify payment ${paymentId}: HTTP ${verifyRes.status}`);
-          // If verification fails, still trust the webhook but log warning
+          // Trust webhook if verification endpoint fails
           verified = true;
         }
       } catch (verifyError) {
         console.warn('Payment verification request failed:', verifyError);
-        // Trust webhook if verification endpoint is unreachable
         verified = true;
       }
     } else {
-      // No payment ID to verify, trust the webhook
       verified = true;
     }
 
@@ -75,7 +80,7 @@ serve(async (req) => {
       });
     }
 
-    // Use service role to update order status to completed
+    // Update order status to completed
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
