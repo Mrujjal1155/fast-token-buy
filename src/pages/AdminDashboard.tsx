@@ -31,6 +31,7 @@ import AdminNotifications from "@/components/AdminNotifications";
 import AdminPackages from "@/components/AdminPackages";
 import AdminPaymentMethods from "@/components/AdminPaymentMethods";
 import AdminReviews from "@/components/AdminReviews";
+import AdminSiteContent from "@/components/AdminSiteContent";
 
 type Order = Tables<"orders">;
 
@@ -62,7 +63,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -206,6 +207,7 @@ const AdminDashboard = () => {
             { id: "notifications" as const, label: "Notifications", icon: Bell },
             { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "reviews" as const, label: "Reviews", icon: MessageSquare },
+            { id: "content" as const, label: "Content", icon: Globe },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -377,6 +379,8 @@ const AdminDashboard = () => {
           <AdminNotifications />
         ) : activeTab === "reviews" ? (
           <AdminReviews />
+        ) : activeTab === "content" ? (
+          <AdminSiteContent />
         ) : (
           <AdminPaymentMethods />
         )}
