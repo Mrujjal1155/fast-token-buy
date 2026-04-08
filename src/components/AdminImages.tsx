@@ -140,7 +140,8 @@ const AdminImages = () => {
                 {currentUrl ? (
                   <img
                     src={currentUrl}
-                    alt={item.label}
+                    alt={`${item.label} preview`}
+                    loading="lazy"
                     className="max-h-full max-w-full object-contain"
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = "none";

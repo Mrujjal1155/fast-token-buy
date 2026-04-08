@@ -441,7 +441,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary animate-pulse" />
               )}
               {m.iconUrl ? (
-                <img src={m.iconUrl} alt={m.name} className="w-7 h-7 rounded-md object-contain drop-shadow-md" />
+                <img src={m.iconUrl} alt={`${m.name} payment method icon`} loading="lazy" className="w-7 h-7 rounded-md object-contain drop-shadow-md" />
               ) : (
                 <span
                   className="w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-bold text-white shadow-md"

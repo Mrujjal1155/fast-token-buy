@@ -14,7 +14,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
       <div className="container flex items-center justify-between py-2 md:py-4 px-3 md:px-6">
         <Link to="/" className="flex items-center gap-2 md:gap-3 min-w-0">
-          <img src={logo || "/logo.png"} alt="LovableCredit.com" className="h-7 md:h-10 w-auto flex-shrink-0" />
+          <img src={logo || "/logo.png"} alt="LovableCredit.com — Buy Lovable AI Credits in Bangladesh" className="h-7 md:h-10 w-auto flex-shrink-0" />
         </Link>
         <div className="hidden md:flex flex-1 justify-center">
           <OperatorStatus />

@@ -18,7 +18,7 @@ const WhatsAppButton = () => {
         aria-label="WhatsApp Support"
         title={t("whatsapp.chat")}
       >
-        <img src="https://th.bing.com/th/id/R.1028371bf3f572030d2a502a63b90f07?rik=djVPoQDJX%2be4PA&pid=ImgRaw&r=0" alt="WhatsApp" className="w-6 h-6 rounded-full" />
+        <img src="https://th.bing.com/th/id/R.1028371bf3f572030d2a502a63b90f07?rik=djVPoQDJX%2be4PA&pid=ImgRaw&r=0" alt="WhatsApp Support — Chat with us for Lovable Credits help" loading="lazy" className="w-6 h-6 rounded-full" />
         <span className="hidden sm:inline text-sm font-medium">WhatsApp Support</span>
       </a>
     </div>
