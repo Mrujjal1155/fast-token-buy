@@ -28,10 +28,10 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
             <div className="flex gap-3 pt-2">
               {[
-                { icon: Globe, href: "#" },
-                { icon: Send, href: "#" },
-                { icon: MessageCircle, href: "#" },
-                { icon: Mail, href: "#" },
+                { icon: Globe, href: c.socialWebsite || "#" },
+                { icon: Send, href: c.socialTelegram || "#" },
+                { icon: MessageCircle, href: c.socialWhatsapp || "#" },
+                { icon: Mail, href: c.socialEmail || "mailto:support@lovablecredits.com" },
               ].map(({ icon: Icon, href }, i) => (
                 <a
                   key={i}
