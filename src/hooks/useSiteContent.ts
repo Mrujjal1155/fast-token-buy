@@ -289,26 +289,27 @@ export const useSiteContent = () => {
   return { content, loading };
 };
 
-export const updateSiteContent = async (section: keyof SiteContent, data: any) => {
+export const updateSiteContent = async (section: keyof SiteContent, data: any, lang: "en" | "bn" = "en") => {
   const key = Object.entries(keyToSection).find(([, v]) => v === section)?.[0];
   if (!key) return;
 
+  const langKey = `${key}_${lang}`;
   const value = JSON.stringify(data);
 
   const { data: existing } = await supabase
     .from("site_settings")
     .select("id")
-    .eq("key", key)
+    .eq("key", langKey)
     .maybeSingle();
 
   if (existing) {
     await supabase
       .from("site_settings")
       .update({ value, updated_at: new Date().toISOString() })
-      .eq("key", key);
+      .eq("key", langKey);
   } else {
     await supabase
       .from("site_settings")
-      .insert({ key, value });
+      .insert({ key: langKey, value });
   }
 };
