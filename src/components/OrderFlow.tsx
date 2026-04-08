@@ -386,7 +386,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()} ✨</span>
+                  <span className="text-sm font-medium text-primary">{couponCode.toUpperCase()}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-primary">-৳{couponDiscount} {t("order.couponSaved")}!</span>
