@@ -433,33 +433,19 @@ const loadContentForLang = async (lang: EditLang): Promise<SiteContent> => {
   const { data } = await supabase
     .from("site_settings")
     .select("key, value")
-    .in("key", [...langKeys, ...CONTENT_KEYS_BASE]);
+    .in("key", langKeys);
 
   const merged = { ...defaults };
   
   if (data && data.length > 0) {
-    const langData: Record<string, string> = {};
-    const baseData: Record<string, string> = {};
-    
     data.forEach((row) => {
-      if (row.key.endsWith(`_${lang}`)) {
-        const baseKey = row.key.replace(`_${lang}`, "");
-        langData[baseKey] = row.value;
-      } else if (CONTENT_KEYS_BASE.includes(row.key)) {
-        baseData[row.key] = row.value;
-      }
-    });
-
-    CONTENT_KEYS_BASE.forEach((key) => {
-      const section = keyToSection[key];
+      const baseKey = row.key.replace(`_${lang}`, "");
+      const section = keyToSection[baseKey];
       if (!section) return;
-      const valueStr = langData[key] || baseData[key];
-      if (valueStr) {
-        try {
-          const parsed = JSON.parse(valueStr);
-          (merged as any)[section] = { ...(defaults as any)[section], ...parsed };
-        } catch {}
-      }
+      try {
+        const parsed = JSON.parse(row.value);
+        (merged as any)[section] = { ...(defaults as any)[section], ...parsed };
+      } catch {}
     });
   }
   
