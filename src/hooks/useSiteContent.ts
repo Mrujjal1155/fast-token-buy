@@ -57,6 +57,7 @@ export interface SiteContent {
     socialTelegram: string;
     socialWhatsapp: string;
     socialEmail: string;
+    whatsappNumber: string;
   };
   operator: {
     label: string;
@@ -120,6 +121,7 @@ export const defaultContent: SiteContent = {
     socialTelegram: "#",
     socialWhatsapp: "#",
     socialEmail: "mailto:support@lovablecredits.com",
+    whatsappNumber: "8801889067101",
   },
   operator: {
     label: "অপারেটর:",
