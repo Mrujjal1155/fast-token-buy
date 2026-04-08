@@ -246,43 +246,25 @@ export const useSiteContent = () => {
   const fetchContent = useCallback(async () => {
     const currentDefaults = lang === "bn" ? defaultContentBn : defaultContentEn;
     
-    // Try language-specific keys first, then fallback to base keys
+    // Fetch language-specific keys only
     const langKeys = CONTENT_KEYS_BASE.map(k => `${k}_${lang}`);
-    const allKeys = [...langKeys, ...CONTENT_KEYS_BASE];
     
     const { data } = await supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", allKeys);
+      .in("key", langKeys);
 
     const merged = { ...currentDefaults };
     
     if (data && data.length > 0) {
-      // Process language-specific keys first, then base keys as fallback
-      const langData: Record<string, string> = {};
-      const baseData: Record<string, string> = {};
-      
       data.forEach((row) => {
-        if (row.key.endsWith(`_${lang}`)) {
-          const baseKey = row.key.replace(`_${lang}`, "");
-          langData[baseKey] = row.value;
-        } else if (CONTENT_KEYS_BASE.includes(row.key)) {
-          baseData[row.key] = row.value;
-        }
-      });
-
-      // Apply base data first, then language-specific overrides
-      CONTENT_KEYS_BASE.forEach((key) => {
-        const section = keyToSection[key];
+        const baseKey = row.key.replace(`_${lang}`, "");
+        const section = keyToSection[baseKey];
         if (!section) return;
-        
-        const valueStr = langData[key] || baseData[key];
-        if (valueStr) {
-          try {
-            const parsed = JSON.parse(valueStr);
-            (merged as any)[section] = { ...(currentDefaults as any)[section], ...parsed };
-          } catch {}
-        }
+        try {
+          const parsed = JSON.parse(row.value);
+          (merged as any)[section] = { ...(currentDefaults as any)[section], ...parsed };
+        } catch {}
       });
     }
     

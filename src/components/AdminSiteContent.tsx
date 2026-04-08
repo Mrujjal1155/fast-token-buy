@@ -403,7 +403,7 @@ const saveContentForLang = async (section: SectionKey, data: any, lang: EditLang
   const baseKey = sectionToKey[section];
   if (!baseKey) return;
   
-  // Save with language suffix key (e.g. content_hero_en)
+  // Save with language suffix key only (e.g. content_hero_en, content_hero_bn)
   const langKey = `${baseKey}_${lang}`;
   const value = JSON.stringify(data);
 
@@ -422,24 +422,6 @@ const saveContentForLang = async (section: SectionKey, data: any, lang: EditLang
     await supabase
       .from("site_settings")
       .insert({ key: langKey, value });
-  }
-  
-  // Also save to base key if it's the default save (backward compat)
-  const { data: baseExisting } = await supabase
-    .from("site_settings")
-    .select("id")
-    .eq("key", baseKey)
-    .maybeSingle();
-
-  if (baseExisting) {
-    await supabase
-      .from("site_settings")
-      .update({ value, updated_at: new Date().toISOString() })
-      .eq("key", baseKey);
-  } else {
-    await supabase
-      .from("site_settings")
-      .insert({ key: baseKey, value });
   }
 };
 
