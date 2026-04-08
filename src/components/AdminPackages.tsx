@@ -5,6 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Save, Package, Star } from "lucide-react";
+import {
+  buildPackageSavingsFallback,
+  getPackageSavingsText,
+  loadPackageTextMaps,
+  savePackageTextMap,
+  type LocalizedCatalogLang,
+  type PackageTextMap,
+} from "@/lib/catalogLocalization";
 
 interface PackageRow {
   id: string;
@@ -18,17 +26,54 @@ interface PackageRow {
   is_active: boolean;
 }
 
+type PackageTextState = Record<string, Record<LocalizedCatalogLang, string>>;
+
+const buildPackageTextPayload = (
+  packageTexts: PackageTextState,
+  lang: LocalizedCatalogLang
+): PackageTextMap =>
+  Object.fromEntries(
+    Object.entries(packageTexts)
+      .map(([packageKey, texts]) => [packageKey, texts[lang].trim()])
+      .filter(([, savings]) => Boolean(savings))
+      .map(([packageKey, savings]) => [packageKey, { savings }])
+  );
+
 const AdminPackages = () => {
   const [packages, setPackages] = useState<PackageRow[]>([]);
+  const [textLang, setTextLang] = useState<LocalizedCatalogLang>("en");
+  const [packageTexts, setPackageTexts] = useState<PackageTextState>({});
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchPackages = async () => {
-    const { data, error } = await supabase
-      .from("packages")
-      .select("*")
-      .order("sort_order");
-    if (data) setPackages(data as PackageRow[]);
+    const [{ data, error }, textMaps] = await Promise.all([
+      supabase.from("packages").select("*").order("sort_order"),
+      loadPackageTextMaps(),
+    ]);
+
+    if (data) {
+      const packageRows = data as PackageRow[];
+      setPackages(packageRows);
+      setPackageTexts(
+        packageRows.reduce<PackageTextState>((acc, pkg) => {
+          acc[pkg.package_key] = {
+            en: getPackageSavingsText(
+              textMaps.en,
+              pkg.package_key,
+              buildPackageSavingsFallback({ value: pkg.savings, lang: "en", popular: pkg.popular })
+            ),
+            bn: getPackageSavingsText(
+              textMaps.bn,
+              pkg.package_key,
+              buildPackageSavingsFallback({ value: pkg.savings, lang: "bn", popular: pkg.popular })
+            ),
+          };
+          return acc;
+        }, {})
+      );
+    }
+
     if (error) toast({ title: "লোড করতে সমস্যা", variant: "destructive" });
     setLoading(false);
   };
@@ -53,32 +98,53 @@ const AdminPackages = () => {
   };
 
   const updatePackage = async (pkg: PackageRow) => {
-    const { error } = await supabase
-      .from("packages")
-      .update({
-        credits: pkg.credits,
-        price: pkg.price,
-        currency: pkg.currency,
-        popular: pkg.popular,
-        savings: pkg.savings,
-        sort_order: pkg.sort_order,
-        is_active: pkg.is_active,
-      })
-      .eq("id", pkg.id);
-    if (error) {
-      toast({ title: "আপডেট ব্যর্থ", variant: "destructive" });
-    } else {
+    try {
+      const [{ error: packageError }] = await Promise.all([
+        supabase
+          .from("packages")
+          .update({
+            credits: pkg.credits,
+            price: pkg.price,
+            currency: pkg.currency,
+            popular: pkg.popular,
+            sort_order: pkg.sort_order,
+            is_active: pkg.is_active,
+          })
+          .eq("id", pkg.id),
+        Promise.all([
+          savePackageTextMap("en", buildPackageTextPayload(packageTexts, "en")),
+          savePackageTextMap("bn", buildPackageTextPayload(packageTexts, "bn")),
+        ]),
+      ]);
+
+      if (packageError) throw packageError;
       toast({ title: "প্যাকেজ আপডেট হয়েছে", variant: "success" });
+    } catch {
+      toast({ title: "আপডেট ব্যর্থ", variant: "destructive" });
     }
   };
 
-  const deletePackage = async (id: string) => {
-    const { error } = await supabase.from("packages").delete().eq("id", id);
-    if (error) {
-      toast({ title: "ডিলিট ব্যর্থ", variant: "destructive" });
-    } else {
+  const deletePackage = async (pkg: PackageRow) => {
+    const nextPackageTexts = Object.fromEntries(
+      Object.entries(packageTexts).filter(([packageKey]) => packageKey !== pkg.package_key)
+    ) as PackageTextState;
+
+    try {
+      const [{ error }] = await Promise.all([
+        supabase.from("packages").delete().eq("id", pkg.id),
+        Promise.all([
+          savePackageTextMap("en", buildPackageTextPayload(nextPackageTexts, "en")),
+          savePackageTextMap("bn", buildPackageTextPayload(nextPackageTexts, "bn")),
+        ]),
+      ]);
+
+      if (error) throw error;
+
+      setPackageTexts(nextPackageTexts);
       toast({ title: "প্যাকেজ ডিলিট হয়েছে", variant: "success" });
       fetchPackages();
+    } catch {
+      toast({ title: "ডিলিট ব্যর্থ", variant: "destructive" });
     }
   };
 
@@ -86,6 +152,17 @@ const AdminPackages = () => {
     setPackages((prev) =>
       prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
     );
+  };
+
+  const updateSavingsText = (packageKey: string, lang: LocalizedCatalogLang, value: string) => {
+    setPackageTexts((prev) => ({
+      ...prev,
+      [packageKey]: {
+        en: prev[packageKey]?.en ?? "",
+        bn: prev[packageKey]?.bn ?? "",
+        [lang]: value,
+      },
+    }));
   };
 
   if (loading) return <p className="text-center text-muted-foreground py-8">লোড হচ্ছে...</p>;
@@ -99,9 +176,31 @@ const AdminPackages = () => {
           </h2>
           <p className="text-sm text-muted-foreground">ক্রেডিট প্যাকেজ যোগ, এডিট বা ডিলিট করুন</p>
         </div>
-        <Button onClick={addPackage} size="sm">
-          <Plus className="w-4 h-4 mr-1" /> নতুন প্যাকেজ
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 rounded-lg border border-border/30 bg-secondary p-1">
+            <button
+              type="button"
+              onClick={() => setTextLang("en")}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                textLang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              onClick={() => setTextLang("bn")}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                textLang === "bn" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              বাংলা
+            </button>
+          </div>
+          <Button onClick={addPackage} size="sm">
+            <Plus className="w-4 h-4 mr-1" /> নতুন প্যাকেজ
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -130,11 +229,13 @@ const AdminPackages = () => {
                 />
               </div>
               <div className="col-span-2">
-                <label className="text-xs text-muted-foreground mb-1 block">সেভিংস টেক্সট</label>
+                <label className="text-xs text-muted-foreground mb-1 block">
+                  সেভিংস টেক্সট ({textLang === "en" ? "EN" : "বাংলা"})
+                </label>
                 <Input
-                  value={pkg.savings || ""}
-                  onChange={(e) => updateField(pkg.id, "savings", e.target.value || null)}
-                  placeholder="যেমন: ২৪% সাশ্রয়!"
+                  value={packageTexts[pkg.package_key]?.[textLang] ?? ""}
+                  onChange={(e) => updateSavingsText(pkg.package_key, textLang, e.target.value)}
+                  placeholder={textLang === "en" ? "e.g. 24% savings — best deal!" : "যেমন: ২৪% সাশ্রয় — সেরা ডিল!"}
                   className="h-9 bg-secondary border-border/50"
                 />
               </div>
@@ -172,7 +273,7 @@ const AdminPackages = () => {
                 <Button variant="outline" size="sm" onClick={() => updatePackage(pkg)}>
                   <Save className="w-3.5 h-3.5 mr-1" /> সেভ
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => deletePackage(pkg.id)}>
+                <Button variant="destructive" size="sm" onClick={() => deletePackage(pkg)}>
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
