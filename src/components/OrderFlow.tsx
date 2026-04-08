@@ -9,6 +9,7 @@ import { usePackages } from "@/hooks/usePackages";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import CryptoCheckoutStep from "./CryptoCheckoutStep";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Step = "package" | "email" | "summary" | "payment" | "crypto-checkout" | "success";
 
