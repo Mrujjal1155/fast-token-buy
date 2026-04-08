@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Loader2, Copy, ExternalLink, CheckCircle, XCircle, RefreshCw } from "lucide-react";
+import { Loader2, Copy, ExternalLink, CheckCircle, XCircle, RefreshCw, Lock, PartyPopper, ShieldX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -26,7 +26,7 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
 
     if (data?.status === "completed") {
       setState("success");
-      toast({ title: "পেমেন্ট সফল হয়েছে! 🎉", variant: "success" });
+      toast({ title: "পেমেন্ট সফল হয়েছে!", variant: "success" });
       onSuccess();
     } else if (data?.status === "failed") {
       setState("failed");
@@ -61,10 +61,10 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
         {state === "failed" && <XCircle className="w-8 h-8 text-destructive" />}
       </div>
 
-      <h2 className="text-2xl font-bold text-foreground">
-        {state === "checking" && "পেমেন্ট সম্পন্ন করুন 🔐"}
-        {state === "success" && "পেমেন্ট সফল! 🎉"}
-        {state === "failed" && "পেমেন্ট ব্যর্থ হয়েছে ❌"}
+      <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">
+        {state === "checking" && <><Lock className="w-5 h-5 text-primary" /> পেমেন্ট সম্পন্ন করুন</>}
+        {state === "success" && <><PartyPopper className="w-5 h-5 text-primary" /> পেমেন্ট সফল!</>}
+        {state === "failed" && <><ShieldX className="w-5 h-5 text-destructive" /> পেমেন্ট ব্যর্থ হয়েছে</>}
       </h2>
 
       <p className="text-muted-foreground">

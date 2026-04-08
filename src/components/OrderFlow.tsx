@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -487,7 +487,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               {submitting ? (
                 <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t("order.submitting")}</>
               ) : (
-                <>{t("order.confirmPayment")} — {selectedCrypto.label} ⚡</>
+                <>{t("order.confirmPayment")} — {selectedCrypto.label} <Zap className="w-4 h-4 ml-1" /></>
               )}
             </Button>
           </div>
@@ -509,7 +509,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               {submitting ? (
                 <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t("order.submitting")}</>
               ) : (
-                <>{t("order.confirmPayment")} — {currentPayment.name} ⚡</>
+                <>{t("order.confirmPayment")} — {currentPayment.name} <Zap className="w-4 h-4 ml-1" /></>
               )}
             </Button>
           </div>
@@ -521,7 +521,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
           <Check className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">{t("success.title")} 🎉</h2>
+        <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-2">{t("success.title")} <PartyPopper className="w-6 h-6 text-primary" /></h2>
         <p className="text-muted-foreground">{t("success.desc")}</p>
         <div className="bg-secondary/50 rounded-xl p-6">
           <p className="text-sm text-muted-foreground mb-1">Order ID</p>

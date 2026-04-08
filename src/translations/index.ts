@@ -19,7 +19,7 @@ const en = {
   "pricing.credits": "Credits",
   "pricing.taka": "BDT",
   "pricing.perCredit": "Per credit only ৳",
-  "pricing.everyoneBuying": "🔥 Most Popular",
+  "pricing.everyoneBuying": "Most Popular",
 
   // Testimonials
   "testimonials.avgRating": "/5 avg rating",
@@ -30,9 +30,9 @@ const en = {
 
   // Reserves
   "reserves.outOfStock": "Out of Stock",
-  "reserves.noStock": "⚠️ Currently out of stock",
+  "reserves.noStock": "Currently out of stock",
   "reserves.available": "Packages available",
-  "reserves.sellingFast": "⚡ Selling fast!",
+  "reserves.sellingFast": "Selling fast!",
 
   // Recent Purchases
   "recent.liveBadge": "Live orders in progress",
@@ -48,14 +48,14 @@ const en = {
   "status.failed": "Failed",
 
   // Order Flow
-  "order.choosePackage": "Choose Your Package ⚡",
+  "order.choosePackage": "Choose Your Package",
   "order.chooseSubtext": "Smart users pick the best deal!",
-  "order.emailHeading": "Where should we send credits? 📧",
+  "order.emailHeading": "Where should we send credits?",
   "order.emailSubtext": "Enter the Lovable account email where you want credits",
   "order.emailPlaceholder": "your@email.com",
-  "order.emailProceed": "Continue — Almost done! 🚀",
+  "order.emailProceed": "Continue — Almost done!",
   "order.validEmail": "Enter a valid email",
-  "order.summaryHeading": "Your Order is Ready! ✅",
+  "order.summaryHeading": "Your Order is Ready!",
   "order.summarySubtext": "Everything looks good? Proceed to payment!",
   "order.package": "Package",
   "order.email": "Email",
@@ -66,8 +66,8 @@ const en = {
   "order.couponApplied": "Coupon applied!",
   "order.couponSaved": "saved",
   "order.total": "Total",
-  "order.proceedPayment": "Pay Now — Just 1 step left! 🎯",
-  "order.paymentHeading": "Make Payment 💸",
+  "order.proceedPayment": "Pay Now — Just 1 step left!",
+  "order.paymentHeading": "Make Payment",
   "order.paymentCrypto": "Pay securely with crypto",
   "order.paymentSend": "Send just ৳",
   "order.paymentCredits": "— credits on the way!",
@@ -100,11 +100,11 @@ const en = {
   "track.payment": "Payment",
   "track.transactionId": "Transaction ID",
   "track.date": "Date",
-  "track.backHome": "← Go Home",
-  "track.orderCompleted": "🎉 Your order has been completed!",
+  "track.backHome": "Go Home",
+  "track.orderCompleted": "Your order has been completed!",
 
   // Review Form
-  "review.heading": "⭐ Share your experience",
+  "review.heading": "Share your experience",
   "review.subtext": "Your review will help others",
   "review.namePlaceholder": "Your name",
   "review.textPlaceholder": "Write your experience...",
@@ -207,7 +207,7 @@ const bn: Record<keyof typeof en, string> = {
   "pricing.credits": "ক্রেডিট",
   "pricing.taka": "টাকা",
   "pricing.perCredit": "প্রতি ক্রেডিট মাত্র ৳",
-  "pricing.everyoneBuying": "🔥 সবাই এটাই নিচ্ছে",
+  "pricing.everyoneBuying": "সবাই এটাই নিচ্ছে",
 
   // Testimonials
   "testimonials.avgRating": "/৫ গড় রেটিং",
@@ -218,9 +218,9 @@ const bn: Record<keyof typeof en, string> = {
 
   // Reserves
   "reserves.outOfStock": "স্টক শেষ",
-  "reserves.noStock": "⚠️ বর্তমানে স্টক নেই",
+  "reserves.noStock": "বর্তমানে স্টক নেই",
   "reserves.available": "প্যাকেজ এভেইলেবল",
-  "reserves.sellingFast": "⚡ দ্রুত শেষ হচ্ছে!",
+  "reserves.sellingFast": "দ্রুত শেষ হচ্ছে!",
 
   // Recent Purchases
   "recent.liveBadge": "লাইভ অর্ডার চলছে",
@@ -236,14 +236,14 @@ const bn: Record<keyof typeof en, string> = {
   "status.failed": "ব্যর্থ",
 
   // Order Flow
-  "order.choosePackage": "আপনার প্যাকেজ বাছুন ⚡",
+  "order.choosePackage": "আপনার প্যাকেজ বাছুন",
   "order.chooseSubtext": "স্মার্ট ইউজাররা সেরা ডিলটাই বেছে নেয়!",
-  "order.emailHeading": "কোথায় ক্রেডিট পাঠাবো? 📧",
+  "order.emailHeading": "কোথায় ক্রেডিট পাঠাবো?",
   "order.emailSubtext": "যে Lovable অ্যাকাউন্টে ক্রেডিট চান, সেই ইমেইল দিন",
   "order.emailPlaceholder": "your@email.com",
-  "order.emailProceed": "এগিয়ে যান — প্রায় শেষ! 🚀",
+  "order.emailProceed": "এগিয়ে যান — প্রায় শেষ!",
   "order.validEmail": "সঠিক ইমেইল দিন",
-  "order.summaryHeading": "আপনার অর্ডার রেডি! ✅",
+  "order.summaryHeading": "আপনার অর্ডার রেডি!",
   "order.summarySubtext": "সব ঠিক আছে তো? তাহলে পেমেন্টে যান!",
   "order.package": "প্যাকেজ",
   "order.email": "ইমেইল",
@@ -254,8 +254,8 @@ const bn: Record<keyof typeof en, string> = {
   "order.couponApplied": "কুপন প্রয়োগ হয়েছে!",
   "order.couponSaved": "সাশ্রয়",
   "order.total": "সর্বমোট",
-  "order.proceedPayment": "পেমেন্ট করুন — মাত্র ১ স্টেপ বাকি! 🎯",
-  "order.paymentHeading": "পেমেন্ট করুন 💸",
+  "order.proceedPayment": "পেমেন্ট করুন — মাত্র ১ স্টেপ বাকি!",
+  "order.paymentHeading": "পেমেন্ট করুন",
   "order.paymentCrypto": "ক্রিপ্টো দিয়ে নিরাপদে পে করুন",
   "order.paymentSend": "মাত্র ৳",
   "order.paymentCredits": "পাঠান — ক্রেডিট চলে আসবে!",
@@ -288,11 +288,11 @@ const bn: Record<keyof typeof en, string> = {
   "track.payment": "পেমেন্ট",
   "track.transactionId": "ট্রানজেকশন আইডি",
   "track.date": "তারিখ",
-  "track.backHome": "← হোমে ফিরুন",
-  "track.orderCompleted": "🎉 আপনার অর্ডার সম্পন্ন হয়েছে!",
+  "track.backHome": "হোমে ফিরুন",
+  "track.orderCompleted": "আপনার অর্ডার সম্পন্ন হয়েছে!",
 
   // Review Form
-  "review.heading": "⭐ আপনার অভিজ্ঞতা জানান",
+  "review.heading": "আপনার অভিজ্ঞতা জানান",
   "review.subtext": "আপনার রিভিউ অন্যদের সাহায্য করবে",
   "review.namePlaceholder": "আপনার নাম",
   "review.textPlaceholder": "আপনার অভিজ্ঞতা লিখুন...",
