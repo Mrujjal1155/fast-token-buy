@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useSiteImages } from "@/hooks/useSiteImages";
 
 const Footer = () => {
   const { content } = useSiteContent();
   const c = content.footer;
+  const { logo } = useSiteImages();
 
   return (
     <footer className="relative border-t border-border/10 pt-1">
@@ -21,7 +23,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           <div className="space-y-4">
             <div className="flex items-center">
-              <img src="/logo.png" alt="LovableCredit.com" className="h-9 w-auto" />
+              <img src={logo || "/logo.png"} alt="LovableCredit.com" className="h-9 w-auto" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
             <div className="flex gap-3 pt-2">
