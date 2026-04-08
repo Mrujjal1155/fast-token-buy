@@ -53,6 +53,10 @@ export interface SiteContent {
     email: string;
     chatText: string;
     website: string;
+    socialWebsite: string;
+    socialTelegram: string;
+    socialWhatsapp: string;
+    socialEmail: string;
   };
   operator: {
     label: string;
@@ -112,6 +116,10 @@ export const defaultContent: SiteContent = {
     email: "support@lovablecredits.com",
     chatText: "লাইভ চ্যাট — সবসময় চালু",
     website: "lovablecredits.com",
+    socialWebsite: "#",
+    socialTelegram: "#",
+    socialWhatsapp: "#",
+    socialEmail: "mailto:support@lovablecredits.com",
   },
   operator: {
     label: "অপারেটর:",
