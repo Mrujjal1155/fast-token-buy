@@ -86,7 +86,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
-      toast({ title: "সঠিক ইমেইল দিন", variant: "destructive" });
+      toast({ title: t("order.validEmail"), variant: "destructive" });
       return;
     }
     setStep("summary");
@@ -103,7 +103,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     });
 
     if (error || !data || data.length === 0) {
-      setCouponMessage("কুপন যাচাই করা যায়নি");
+      setCouponMessage(t("order.couponError"));
       setValidatingCoupon(false);
       return;
     }
@@ -113,7 +113,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       setCouponApplied(true);
       setCouponDiscount(Number(result.calculated_discount));
       setCouponMessage(result.message);
-      toast({ title: "কুপন প্রয়োগ হয়েছে!", description: `আপনি ৳${result.calculated_discount} সাশ্রয় করেছেন`, variant: "success" });
+      toast({ title: t("order.couponApplied"), description: `৳${result.calculated_discount} ${t("order.couponSaved")}`, variant: "success" });
     } else {
       setCouponMessage(result.message);
     }
@@ -155,7 +155,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .single();
 
     if (orderError || !orderData) {
-      toast({ title: "অর্ডার তৈরি করা যায়নি", description: orderError?.message, variant: "destructive" });
+      toast({ title: t("order.orderFailed"), description: orderError?.message, variant: "destructive" });
       setSubmitting(false);
       return;
     }
@@ -179,7 +179,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
     if (paymentError || !paymentData?.payment_url) {
       toast({
-        title: "পেমেন্ট তৈরি করা যায়নি",
+        title: t("order.paymentFailed"),
         description: paymentError?.message || paymentData?.error || "BlinkPay error",
         variant: "destructive",
       });
@@ -222,7 +222,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .single();
 
     if (orderError || !orderData) {
-      toast({ title: "অর্ডার তৈরি করা যায়নি", description: orderError?.message, variant: "destructive" });
+      toast({ title: t("order.orderFailed"), description: orderError?.message, variant: "destructive" });
       setSubmitting(false);
       return;
     }
@@ -246,7 +246,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
     if (paymentError || !paymentData?.payment_url) {
       toast({
-        title: "পেমেন্ট তৈরি করা যায়নি",
+        title: t("order.paymentFailed"),
         description: paymentError?.message || paymentData?.error || "AjkerPay error",
         variant: "destructive",
       });
