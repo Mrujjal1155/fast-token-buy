@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
 import ReviewForm from "@/components/ReviewForm";
+import SEOHead from "@/components/SEOHead";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 type Order = Tables<"orders">;
 
@@ -60,147 +63,120 @@ const TrackOrder = () => {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${order.id}` },
         (payload) => {
-          const updated = payload.new as Order;
-          setOrder(updated);
-          if (updated.status !== order.status) {
-            toast({ title: "স্ট্যাটাস আপডেট!", description: `আপনার অর্ডার এখন: ${statusConfig[updated.status]?.label || updated.status}`, variant: "success" });
+          setOrder(payload.new as Order);
+          if ((payload.new as Order).status === "completed") {
+            toast({ title: "🎉 আপনার অর্ডার সম্পন্ন হয়েছে!", variant: "success" });
           }
         }
       )
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [order?.id, order?.status]);
+  }, [order?.id]);
 
-  const status = order ? statusConfig[order.status] : null;
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) {
+      setQuery(q);
+      handleSearch(q);
+    }
+  }, []);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({ title: "কপি হয়েছে!", variant: "success" });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-3 md:p-4">
-      <div className="w-full max-w-md">
-        <Link to="/" className="text-muted-foreground hover:text-foreground text-sm mb-6 block">
-          ← হোমে ফিরুন
-        </Link>
+    <div className="min-h-screen bg-background">
+      <SEOHead
+        title="অর্ডার ট্র্যাক করুন — Lovable Credits"
+        description="আপনার Lovable ক্রেডিট অর্ডারের রিয়েল-টাইম স্ট্যাটাস ট্র্যাক করুন। অর্ডার আইডি বা ইমেইল দিয়ে খুঁজুন।"
+        path="/track"
+        keywords="order track, lovable credit order track, অর্ডার ট্র্যাক, lovable order status"
+      />
+      <Navbar />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-card border border-border/30 rounded-2xl p-8 shadow-card"
-        >
-          <div className="text-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Search className="w-7 h-7 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">অর্ডার ট্র্যাক করুন</h2>
-            <p className="text-muted-foreground">আপনার অর্ডার আইডি বা ইমেইল লিখুন</p>
-          </div>
-
-          <div className="flex gap-2 mb-6">
-            <Input
-              placeholder="অর্ডার আইডি বা ইমেইল"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="h-12 bg-secondary border-border/50"
-            />
-            <Button variant="hero" size="lg" onClick={() => handleSearch()} disabled={loading}>
-              <Search className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {searched && !order && (
-            <div className="text-center py-6">
-              <AlertCircle className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি। অর্ডার আইডি বা ইমেইল যাচাই করুন।</p>
-            </div>
-          )}
-
-          {order && status && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
-              {/* Order ID */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">অর্ডার</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-mono font-bold text-foreground">{order.order_id}</span>
-                  <button onClick={() => { navigator.clipboard.writeText(order.order_id); toast({ title: "কপি হয়েছে!", variant: "success" }); }} className="p-1 rounded hover:bg-secondary transition"><Copy className="w-3.5 h-3.5 text-muted-foreground" /></button>
-                </div>
-              </div>
-
-              {/* Realtime Status Timeline */}
-              <div className="bg-secondary/30 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-2 h-2 rounded-full animate-pulse ${
-                    order.status === "completed" ? "bg-primary" : order.status === "failed" ? "bg-destructive" : "bg-yellow-400"
-                  }`} />
-                  <span className="text-xs text-muted-foreground">রিয়েলটাইম আপডেট</span>
-                </div>
-                <div className="flex items-center justify-between gap-1">
-                  {(["pending", "processing", "completed"] as const).map((s, i) => {
-                    const stepConfig = statusConfig[s];
-                    const StepIcon = stepConfig.icon;
-                    const statusOrder = { pending: 0, processing: 1, completed: 2, failed: -1 };
-                    const currentOrder = statusOrder[order.status] ?? -1;
-                    const isActive = order.status === "failed" ? false : currentOrder >= i;
-                    const isCurrent = order.status === s;
-                    return (
-                      <div key={s} className="flex flex-col items-center flex-1">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-1.5 transition-all ${
-                          isCurrent ? `${stepConfig.className} ring-2 ring-offset-2 ring-offset-card ${s === "completed" ? "ring-primary" : "ring-yellow-400"}` :
-                          isActive ? stepConfig.className : "bg-secondary text-muted-foreground"
-                        }`}>
-                          <StepIcon className={`w-5 h-5 ${isCurrent && s === "processing" ? "animate-spin" : ""}`} />
-                        </div>
-                        <span className={`text-[10px] font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}>
-                          {stepConfig.label}
-                        </span>
-                        {i < 2 && (
-                          <div className={`absolute w-[calc(33%-20px)] h-0.5 top-5 ${isActive ? "bg-primary" : "bg-border"}`} style={{ display: "none" }} />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-                {order.status === "failed" && (
-                  <div className="mt-3 flex items-center gap-2 text-destructive text-sm">
-                    <AlertCircle className="w-4 h-4" />
-                    পেমেন্ট ব্যর্থ হয়েছে। আবার চেষ্টা করুন।
-                  </div>
-                )}
-              </div>
-
-              {/* Current Status Badge */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">বর্তমান স্ট্যাটাস</span>
-                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>
-                  <status.icon className={`w-4 h-4 ${order.status === "processing" ? "animate-spin" : ""}`} />
-                  {status.label}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">প্যাকেজ</span>
-                <span className="text-foreground">{order.credits} ক্রেডিট</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">মূল্য</span>
-                <span className="text-foreground">৳{order.amount}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">পেমেন্ট</span>
-                <span className="text-foreground capitalize">{order.payment_method.replace("ajkerpay-", "").replace("crypto-", "Crypto: ")}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">তারিখ</span>
-                <span className="text-foreground text-sm">{new Date(order.created_at).toLocaleDateString("bn-BD")}</span>
-              </div>
-
-              {/* Review Form - only for completed orders */}
-              {order.status === "completed" && (
-                <ReviewForm orderId={order.order_id} />
-              )}
-            </motion.div>
-          )}
+      <div className="container max-w-xl px-4 pt-28 pb-16 md:pt-32">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">অর্ডার ট্র্যাক</h1>
+          <p className="text-muted-foreground">অর্ডার আইডি বা ইমেইল দিয়ে খুঁজুন</p>
         </motion.div>
+
+        <div className="flex gap-2 mb-8">
+          <Input
+            placeholder="ORD-XXXXXXXX বা email"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="glass border-border/30 focus-visible:ring-primary/50"
+          />
+          <Button onClick={() => handleSearch()} disabled={loading} className="shrink-0">
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+          </Button>
+        </div>
+
+        {searched && !order && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-10 glass rounded-xl">
+            <Package className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+            <p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি</p>
+            <p className="text-xs text-muted-foreground mt-1">আইডি বা ইমেইল চেক করে আবার চেষ্টা করুন</p>
+          </motion.div>
+        )}
+
+        {order && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-xl p-5 md:p-6 space-y-5">
+            {/* Status header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">অর্ডার আইডি</p>
+                <button
+                  onClick={() => copyToClipboard(order.order_id)}
+                  className="flex items-center gap-1.5 font-mono text-sm text-foreground hover:text-primary transition"
+                >
+                  {order.order_id} <Copy className="w-3 h-3" />
+                </button>
+              </div>
+              {(() => {
+                const config = statusConfig[order.status];
+                const Icon = config?.icon || Clock;
+                return (
+                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${config?.className || ""}`}>
+                    <Icon className="w-3.5 h-3.5" />
+                    {config?.label || order.status}
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Details grid */}
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              {[
+                { label: "ইমেইল", value: order.email },
+                { label: "ক্রেডিট", value: `${order.credits} Credits` },
+                { label: "মূল্য", value: `৳${order.amount}` },
+                { label: "পেমেন্ট", value: order.payment_method },
+                { label: "ট্রানজেকশন আইডি", value: order.transaction_id },
+                { label: "তারিখ", value: new Date(order.created_at).toLocaleDateString("bn-BD") },
+              ].map((item) => (
+                <div key={item.label} className="bg-secondary/30 rounded-lg p-3">
+                  <p className="text-[10px] text-muted-foreground mb-0.5">{item.label}</p>
+                  <p className="text-foreground font-medium truncate text-xs">{item.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {order.status === "completed" && <ReviewForm orderId={order.order_id} />}
+
+            {/* Back link */}
+            <div className="text-center pt-2">
+              <Link to="/" className="text-xs text-primary hover:underline">← হোমে ফিরুন</Link>
+            </div>
+          </motion.div>
+        )}
       </div>
+      <Footer />
     </div>
   );
 };
