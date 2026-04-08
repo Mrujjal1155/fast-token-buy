@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Package } from "lucide-react";
+import { Package, Globe, Languages } from "lucide-react";
 import OperatorStatus from "@/components/OperatorStatus";
 import NotificationBell from "@/components/NotificationBell";
 import { useSiteImages } from "@/hooks/useSiteImages";
@@ -31,7 +31,7 @@ const Navbar = () => {
               }`}
               title="Switch to English"
             >
-              <span className="text-sm leading-none">🇺🇸</span>
+              <Globe className="w-3.5 h-3.5" />
               <span>EN</span>
             </button>
             <button
@@ -43,7 +43,7 @@ const Navbar = () => {
               }`}
               title="বাংলায় দেখুন"
             >
-              <span className="text-sm leading-none">🇧🇩</span>
+              <Languages className="w-3.5 h-3.5" />
               <span>বাং</span>
             </button>
           </div>
