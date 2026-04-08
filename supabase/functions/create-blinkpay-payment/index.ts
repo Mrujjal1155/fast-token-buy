@@ -85,11 +85,18 @@ serve(async (req) => {
       });
     }
 
-    // Return payment_url and payment_id to the client
+    // Build correct payment URL using blinkpay.cc domain
+    const paymentId = data.payment_id || data.id;
+    const correctPaymentUrl = paymentId
+      ? `https://blinkpay.cc/pay/${paymentId}`
+      : data.payment_url;
+
+    console.log('Using payment URL:', correctPaymentUrl);
+
     return new Response(JSON.stringify({
-      payment_url: data.payment_url,
-      payment_id: data.payment_id || data.id,
       ...data,
+      payment_url: correctPaymentUrl,
+      payment_id: paymentId,
     }), {
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
