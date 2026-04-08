@@ -203,6 +203,32 @@ const en = {
   "crypto.toastSuccess": "Payment successful!",
   "crypto.toastFailed": "Payment failed",
 
+  // SEO
+  "seo.title": "Buy Lovable Credits — Cheapest in Bangladesh",
+  "seo.description": "Buy Lovable AI credits with bKash, Nagad, Rocket & Crypto. Starting from ৳40. 5-minute delivery. Save up to 24%! Thousands of happy customers.",
+  "seo.keywords": "lovable credits, lovable credit buy, buy lovable credits bangladesh, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits",
+
+  // 404
+  "notFound.title": "404 — Page Not Found",
+  "notFound.description": "Sorry! The page you're looking for was not found.",
+  "notFound.heading": "404",
+  "notFound.text": "Sorry! The page could not be found",
+  "notFound.goHome": "Go Home",
+
+  // Default Testimonials
+  "testimonial.d1.name": "Rakib Hasan",
+  "testimonial.d1.text": "Got credits in 5 minutes! Couldn't believe it was this fast. Support team is super friendly.",
+  "testimonial.d2.name": "Farhana Akter",
+  "testimonial.d2.text": "Paid with bKash, credits came instantly. Never had such a hassle-free service! 10/10",
+  "testimonial.d3.name": "Tanvir Ahmed",
+  "testimonial.d3.text": "Other places charge double. Here I get more credits for less — became a regular customer.",
+  "testimonial.d4.name": "Nusrat Jahan",
+  "testimonial.d4.text": "Was skeptical at first, but after ordering I realized — they are truly trustworthy. Thank you!",
+  "testimonial.d5.name": "Sakib Rahman",
+  "testimonial.d5.text": "Bought 3 times, never had any issues. The crypto option is a bonus — super convenient!",
+  "testimonial.d6.name": "Mehjabeen Chowdhury",
+  "testimonial.d6.text": "Messaged at 2am, got a reply in 10 minutes! 24/7 support is real, not just a claim.",
+
   // WhatsApp
   "whatsapp.chat": "Chat with us",
 } as const;
