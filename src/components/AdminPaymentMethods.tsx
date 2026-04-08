@@ -239,7 +239,7 @@ const AdminPaymentMethods = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 {m.iconUrl ? (
-                  <img src={m.iconUrl} alt={m.name} className="w-8 h-8 rounded-lg object-contain bg-secondary p-0.5" />
+                  <img src={m.iconUrl} alt={`${m.name} payment icon`} loading="lazy" className="w-8 h-8 rounded-lg object-contain bg-secondary p-0.5" />
                 ) : (
                   <CreditCard className={`w-5 h-5 ${m.enabled ? "text-primary" : "text-muted-foreground"}`} />
                 )}

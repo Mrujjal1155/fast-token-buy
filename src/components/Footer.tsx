@@ -35,7 +35,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           <div className="space-y-4">
             <div className="flex items-center">
-              <img src={logo || "/logo.png"} alt="LovableCredit.com" className="h-9 w-auto" />
+              <img src={logo || "/logo.png"} alt="LovableCredit.com — Trusted Lovable Credit Seller in Bangladesh" loading="lazy" className="h-9 w-auto" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
             <div className="flex flex-wrap gap-2.5 pt-2">
