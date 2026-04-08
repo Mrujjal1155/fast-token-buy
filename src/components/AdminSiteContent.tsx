@@ -1,67 +1,226 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Eye, EyeOff, ShieldCheck, Zap, Flame, ArrowRight, Check, TrendingUp, Clock, UserCircle, Mail, MessageCircle, ExternalLink } from "lucide-react";
-import { useSiteContent, updateSiteContent, defaultContent, type SiteContent } from "@/hooks/useSiteContent";
+import { Save, Loader2, Eye, EyeOff, ShieldCheck, Zap, Flame, ArrowRight, Check, TrendingUp, Clock, UserCircle, Mail, MessageCircle, ExternalLink, Globe } from "lucide-react";
+import { type SiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/integrations/supabase/client";
 
 type SectionKey = keyof SiteContent;
+type EditLang = "en" | "bn";
 
 const sectionLabels: Record<SectionKey, string> = {
-  hero: "🏠 হিরো সেকশন",
-  trustBadges: "🛡️ ট্রাস্ট ব্যাজ",
-  pricing: "💰 প্রাইসিং সেকশন",
-  testimonials: "⭐ টেস্টিমোনিয়াল",
-  reserves: "📦 স্টক রিজার্ভ",
-  footer: "📋 ফুটার",
-  operator: "👤 অপারেটর স্ট্যাটাস",
+  hero: "🏠 Hero Section",
+  trustBadges: "🛡️ Trust Badges",
+  pricing: "💰 Pricing Section",
+  testimonials: "⭐ Testimonials",
+  reserves: "📦 Stock Reserve",
+  footer: "📋 Footer",
+  operator: "👤 Operator Status",
 };
 
-const fieldLabels: Record<string, string> = {
-  badge: "ব্যাজ টেক্সট",
-  headingPrefix: "হেডিং শুরু",
-  headingPrice: "হেডিং প্রাইস",
-  headingMiddle: "হেডিং মাঝ",
-  headingCredits: "হেডিং ক্রেডিট",
-  headingSuffix: "হেডিং শেষ",
-  subtext: "সাব টেক্সট",
-  trustSafe: "নিরাপদ টেক্সট",
-  trustDelivery: "ডেলিভারি টেক্সট",
-  btnPrimary: "প্রাইমারি বাটন",
-  btnSecondary: "সেকেন্ডারি বাটন",
-  badge1Title: "ব্যাজ ১ শিরোনাম",
-  badge1Desc: "ব্যাজ ১ বিবরণ",
-  badge2Title: "ব্যাজ ২ শিরোনাম",
-  badge2Desc: "ব্যাজ ২ বিবরণ",
-  badge3Title: "ব্যাজ ৩ শিরোনাম",
-  badge3Desc: "ব্যাজ ৩ বিবরণ",
-  heading: "হেডিং",
-  headingHighlight: "হেডিং হাইলাইট",
-  feature1: "ফিচার ১",
-  feature2: "ফিচার ২",
-  feature3: "ফিচার ৩",
-  popularBadge: "পপুলার ব্যাজ",
-  btnPopular: "পপুলার বাটন",
-  btnNormal: "নরমাল বাটন",
-  description: "বিবরণ",
-  trustText: "ট্রাস্ট টেক্সট",
-  copyright: "কপিরাইট",
-  tagline: "ট্যাগলাইন",
-  email: "ইমেইল",
-  chatText: "চ্যাট টেক্সট",
-  website: "ওয়েবসাইট",
-  socialWebsite: "🔗 ওয়েবসাইট লিংক",
-  socialTelegram: "📨 টেলিগ্রাম লিংক",
-  socialWhatsapp: "💬 হোয়াটসঅ্যাপ লিংক",
-  socialEmail: "📧 ইমেইল লিংক (mailto:...)",
-  socialFacebook: "📘 Facebook লিংক",
-  socialYoutube: "🎬 YouTube লিংক",
-  socialInstagram: "📸 Instagram লিংক",
-  whatsappNumber: "📱 WhatsApp নম্বর (যেমন: 8801XXXXXXXXX)",
-  label: "লেবেল",
-  workingHours: "কর্মসময়",
+const fieldLabels: Record<string, Record<EditLang, string>> = {
+  badge: { en: "Badge Text", bn: "ব্যাজ টেক্সট" },
+  headingPrefix: { en: "Heading Start", bn: "হেডিং শুরু" },
+  headingPrice: { en: "Heading Price", bn: "হেডিং প্রাইস" },
+  headingMiddle: { en: "Heading Middle", bn: "হেডিং মাঝ" },
+  headingCredits: { en: "Heading Credits", bn: "হেডিং ক্রেডিট" },
+  headingSuffix: { en: "Heading End", bn: "হেডিং শেষ" },
+  subtext: { en: "Subtext", bn: "সাব টেক্সট" },
+  trustSafe: { en: "Safe Text", bn: "নিরাপদ টেক্সট" },
+  trustDelivery: { en: "Delivery Text", bn: "ডেলিভারি টেক্সট" },
+  btnPrimary: { en: "Primary Button", bn: "প্রাইমারি বাটন" },
+  btnSecondary: { en: "Secondary Button", bn: "সেকেন্ডারি বাটন" },
+  badge1Title: { en: "Badge 1 Title", bn: "ব্যাজ ১ শিরোনাম" },
+  badge1Desc: { en: "Badge 1 Description", bn: "ব্যাজ ১ বিবরণ" },
+  badge2Title: { en: "Badge 2 Title", bn: "ব্যাজ ২ শিরোনাম" },
+  badge2Desc: { en: "Badge 2 Description", bn: "ব্যাজ ২ বিবরণ" },
+  badge3Title: { en: "Badge 3 Title", bn: "ব্যাজ ৩ শিরোনাম" },
+  badge3Desc: { en: "Badge 3 Description", bn: "ব্যাজ ৩ বিবরণ" },
+  heading: { en: "Heading", bn: "হেডিং" },
+  headingHighlight: { en: "Heading Highlight", bn: "হেডিং হাইলাইট" },
+  feature1: { en: "Feature 1", bn: "ফিচার ১" },
+  feature2: { en: "Feature 2", bn: "ফিচার ২" },
+  feature3: { en: "Feature 3", bn: "ফিচার ৩" },
+  popularBadge: { en: "Popular Badge", bn: "পপুলার ব্যাজ" },
+  btnPopular: { en: "Popular Button", bn: "পপুলার বাটন" },
+  btnNormal: { en: "Normal Button", bn: "নরমাল বাটন" },
+  description: { en: "Description", bn: "বিবরণ" },
+  trustText: { en: "Trust Text", bn: "ট্রাস্ট টেক্সট" },
+  copyright: { en: "Copyright", bn: "কপিরাইট" },
+  tagline: { en: "Tagline", bn: "ট্যাগলাইন" },
+  email: { en: "Email", bn: "ইমেইল" },
+  chatText: { en: "Chat Text", bn: "চ্যাট টেক্সট" },
+  website: { en: "Website", bn: "ওয়েবসাইট" },
+  socialWebsite: { en: "🔗 Website Link", bn: "🔗 ওয়েবসাইট লিংক" },
+  socialTelegram: { en: "📨 Telegram Link", bn: "📨 টেলিগ্রাম লিংক" },
+  socialWhatsapp: { en: "💬 WhatsApp Link", bn: "💬 হোয়াটসঅ্যাপ লিংক" },
+  socialEmail: { en: "📧 Email Link (mailto:...)", bn: "📧 ইমেইল লিংক (mailto:...)" },
+  socialFacebook: { en: "📘 Facebook Link", bn: "📘 Facebook লিংক" },
+  socialYoutube: { en: "🎬 YouTube Link", bn: "🎬 YouTube লিংক" },
+  socialInstagram: { en: "📸 Instagram Link", bn: "📸 Instagram লিংক" },
+  whatsappNumber: { en: "📱 WhatsApp Number (e.g. 8801XXXXXXXXX)", bn: "📱 WhatsApp নম্বর (যেমন: 8801XXXXXXXXX)" },
+  label: { en: "Label", bn: "লেবেল" },
+  workingHours: { en: "Working Hours", bn: "কর্মসময়" },
 };
+
+const getFieldLabel = (field: string, lang: EditLang) => {
+  return fieldLabels[field]?.[lang] || field;
+};
+
+// Default content per language
+const defaultContentEn: SiteContent = {
+  hero: {
+    badge: "This offer won't last long — grab it now!",
+    headingPrefix: "Get",
+    headingPrice: "৳80",
+    headingMiddle: "for",
+    headingCredits: "105 Credits",
+    headingSuffix: "— Today!",
+    subtext: "Order in 1 minute, delivery in 5 minutes. Thousands of users already trust us.",
+    trustSafe: "100% Safe",
+    trustDelivery: "Instant Delivery",
+    btnPrimary: "Get Credits Now",
+    btnSecondary: "Start in 1 Minute",
+  },
+  trustBadges: {
+    badge1Title: "5-Min Delivery",
+    badge1Desc: "Order now, get it in minutes — guaranteed!",
+    badge2Title: "100% Secure",
+    badge2Desc: "Your money & data are fully protected",
+    badge3Title: "24/7 Live Support",
+    badge3Desc: "We're always here to help you",
+  },
+  pricing: {
+    heading: "More Credits,",
+    headingHighlight: "Less Cost",
+    subtext: "Smart users are picking the best deal — you should too!",
+    feature1: "5-minute delivery guarantee",
+    feature2: "24/7 live support",
+    feature3: "100% secure payment",
+    popularBadge: "Most Popular!",
+    btnPopular: "Order Now",
+    btnNormal: "Get Now",
+  },
+  testimonials: {
+    heading: "They're saying —",
+    headingHighlight: '"Trustworthy!"',
+    subtext: "It's not just us — our customers say so too",
+  },
+  reserves: {
+    badge: "Live Stock Update",
+    heading: "Our",
+    headingHighlight: "Stock Reserve",
+    subtext: "Sufficient stock in every package — order now before it runs out!",
+  },
+  footer: {
+    description: "Bangladesh's most trusted Lovable credit seller. Fast delivery, best prices, hundreds of happy customers.",
+    trustText: "Your security & satisfaction is our top priority",
+    copyright: "© 2026 Lovable Credits. All rights reserved.",
+    tagline: "Built on your trust — Lovable Credits",
+    email: "support@lovablecredits.com",
+    chatText: "Live Chat — Always On",
+    website: "lovablecredits.com",
+    socialWebsite: "#",
+    socialTelegram: "#",
+    socialWhatsapp: "#",
+    socialEmail: "mailto:support@lovablecredits.com",
+    socialFacebook: "#",
+    socialYoutube: "#",
+    socialInstagram: "#",
+    whatsappNumber: "8801889067101",
+  },
+  operator: {
+    label: "Operator:",
+    workingHours: "Working Hours: 9:00 AM - 11:59 PM (GMT+06)",
+  },
+};
+
+const defaultContentBn: SiteContent = {
+  hero: {
+    badge: "এই অফার আর বেশিদিন থাকবে না — এখনই নিন!",
+    headingPrefix: "মাত্র",
+    headingPrice: "৳৮০",
+    headingMiddle: "তে পান",
+    headingCredits: "১০৫ ক্রেডিট",
+    headingSuffix: "— আজই!",
+    subtext: "১ মিনিটে অর্ডার, ৫ মিনিটে ডেলিভারি। হাজারো ইউজার ইতিমধ্যে বিশ্বাস করে।",
+    trustSafe: "১০০% নিরাপদ",
+    trustDelivery: "তাৎক্ষণিক ডেলিভারি",
+    btnPrimary: "এখনই ক্রেডিট নিন",
+    btnSecondary: "১ মিনিটে শুরু করুন",
+  },
+  trustBadges: {
+    badge1Title: "৫ মিনিটে ডেলিভারি",
+    badge1Desc: "অর্ডার দিন, মিনিটে পান — গ্যারান্টি!",
+    badge2Title: "১০০% নিরাপদ",
+    badge2Desc: "আপনার টাকা ও তথ্য সম্পূর্ণ সুরক্ষিত",
+    badge3Title: "২৪/৭ লাইভ সাপোর্ট",
+    badge3Desc: "যেকোনো সমস্যায় আমরা পাশে আছি",
+  },
+  pricing: {
+    heading: "কম খরচে",
+    headingHighlight: "বেশি ক্রেডিট",
+    subtext: "স্মার্ট ইউজাররা সেরা ডিলটা বেছে নিচ্ছে — আপনিও নিন!",
+    feature1: "৫ মিনিটে ডেলিভারি গ্যারান্টি",
+    feature2: "২৪/৭ লাইভ সাপোর্ট",
+    feature3: "১০০% নিরাপদ পেমেন্ট",
+    popularBadge: "সবাই এটাই নিচ্ছে!",
+    btnPopular: "এখনই অর্ডার করুন",
+    btnNormal: "এখনই নিন",
+  },
+  testimonials: {
+    heading: "তারা বলছে —",
+    headingHighlight: '"বিশ্বাসযোগ্য!"',
+    subtext: "শুধু আমরা বলছি না — আমাদের গ্রাহকরাও বলছে",
+  },
+  reserves: {
+    badge: "লাইভ স্টক আপডেট",
+    heading: "আমাদের",
+    headingHighlight: "স্টক রিজার্ভ",
+    subtext: "প্রতিটি প্যাকেজে পর্যাপ্ত স্টক — দেরি না করে অর্ডার করুন!",
+  },
+  footer: {
+    description: "বাংলাদেশের সবচেয়ে বিশ্বস্ত Lovable ক্রেডিট সেলার। দ্রুত ডেলিভারি, সেরা দাম, শত শত সন্তুষ্ট গ্রাহক।",
+    trustText: "আপনার নিরাপত্তা ও সন্তুষ্টি আমাদের প্রথম অগ্রাধিকার",
+    copyright: "© ২০২৬ Lovable Credits। সর্বস্বত্ব সংরক্ষিত।",
+    tagline: "আপনার ভরসায় গড়ে উঠেছে Lovable Credits",
+    email: "support@lovablecredits.com",
+    chatText: "লাইভ চ্যাট — সবসময় চালু",
+    website: "lovablecredits.com",
+    socialWebsite: "#",
+    socialTelegram: "#",
+    socialWhatsapp: "#",
+    socialEmail: "mailto:support@lovablecredits.com",
+    socialFacebook: "#",
+    socialYoutube: "#",
+    socialInstagram: "#",
+    whatsappNumber: "8801889067101",
+  },
+  operator: {
+    label: "অপারেটর:",
+    workingHours: "কর্মসময়: সকাল ৯:০০ - রাত ১১:৫৯ (GMT+06)",
+  },
+};
+
+const defaultsByLang: Record<EditLang, SiteContent> = { en: defaultContentEn, bn: defaultContentBn };
+
+const keyToSection: Record<string, keyof SiteContent> = {
+  content_hero: "hero",
+  content_trust_badges: "trustBadges",
+  content_pricing: "pricing",
+  content_testimonials: "testimonials",
+  content_reserves: "reserves",
+  content_footer: "footer",
+  content_operator: "operator",
+};
+
+const sectionToKey: Record<keyof SiteContent, string> = Object.fromEntries(
+  Object.entries(keyToSection).map(([k, v]) => [v, k])
+) as any;
+
+const CONTENT_KEYS_BASE = Object.keys(keyToSection);
 
 /* ───── Section Preview Components ───── */
 
@@ -134,7 +293,7 @@ const PricingPreview = ({ data }: { data: SiteContent["pricing"] }) => (
             </div>
           )}
           <div className="mt-1 space-y-1">
-            <p className="text-[9px] font-bold text-foreground">{[50, 105, 250][i]} ক্রেডিট</p>
+            <p className="text-[9px] font-bold text-foreground">{[50, 105, 250][i]} Credits</p>
             <p className="text-xs font-bold text-gradient-primary">৳{[40, 80, 180][i]}</p>
           </div>
           <div className="mt-1.5 space-y-0.5">
@@ -160,14 +319,14 @@ const TestimonialsPreview = ({ data }: { data: SiteContent["testimonials"] }) =>
     </h3>
     <p className="text-[9px] text-muted-foreground mb-3">{data.subtext}</p>
     <div className="grid grid-cols-2 gap-2">
-      {["রাকিব হাসান", "ফারহানা আক্তার"].map((name) => (
+      {["Rakib Hasan", "Farhana Akter"].map((name) => (
         <div key={name} className="bg-secondary/50 border border-border/20 rounded-lg p-2.5 text-left">
           <div className="flex gap-0.5 mb-1">
             {[1, 2, 3, 4, 5].map((s) => (
               <span key={s} className="text-[#FF7A18] text-[8px]">★</span>
             ))}
           </div>
-          <p className="text-[8px] text-muted-foreground mb-1.5 line-clamp-2">"দারুণ সার্ভিস, খুবই দ্রুত ডেলিভারি..."</p>
+          <p className="text-[8px] text-muted-foreground mb-1.5 line-clamp-2">"Great service, very fast delivery..."</p>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-[#FF7A18] to-[#FF3CAC] flex items-center justify-center text-[7px] text-white font-bold">
               {name.charAt(0)}
@@ -221,7 +380,7 @@ const OperatorPreview = ({ data }: { data: SiteContent["operator"] }) => (
     <span className="text-[10px] text-muted-foreground">{data.label}</span>
     <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-400 text-[9px] font-semibold border border-green-500/20">
       <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-      অনলাইন
+      Online
     </span>
     <span className="flex items-center gap-1 text-[9px] text-muted-foreground">
       <Clock className="w-2.5 h-2.5" /> {data.workingHours}
@@ -239,19 +398,113 @@ const previewComponents: Record<SectionKey, (data: any) => JSX.Element> = {
   operator: (data) => <OperatorPreview data={data} />,
 };
 
+/* ───── Helper: save content for a specific language ───── */
+const saveContentForLang = async (section: SectionKey, data: any, lang: EditLang) => {
+  const baseKey = sectionToKey[section];
+  if (!baseKey) return;
+  
+  // Save with language suffix key (e.g. content_hero_en)
+  const langKey = `${baseKey}_${lang}`;
+  const value = JSON.stringify(data);
+
+  const { data: existing } = await supabase
+    .from("site_settings")
+    .select("id")
+    .eq("key", langKey)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from("site_settings")
+      .update({ value, updated_at: new Date().toISOString() })
+      .eq("key", langKey);
+  } else {
+    await supabase
+      .from("site_settings")
+      .insert({ key: langKey, value });
+  }
+  
+  // Also save to base key if it's the default save (backward compat)
+  const { data: baseExisting } = await supabase
+    .from("site_settings")
+    .select("id")
+    .eq("key", baseKey)
+    .maybeSingle();
+
+  if (baseExisting) {
+    await supabase
+      .from("site_settings")
+      .update({ value, updated_at: new Date().toISOString() })
+      .eq("key", baseKey);
+  } else {
+    await supabase
+      .from("site_settings")
+      .insert({ key: baseKey, value });
+  }
+};
+
+/* ───── Helper: load content for a specific language ───── */
+const loadContentForLang = async (lang: EditLang): Promise<SiteContent> => {
+  const defaults = defaultsByLang[lang];
+  const langKeys = CONTENT_KEYS_BASE.map(k => `${k}_${lang}`);
+  
+  const { data } = await supabase
+    .from("site_settings")
+    .select("key, value")
+    .in("key", [...langKeys, ...CONTENT_KEYS_BASE]);
+
+  const merged = { ...defaults };
+  
+  if (data && data.length > 0) {
+    const langData: Record<string, string> = {};
+    const baseData: Record<string, string> = {};
+    
+    data.forEach((row) => {
+      if (row.key.endsWith(`_${lang}`)) {
+        const baseKey = row.key.replace(`_${lang}`, "");
+        langData[baseKey] = row.value;
+      } else if (CONTENT_KEYS_BASE.includes(row.key)) {
+        baseData[row.key] = row.value;
+      }
+    });
+
+    CONTENT_KEYS_BASE.forEach((key) => {
+      const section = keyToSection[key];
+      if (!section) return;
+      const valueStr = langData[key] || baseData[key];
+      if (valueStr) {
+        try {
+          const parsed = JSON.parse(valueStr);
+          (merged as any)[section] = { ...(defaults as any)[section], ...parsed };
+        } catch {}
+      }
+    });
+  }
+  
+  return merged;
+};
+
 /* ───── Main Component ───── */
 
 const AdminSiteContent = () => {
-  const { content, loading } = useSiteContent();
-  const [editData, setEditData] = useState<SiteContent>(defaultContent);
+  const [editLang, setEditLang] = useState<EditLang>("en");
+  const [editData, setEditData] = useState<SiteContent>(defaultContentEn);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<SectionKey | null>(null);
   const [activeSection, setActiveSection] = useState<SectionKey>("hero");
   const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
+  const loadData = useCallback(async (lang: EditLang) => {
+    setLoading(true);
+    const content = await loadContentForLang(lang);
+    setEditData(content);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    if (!loading) setEditData(content);
-  }, [content, loading]);
+    loadData(editLang);
+  }, [editLang, loadData]);
 
   const handleFieldChange = (section: SectionKey, field: string, value: string) => {
     setEditData((prev) => ({
@@ -263,18 +516,19 @@ const AdminSiteContent = () => {
   const handleSave = async (section: SectionKey) => {
     setSaving(section);
     try {
-      await updateSiteContent(section, editData[section]);
-      toast({ title: "সেভ হয়েছে!", variant: "success" });
+      await saveContentForLang(section, editData[section], editLang);
+      toast({ title: editLang === "bn" ? "সেভ হয়েছে!" : "Saved!", variant: "success" });
     } catch {
-      toast({ title: "সেভ ব্যর্থ", variant: "destructive" });
+      toast({ title: editLang === "bn" ? "সেভ ব্যর্থ" : "Save failed", variant: "destructive" });
     }
     setSaving(null);
   };
 
   const handleReset = (section: SectionKey) => {
+    const defaults = defaultsByLang[editLang];
     setEditData((prev) => ({
       ...prev,
-      [section]: defaultContent[section],
+      [section]: defaults[section],
     }));
   };
 
@@ -290,9 +544,45 @@ const AdminSiteContent = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-foreground mb-1">সাইট কন্টেন্ট ম্যানেজমেন্ট</h2>
-        <p className="text-sm text-muted-foreground">ল্যান্ডিং পেইজের সকল টেক্সট এখান থেকে পরিবর্তন করুন</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-foreground mb-1">Site Content Management</h2>
+          <p className="text-sm text-muted-foreground">Edit all landing page text for each language</p>
+        </div>
+        
+        {/* Language Toggle */}
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-secondary border border-border/30">
+          <button
+            onClick={() => setEditLang("en")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+              editLang === "en"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            English
+          </button>
+          <button
+            onClick={() => setEditLang("bn")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+              editLang === "bn"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            বাংলা
+          </button>
+        </div>
+      </div>
+
+      {/* Editing language indicator */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 border border-primary/20">
+        <Globe className="w-4 h-4 text-primary" />
+        <span className="text-sm font-medium text-primary">
+          {editLang === "en" ? "Editing English content" : "বাংলা কন্টেন্ট এডিট করছেন"}
+        </span>
       </div>
 
       {/* Section tabs */}
@@ -324,10 +614,10 @@ const AdminSiteContent = () => {
               className="gap-1.5 text-xs"
             >
               {showPreview ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              {showPreview ? "এডিটর" : "প্রিভিউ"}
+              {showPreview ? (editLang === "en" ? "Editor" : "এডিটর") : (editLang === "en" ? "Preview" : "প্রিভিউ")}
             </Button>
             <Button variant="ghost" size="sm" onClick={() => handleReset(activeSection)} className="text-xs">
-              ডিফল্ট
+              {editLang === "en" ? "Default" : "ডিফল্ট"}
             </Button>
             <Button
               size="sm"
@@ -336,14 +626,16 @@ const AdminSiteContent = () => {
               className="gap-1.5"
             >
               {saving === activeSection ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              সেভ করুন
+              {editLang === "en" ? "Save" : "সেভ করুন"}
             </Button>
           </div>
         </div>
 
         {showPreview ? (
           <div className="border border-dashed border-primary/30 rounded-xl p-4 bg-background">
-            <p className="text-[10px] text-primary font-medium mb-3 text-center">📱 লাইভ প্রিভিউ — সেভ করার আগে দেখুন কেমন দেখাবে</p>
+            <p className="text-[10px] text-primary font-medium mb-3 text-center">
+              📱 {editLang === "en" ? "Live Preview — see how it looks before saving" : "লাইভ প্রিভিউ — সেভ করার আগে দেখুন কেমন দেখাবে"}
+            </p>
             {previewComponents[activeSection](editData[activeSection])}
           </div>
         ) : (
@@ -353,7 +645,7 @@ const AdminSiteContent = () => {
               return (
                 <div key={field} className={isLong ? "md:col-span-2" : ""}>
                   <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-                    {fieldLabels[field] || field}
+                    {getFieldLabel(field, editLang)}
                   </label>
                   {isLong ? (
                     <Textarea
