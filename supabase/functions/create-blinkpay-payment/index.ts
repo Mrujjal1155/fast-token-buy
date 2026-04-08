@@ -14,7 +14,9 @@ const BodySchema = z.object({
   token: z.string().default("USDT"),
   network: z.string().default("tron"),
   customer_email: z.string().email().optional(),
+  customer_name: z.string().optional(),
   return_url: z.string().url(),
+  metadata: z.record(z.unknown()).optional(),
 });
 
 serve(async (req) => {
@@ -38,13 +40,11 @@ serve(async (req) => {
       });
     }
 
-    const { amount, order_id, token, network, customer_email, return_url } = parsed.data;
+    const { amount, order_id, token, network, customer_email, customer_name, return_url, metadata } = parsed.data;
 
     // Convert BDT to USD (1 USD ≈ 130 BDT)
     const BDT_TO_USD_RATE = 130;
     const amountInUSD = parseFloat((amount / BDT_TO_USD_RATE).toFixed(2));
-
-    // Ensure minimum $0.01
     const finalAmount = Math.max(amountInUSD, 0.01);
 
     console.log(`Converting: ৳${amount} BDT → $${finalAmount} USD (rate: 1 USD = ${BDT_TO_USD_RATE} BDT)`);
@@ -52,16 +52,19 @@ serve(async (req) => {
     // Build callback URL pointing to our webhook edge function
     const callback_url = `${SUPABASE_URL}/functions/v1/blinkpay-webhook`;
 
-    const requestBody = {
+    const requestBody: Record<string, unknown> = {
       amount: finalAmount,
       token,
       network,
       order_id,
-      customer_email,
       callback_url,
       return_url,
-      metadata: { order_id },
     };
+
+    if (customer_email) requestBody.customer_email = customer_email;
+    if (customer_name) requestBody.customer_name = customer_name;
+    if (metadata) requestBody.metadata = { ...metadata, order_id };
+    else requestBody.metadata = { order_id };
 
     console.log('BlinkPay create payment request:', JSON.stringify(requestBody));
 
