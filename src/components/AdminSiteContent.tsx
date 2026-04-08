@@ -51,6 +51,10 @@ const fieldLabels: Record<string, string> = {
   email: "ইমেইল",
   chatText: "চ্যাট টেক্সট",
   website: "ওয়েবসাইট",
+  socialWebsite: "🔗 ওয়েবসাইট লিংক",
+  socialTelegram: "📨 টেলিগ্রাম লিংক",
+  socialWhatsapp: "💬 হোয়াটসঅ্যাপ লিংক",
+  socialEmail: "📧 ইমেইল লিংক (mailto:...)",
   label: "লেবেল",
   workingHours: "কর্মসময়",
 };
