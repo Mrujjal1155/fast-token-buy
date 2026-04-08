@@ -36,7 +36,7 @@ export const useSiteImages = () => {
     fetchImages();
 
     const channel = supabase
-      .channel("site-images-realtime")
+      .channel(`site-images-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
         fetchImages();
       })

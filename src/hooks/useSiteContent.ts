@@ -184,8 +184,9 @@ export const useSiteContent = () => {
   useEffect(() => {
     fetchContent();
 
+    const channelId = `site-content-${crypto.randomUUID()}`;
     const channel = supabase
-      .channel("site-content-realtime")
+      .channel(channelId)
       .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
         fetchContent();
       })
