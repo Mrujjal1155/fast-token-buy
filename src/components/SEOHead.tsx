@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useSiteImages } from "@/hooks/useSiteImages";
 
 interface SEOHeadProps {
   title?: string;
@@ -8,6 +9,7 @@ interface SEOHeadProps {
 }
 
 const BASE_URL = "https://lovablecredit.com";
+const DEFAULT_OG_IMAGE = "https://lovablecredit.com/og-image.png";
 
 const SEOHead = ({
   title = "Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায়",
@@ -17,6 +19,8 @@ const SEOHead = ({
 }: SEOHeadProps) => {
   const fullTitle = title.includes("LovableCredit") ? title : `${title} | LovableCredit.com`;
   const url = `${BASE_URL}${path}`;
+  const { ogImage } = useSiteImages();
+  const ogImageUrl = ogImage || DEFAULT_OG_IMAGE;
 
   return (
     <Helmet>
@@ -27,8 +31,10 @@ const SEOHead = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
+      <meta property="og:image" content={ogImageUrl} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={ogImageUrl} />
     </Helmet>
   );
 };
