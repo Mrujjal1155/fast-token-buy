@@ -44,7 +44,12 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="সচরাচর জিজ্ঞাসা (FAQ)" description="Lovable ক্রেডিট কেনার প্রশ্ন ও উত্তর। পেমেন্ট, ডেলিভারি, রিফান্ড সম্পর্কে জানুন।" path="/faq" keywords="lovable credits faq, lovable credit প্রশ্ন, lovable help" />
+      <SEOHead
+        title="সচরাচর জিজ্ঞাসা (FAQ) — Lovable Credits"
+        description="Lovable ক্রেডিট সম্পর্কে সাধারণ প্রশ্ন ও উত্তর। কিভাবে কিনবেন, কত সময় লাগে, কোন পেমেন্ট মেথড সাপোর্ট করে — সব জানুন।"
+        path="/faq"
+        keywords="lovable credit faq, lovable ক্রেডিট প্রশ্ন, lovable credit কিভাবে কিনবো, lovable credit delivery time, lovable credit payment method"
+      />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
         <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2 text-center">

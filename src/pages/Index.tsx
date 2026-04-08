@@ -26,7 +26,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead />
+      <SEOHead
+        title="Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায়"
+        description="bKash, Nagad, Rocket ও Crypto দিয়ে Lovable AI ক্রেডিট কিনুন। মাত্র ৳৪০ থেকে শুরু। ৫ মিনিটে ডেলিভারি। ২৪% পর্যন্ত সাশ্রয়! হাজারো সন্তুষ্ট গ্রাহক।"
+        keywords="lovable credits, lovable credit buy, buy lovable credits bangladesh, lovable ক্রেডিট কিনুন, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits, লাভেবল ক্রেডিট, lovable credit বাংলাদেশ"
+        path="/"
+      />
       <Navbar />
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
