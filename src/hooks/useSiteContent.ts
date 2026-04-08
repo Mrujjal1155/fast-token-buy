@@ -227,26 +227,13 @@ const keyToSection: Record<string, keyof SiteContent> = {
 
 export const useSiteContent = () => {
   const { lang } = useLanguage();
-  const defaults = lang === "bn" ? defaultContentBn : defaultContentEn;
-  const [content, setContent] = useState<SiteContent>(defaults);
+  const [content, setContent] = useState<SiteContent | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Update content when language changes
-  useEffect(() => {
-    const newDefaults = lang === "bn" ? defaultContentBn : defaultContentEn;
-    setContent(prev => {
-      // Re-merge with new language defaults
-      const merged = { ...newDefaults };
-      return merged;
-    });
-    // Re-fetch from DB for this language
-    fetchContent();
-  }, [lang]);
-
   const fetchContent = useCallback(async () => {
+    setLoading(true);
     const currentDefaults = lang === "bn" ? defaultContentBn : defaultContentEn;
     
-    // Fetch language-specific keys only
     const langKeys = CONTENT_KEYS_BASE.map(k => `${k}_${lang}`);
     
     const { data } = await supabase
@@ -286,7 +273,8 @@ export const useSiteContent = () => {
     return () => { supabase.removeChannel(channel); };
   }, [fetchContent]);
 
-  return { content, loading };
+  const defaults = lang === "bn" ? defaultContentBn : defaultContentEn;
+  return { content: content || defaults, loading };
 };
 
 export const updateSiteContent = async (section: keyof SiteContent, data: any, lang: "en" | "bn" = "en") => {
