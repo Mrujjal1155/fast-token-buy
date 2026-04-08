@@ -57,6 +57,9 @@ export interface SiteContent {
     socialTelegram: string;
     socialWhatsapp: string;
     socialEmail: string;
+    socialFacebook: string;
+    socialYoutube: string;
+    socialInstagram: string;
     whatsappNumber: string;
   };
   operator: {
@@ -121,6 +124,9 @@ export const defaultContent: SiteContent = {
     socialTelegram: "#",
     socialWhatsapp: "#",
     socialEmail: "mailto:support@lovablecredits.com",
+    socialFacebook: "#",
+    socialYoutube: "#",
+    socialInstagram: "#",
     whatsappNumber: "8801889067101",
   },
   operator: {

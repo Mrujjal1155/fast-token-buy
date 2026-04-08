@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Facebook, Youtube, Instagram } from "lucide-react";
 import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
@@ -34,6 +35,9 @@ const Footer = () => {
                 { icon: Send, href: c.socialTelegram || "#" },
                 { icon: MessageCircle, href: c.socialWhatsapp || "#" },
                 { icon: Mail, href: c.socialEmail || "mailto:support@lovablecredits.com" },
+                { icon: Facebook, href: c.socialFacebook || "#" },
+                { icon: Youtube, href: c.socialYoutube || "#" },
+                { icon: Instagram, href: c.socialInstagram || "#" },
               ].map(({ icon: Icon, href }, i) => (
                 <a
                   key={i}
