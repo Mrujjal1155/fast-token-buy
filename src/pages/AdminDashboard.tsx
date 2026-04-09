@@ -147,16 +147,16 @@ const AdminDashboard = () => {
     setStatusChangeDialog({ open: false, orderId: "", orderDisplayId: "", newStatus: "" });
     setUpdatingStatus(orderId);
 
-    let updateData: Record<string, unknown>;
-    if (newStatus === "timeout") {
-      updateData = { status: "failed" as Order["status"], admin_notes: "[Auto-failed: payment timeout 30 min]" };
-    } else {
-      updateData = { status: newStatus as Order["status"] };
-    }
+    const isTimeout = newStatus === "timeout";
+    const dbStatus = isTimeout ? "failed" : newStatus;
+    const dbNotes = isTimeout ? "[Auto-failed: payment timeout 30 min]" : undefined;
 
     const { error } = await supabase
       .from("orders")
-      .update(updateData)
+      .update({
+        status: dbStatus as Order["status"],
+        ...(dbNotes !== undefined && { admin_notes: dbNotes }),
+      })
       .eq("id", orderId);
 
     setUpdatingStatus(null);
