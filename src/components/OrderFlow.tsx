@@ -650,6 +650,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         onSuccess={() => setStep("success")}
         onBack={onBack}
         onRetry={() => setStep("payment")}
+        deadline={paymentDeadline}
       />
     ),
   };
