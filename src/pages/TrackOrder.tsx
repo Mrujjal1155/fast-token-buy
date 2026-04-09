@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Search, Package, Clock, CheckCircle, AlertCircle, Copy, Loader2 } from "lucide-react";
+import { Search, Package, Clock, CheckCircle, AlertCircle, Copy, Loader2, Timer } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -166,6 +166,16 @@ const TrackOrder = () => {
                 </div>
               ))}
             </div>
+
+            {order.status === "failed" && order.admin_notes?.includes("payment timeout") && (
+              <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                <Timer className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-destructive">{t("track.expiredTitle")}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t("track.expiredDesc")}</p>
+                </div>
+              </div>
+            )}
 
             {order.status === "completed" && <ReviewForm orderId={order.order_id} />}
 
