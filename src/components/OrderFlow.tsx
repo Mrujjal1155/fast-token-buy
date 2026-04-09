@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus, PackageCheck, AlertTriangle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -309,9 +309,17 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                     )}
                     {pkg.stock != null && (
                       outOfStock ? (
-                        <span className="px-2 py-0.5 rounded-full bg-destructive/15 text-destructive text-[10px] font-bold">Stock Out</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10 text-destructive text-[10px] font-semibold border border-destructive/20">
+                          <XCircle className="w-3 h-3" /> Stock Out
+                        </span>
+                      ) : pkg.stock <= 5 ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 text-[10px] font-semibold border border-yellow-500/20 animate-pulse">
+                          <AlertTriangle className="w-3 h-3" /> {pkg.stock} left
+                        </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">In Stock ({pkg.stock})</span>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">
+                          <PackageCheck className="w-3 h-3" /> In Stock
+                        </span>
                       )
                     )}
                   </div>
