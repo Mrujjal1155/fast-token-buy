@@ -102,7 +102,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
     const { data, error } = await supabase.rpc("validate_coupon", {
       p_code: couponCode.trim().toUpperCase(),
-      p_amount: chosenPackage?.price,
+      p_amount: totalPrice,
     });
 
     if (error || !data || data.length === 0) {
