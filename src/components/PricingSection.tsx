@@ -51,13 +51,17 @@ const PricingCard = ({
         {/* Stock badge */}
         {pkg.stock != null && (
           <div className="mb-2">
-            {pkg.stock > 0 ? (
-              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
-                ✅ In Stock ({pkg.stock})
-              </span>
-            ) : (
+            {pkg.stock <= 0 ? (
               <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-destructive/15 text-destructive">
                 ❌ Out of Stock
+              </span>
+            ) : pkg.stock <= 5 ? (
+              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 animate-pulse">
+                🔥 Almost Sold Out! ({pkg.stock} left)
+              </span>
+            ) : (
+              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
+                ✅ In Stock ({pkg.stock})
               </span>
             )}
           </div>
