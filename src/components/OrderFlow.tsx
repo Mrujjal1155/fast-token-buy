@@ -287,11 +287,14 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           <p className="text-muted-foreground">{t("order.chooseSubtext")}</p>
         </div>
         <div className="space-y-3">
-          {allPackages.map((pkg) => (
+          {allPackages.map((pkg) => {
+            const outOfStock = pkg.stock != null && pkg.stock <= 0;
+            return (
             <button
               key={pkg.id}
-              onClick={() => { setChosenPackage(pkg); setStep("email"); }}
-              className={`w-full text-left rounded-xl border p-4 transition-all hover:border-primary/50 hover:bg-secondary/50 ${
+              onClick={() => { if (!outOfStock) { setChosenPackage(pkg); setStep("email"); } }}
+              disabled={outOfStock}
+              className={`w-full text-left rounded-xl border p-4 transition-all ${outOfStock ? "opacity-50 cursor-not-allowed border-border/30 bg-secondary/20" : "hover:border-primary/50 hover:bg-secondary/50"} ${
                 chosenPackage?.id === pkg.id ? "border-primary bg-primary/5" : "border-border/30 bg-secondary/30"
               }`}
             >
@@ -299,10 +302,17 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <div>
                   <div className="flex items-center gap-2">
                      <span className="font-bold text-foreground text-lg">{pkg.credits} {t("pricing.credits")}</span>
-                    {pkg.popular && (
+                    {pkg.popular && !outOfStock && (
                       <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-primary text-primary-foreground text-xs font-semibold">
                         <Star className="w-3 h-3" /> {t("pricing.everyoneBuying")}
                       </span>
+                    )}
+                    {pkg.stock != null && (
+                      outOfStock ? (
+                        <span className="px-2 py-0.5 rounded-full bg-destructive/15 text-destructive text-[10px] font-bold">Stock Out</span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">In Stock ({pkg.stock})</span>
+                      )
                     )}
                   </div>
                   {pkg.savings && <span className="text-xs text-primary font-medium">{pkg.savings}</span>}
@@ -310,7 +320,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
                 <span className="text-2xl font-bold text-gradient-primary">৳{pkg.price}</span>
               </div>
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
     ),
