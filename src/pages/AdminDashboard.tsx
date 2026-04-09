@@ -63,7 +63,16 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
     color: "text-destructive",
     badgeClass: "bg-destructive/15 text-destructive border-destructive/30",
   },
+  timeout: {
+    label: "টাইম আউট",
+    icon: <Timer className="w-3.5 h-3.5" />,
+    color: "text-orange-400",
+    badgeClass: "bg-orange-400/15 text-orange-400 border-orange-400/30",
+  },
 };
+
+const isTimeoutOrder = (order: Order) =>
+  order.status === "failed" && order.admin_notes?.includes("payment timeout");
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges">("orders");
