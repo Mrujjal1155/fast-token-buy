@@ -347,13 +347,41 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span>{t("order.package")}</span>
             <span className="font-semibold">{chosenPackage?.credits} {t("pricing.credits")}</span>
           </div>
+
+          {/* Quantity selector */}
+          <div className="flex items-center justify-between text-foreground">
+            <span>একাউন্ট সংখ্যা</span>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={quantity <= 1}
+                className="w-8 h-8 rounded-lg border border-border/50 bg-secondary flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-primary/10 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="text-lg font-bold text-foreground w-6 text-center">{quantity}</span>
+              <button
+                onClick={() => setQuantity((q) => Math.min(3, q + 1))}
+                disabled={quantity >= 3}
+                className="w-8 h-8 rounded-lg border border-border/50 bg-secondary flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-primary/10 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          {quantity > 1 && (
+            <p className="text-xs text-primary">
+              {quantity}টি একাউন্ট × {chosenPackage?.credits} = <span className="font-bold">{totalCredits} {t("pricing.credits")}</span>
+            </p>
+          )}
+
           <div className="flex justify-between text-foreground">
             <span>{t("order.email")}</span>
             <span className="text-muted-foreground text-sm">{email}</span>
           </div>
           <div className="flex justify-between text-foreground">
             <span>{t("order.subtotal")}</span>
-            <span>৳{chosenPackage?.price}</span>
+            <span>৳{totalPrice}{quantity > 1 && <span className="text-xs text-muted-foreground ml-1">({quantity} × ৳{chosenPackage?.price})</span>}</span>
           </div>
 
           {/* Coupon section */}
