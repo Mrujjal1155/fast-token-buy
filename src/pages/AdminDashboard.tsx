@@ -25,6 +25,7 @@ import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, B
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
+import { isTimeoutOrder, getDisplayStatus } from "@/lib/orderUtils";
 import AdminCoupons from "@/components/AdminCoupons";
 import AdminReserves from "@/components/AdminReserves";
 import AdminNotifications from "@/components/AdminNotifications";
@@ -71,8 +72,6 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
   },
 };
 
-const isTimeoutOrder = (order: Order) =>
-  order.status === "failed" && order.admin_notes?.includes("payment timeout");
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges">("orders");

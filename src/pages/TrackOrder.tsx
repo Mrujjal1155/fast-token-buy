@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
+import { getDisplayStatus } from "@/lib/orderUtils";
 import ReviewForm from "@/components/ReviewForm";
 import SEOHead from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
@@ -30,8 +31,6 @@ const TrackOrder = () => {
     timeout: { icon: Timer, label: t("status.timeout"), className: "text-orange-400 bg-orange-400/10" },
   };
 
-  const getDisplayStatus = (order: Order) =>
-    order.status === "failed" && order.admin_notes?.includes("payment timeout") ? "timeout" : order.status;
 
   const handleSearch = useCallback(async (searchQuery?: string) => {
     const q = (searchQuery || query).trim();
