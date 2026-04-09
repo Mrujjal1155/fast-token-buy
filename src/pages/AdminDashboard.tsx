@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Check } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
@@ -34,7 +34,7 @@ import AdminReviews from "@/components/AdminReviews";
 import AdminSiteContent from "@/components/AdminSiteContent";
 import AdminImages from "@/components/AdminImages";
 import AdminTrustBadges from "@/components/AdminTrustBadges";
-import AdminPricingFeatures from "@/components/AdminPricingFeatures";
+
 
 type Order = Tables<"orders">;
 
