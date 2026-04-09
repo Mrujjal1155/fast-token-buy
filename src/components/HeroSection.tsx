@@ -13,10 +13,13 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
 
   return (
     <section className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20">
-      <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#FF7A18]/10 blur-[100px] md:blur-[150px] pointer-events-none animate-float-slow" />
-      <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] rounded-full bg-[#FF3CAC]/8 blur-[80px] md:blur-[120px] pointer-events-none animate-float-slow" style={{ animationDelay: '-3s' }} />
-      <div className="absolute bottom-1/4 right-1/3 w-[200px] md:w-[350px] h-[200px] md:h-[350px] rounded-full bg-[#7B61FF]/8 blur-[80px] md:blur-[120px] pointer-events-none animate-float-slow" style={{ animationDelay: '-5s' }} />
-      <div className="absolute bottom-0 left-1/4 w-[180px] md:w-[300px] h-[180px] md:h-[300px] rounded-full bg-[#4D8DFF]/6 blur-[60px] md:blur-[100px] pointer-events-none" />
+      {/* Animated gradient mesh */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#FF7A18]/10 blur-[100px] md:blur-[150px] animate-hero-blob-1" />
+        <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] rounded-full bg-[#FF3CAC]/10 blur-[80px] md:blur-[120px] animate-hero-blob-2" />
+        <div className="absolute bottom-1/4 right-1/3 w-[200px] md:w-[350px] h-[200px] md:h-[350px] rounded-full bg-[#7B61FF]/10 blur-[80px] md:blur-[120px] animate-hero-blob-3" />
+        <div className="absolute bottom-0 left-1/4 w-[180px] md:w-[300px] h-[180px] md:h-[300px] rounded-full bg-[#4D8DFF]/8 blur-[60px] md:blur-[100px] animate-hero-blob-4" />
+      </div>
 
       <div className="container relative z-10 text-center py-10 md:py-20 px-4">
         <motion.div
