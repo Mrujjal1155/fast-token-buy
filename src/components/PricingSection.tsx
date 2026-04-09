@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Star, Flame, Zap, Loader2 } from "lucide-react";
+import { Check, Star, Flame, Zap, Loader2, PackageCheck, AlertTriangle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type CreditPackage } from "@/lib/packages";
 import { usePackages } from "@/hooks/usePackages";
@@ -50,18 +50,18 @@ const PricingCard = ({
       <div className="rounded-2xl bg-card p-6 md:p-8 h-full flex flex-col">
         {/* Stock badge */}
         {pkg.stock != null && (
-          <div className="mb-2">
+          <div className="mb-3">
             {pkg.stock <= 0 ? (
-              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-destructive/15 text-destructive">
-                ❌ Out of Stock
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
+                <XCircle className="w-3.5 h-3.5" /> Out of Stock
               </span>
             ) : pkg.stock <= 5 ? (
-              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 animate-pulse">
-                🔥 Almost Sold Out! ({pkg.stock} left)
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 animate-pulse">
+                <AlertTriangle className="w-3.5 h-3.5" /> Almost Sold Out — {pkg.stock} left
               </span>
             ) : (
-              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
-                ✅ In Stock ({pkg.stock})
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <PackageCheck className="w-3.5 h-3.5" /> In Stock ({pkg.stock})
               </span>
             )}
           </div>
