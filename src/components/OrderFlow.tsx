@@ -83,6 +83,45 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     fetchSettings();
   }, []);
 
+  // Start countdown when entering payment step
+  useEffect(() => {
+    if (step === "payment" && !paymentDeadline) {
+      setPaymentDeadline(Date.now() + 30 * 60 * 1000);
+    }
+  }, [step, paymentDeadline]);
+
+  // Countdown timer tick
+  useEffect(() => {
+    if (!paymentDeadline) return;
+    if (step === "success") return;
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.floor((paymentDeadline - Date.now()) / 1000));
+      setTimeLeft(remaining);
+      if (remaining <= 0 && orderId) {
+        // Auto-fail the order
+        supabase
+          .from("orders")
+          .update({ status: "failed" as const, admin_notes: "[Auto-failed: payment timeout 30 min]" })
+          .eq("order_id", orderId)
+          .then(() => {
+            toast({ title: t("order.timeoutTitle") || "সময় শেষ!", description: t("order.timeoutDesc") || "৩০ মিনিটের মধ্যে পেমেন্ট হয়নি। অর্ডার বাতিল হয়েছে।", variant: "destructive" });
+            setStep("package");
+            setPaymentDeadline(null);
+          });
+      }
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [paymentDeadline, orderId, step, toast, t]);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
   const currentPayment = activePaymentMethods.find((p) => p.id === selectedPayment) || activePaymentMethods[0];
   const isCrypto = currentPayment?.type === "crypto";
   const totalPrice = chosenPackage ? chosenPackage.price * quantity : 0;
