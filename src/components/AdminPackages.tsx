@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Save, Package, Star } from "lucide-react";
+import PackageFeatures from "@/components/PackageFeatures";
 import {
   buildPackageSavingsFallback,
   getPackageSavingsText,
@@ -278,6 +279,8 @@ const AdminPackages = () => {
                 </Button>
               </div>
             </div>
+
+            <PackageFeatures packageKey={pkg.package_key} textLang={textLang as "en" | "bn"} />
           </div>
         ))}
       </div>

@@ -66,7 +66,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "features">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -211,7 +211,6 @@ const AdminDashboard = () => {
             { id: "payments" as const, label: "Payments", icon: Wallet },
             { id: "reviews" as const, label: "Reviews", icon: MessageSquare },
             { id: "badges" as const, label: "Badges", icon: ShieldCheck },
-            { id: "features" as const, label: "Features", icon: Check },
             { id: "content" as const, label: "Content", icon: Globe },
             { id: "images" as const, label: "Images", icon: ImageIcon },
           ].map((tab) => (
@@ -387,8 +386,6 @@ const AdminDashboard = () => {
           <AdminReviews />
         ) : activeTab === "badges" ? (
           <AdminTrustBadges />
-        ) : activeTab === "features" ? (
-          <AdminPricingFeatures />
         ) : activeTab === "content" ? (
           <AdminSiteContent />
         ) : activeTab === "images" ? (
