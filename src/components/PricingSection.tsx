@@ -48,6 +48,21 @@ const PricingCard = ({
       )}
 
       <div className="rounded-2xl bg-card p-6 md:p-8 h-full flex flex-col">
+        {/* Stock badge */}
+        {pkg.stock != null && (
+          <div className="mb-2">
+            {pkg.stock > 0 ? (
+              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
+                ✅ In Stock ({pkg.stock})
+              </span>
+            ) : (
+              <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-destructive/15 text-destructive">
+                ❌ Out of Stock
+              </span>
+            )}
+          </div>
+        )}
+
         {pkg.savings && (
           <span className="text-xs font-medium text-[#FF7A18] bg-[#FF7A18]/10 px-2 py-0.5 rounded-full w-fit mb-3 flex items-center gap-1">
             <Zap className="w-3 h-3" /> {pkg.savings}
@@ -81,8 +96,9 @@ const PricingCard = ({
           size="lg"
           className="w-full"
           onClick={() => onSelectPackage(pkg)}
+          disabled={pkg.stock != null && pkg.stock <= 0}
         >
-          {pkg.popular ? c.btnPopular : c.btnNormal}
+          {pkg.stock != null && pkg.stock <= 0 ? "Stock Out" : pkg.popular ? c.btnPopular : c.btnNormal}
         </Button>
       </div>
     </motion.div>
