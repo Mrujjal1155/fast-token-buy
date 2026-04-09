@@ -433,7 +433,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span className="font-semibold">{t("order.total")}</span>
             <div className="text-right">
               {couponApplied && (
-                <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage?.price}</span>
+                <span className="text-sm text-muted-foreground line-through mr-2">৳{totalPrice}</span>
               )}
               <span className="text-2xl font-bold text-gradient-primary">৳{finalPrice}</span>
             </div>
