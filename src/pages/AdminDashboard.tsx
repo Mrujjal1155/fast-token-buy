@@ -357,7 +357,9 @@ const AdminDashboard = () => {
                                   <span className="text-muted-foreground">পরিবর্তন করুন</span>
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {Object.entries(statusConfig).filter(([key]) => key !== order.status).map(([key, cfg]) => (
+                                  {Object.entries(statusConfig)
+                                    .filter(([key]) => key !== "timeout" && key !== displayStatus)
+                                    .map(([key, cfg]) => (
                                     <SelectItem key={key} value={key}>
                                       <span className={`flex items-center gap-2 ${cfg.color}`}>
                                         {cfg.icon}
