@@ -5,6 +5,7 @@ import { type CreditPackage } from "@/lib/packages";
 import { usePackages } from "@/hooks/usePackages";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePricingFeatures } from "@/hooks/usePricingFeatures";
 
 interface PricingSectionProps {
   onSelectPackage: (pkg: CreditPackage) => void;
@@ -15,6 +16,8 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
   const { content } = useSiteContent();
   const c = content.pricing;
   const { t } = useLanguage();
+  const dynamicFeatures = usePricingFeatures();
+  const featureList = dynamicFeatures.length > 0 ? dynamicFeatures : [c.feature1, c.feature2, c.feature3];
 
   return (
     <section id="pricing" className="py-16 md:py-24 relative">
@@ -77,8 +80,8 @@ const PricingSection = ({ onSelectPackage }: PricingSectionProps) => {
                 </div>
 
                 <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8 flex-1">
-                  {[c.feature1, c.feature2, c.feature3].map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
+                  {featureList.map((f, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-xs md:text-sm text-secondary-foreground">
                       <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                       {f}
                     </li>
