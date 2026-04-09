@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -27,6 +27,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
@@ -82,7 +83,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const currentPayment = activePaymentMethods.find((p) => p.id === selectedPayment) || activePaymentMethods[0];
   const isCrypto = currentPayment?.type === "crypto";
-  const finalPrice = chosenPackage ? Math.max(chosenPackage.price - couponDiscount, 0) : 0;
+  const totalPrice = chosenPackage ? chosenPackage.price * quantity : 0;
+  const totalCredits = chosenPackage ? chosenPackage.credits * quantity : 0;
+  const finalPrice = Math.max(totalPrice - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
@@ -99,7 +102,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
     const { data, error } = await supabase.rpc("validate_coupon", {
       p_code: couponCode.trim().toUpperCase(),
-      p_amount: chosenPackage?.price,
+      p_amount: totalPrice,
     });
 
     if (error || !data || data.length === 0) {
@@ -143,7 +146,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .insert({
         email,
         package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
+        credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
         payment_method: `crypto-${selectedCrypto.token}-${selectedCrypto.network}`,
@@ -210,7 +213,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .insert({
         email,
         package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
+        credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
         payment_method: `ajkerpay-${selectedPayment}`,
@@ -344,13 +347,41 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span>{t("order.package")}</span>
             <span className="font-semibold">{chosenPackage?.credits} {t("pricing.credits")}</span>
           </div>
+
+          {/* Quantity selector */}
+          <div className="flex items-center justify-between text-foreground">
+            <span>একাউন্ট সংখ্যা</span>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={quantity <= 1}
+                className="w-8 h-8 rounded-lg border border-border/50 bg-secondary flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-primary/10 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="text-lg font-bold text-foreground w-6 text-center">{quantity}</span>
+              <button
+                onClick={() => setQuantity((q) => Math.min(3, q + 1))}
+                disabled={quantity >= 3}
+                className="w-8 h-8 rounded-lg border border-border/50 bg-secondary flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-primary/10 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          {quantity > 1 && (
+            <p className="text-xs text-primary">
+              {quantity}টি একাউন্ট × {chosenPackage?.credits} = <span className="font-bold">{totalCredits} {t("pricing.credits")}</span>
+            </p>
+          )}
+
           <div className="flex justify-between text-foreground">
             <span>{t("order.email")}</span>
             <span className="text-muted-foreground text-sm">{email}</span>
           </div>
           <div className="flex justify-between text-foreground">
             <span>{t("order.subtotal")}</span>
-            <span>৳{chosenPackage?.price}</span>
+            <span>৳{totalPrice}{quantity > 1 && <span className="text-xs text-muted-foreground ml-1">({quantity} × ৳{chosenPackage?.price})</span>}</span>
           </div>
 
           {/* Coupon section */}
@@ -402,7 +433,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             <span className="font-semibold">{t("order.total")}</span>
             <div className="text-right">
               {couponApplied && (
-                <span className="text-sm text-muted-foreground line-through mr-2">৳{chosenPackage?.price}</span>
+                <span className="text-sm text-muted-foreground line-through mr-2">৳{totalPrice}</span>
               )}
               <span className="text-2xl font-bold text-gradient-primary">৳{finalPrice}</span>
             </div>
