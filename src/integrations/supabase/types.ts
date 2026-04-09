@@ -178,6 +178,7 @@ export type Database = {
           created_at: string
           id: string
           is_visible: boolean
+          package_key: string | null
           sort_order: number
           text_bn: string
           text_en: string
@@ -187,6 +188,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_visible?: boolean
+          package_key?: string | null
           sort_order?: number
           text_bn?: string
           text_en?: string
@@ -196,6 +198,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_visible?: boolean
+          package_key?: string | null
           sort_order?: number
           text_bn?: string
           text_en?: string
