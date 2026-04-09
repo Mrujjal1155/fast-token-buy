@@ -13,11 +13,31 @@ interface CryptoCheckoutStepProps {
   onSuccess: () => void;
   onBack: () => void;
   onRetry?: () => void;
+  deadline?: number | null;
 }
 
-const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }: CryptoCheckoutStepProps) => {
+const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry, deadline }: CryptoCheckoutStepProps) => {
   const [state, setState] = useState<PaymentState>("checking");
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const { t } = useLanguage();
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // Countdown tick
+  useEffect(() => {
+    if (!deadline || state === "success") return;
+    const tick = () => {
+      const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+      setTimeLeft(remaining);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [deadline, state]);
 
   const checkStatus = useCallback(async () => {
     const { data } = await supabase
