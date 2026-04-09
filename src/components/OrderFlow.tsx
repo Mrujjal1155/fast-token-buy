@@ -535,6 +535,11 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             </span>
           </div>
         )}
+
+        {/* Payment method tabs */}
+        <div className="grid grid-cols-2 gap-3">
+          {activePaymentMethods.map((m) => (
+            <button
               key={m.id}
               onClick={() => setSelectedPayment(m.id)}
               className={`relative py-4 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2.5 ${
