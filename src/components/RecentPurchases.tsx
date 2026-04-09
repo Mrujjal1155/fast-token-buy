@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Clock, CheckCircle, Loader2, AlertCircle, TrendingUp } from "lucide-react";
+import { Package, Clock, CheckCircle, Loader2, AlertCircle, TrendingUp, Timer } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -23,7 +23,11 @@ const RecentPurchases = () => {
     processing: { icon: Loader2, label: t("status.processing"), color: "text-blue-400", bgColor: "bg-blue-400/10" },
     completed: { icon: CheckCircle, label: t("status.completed"), color: "text-emerald-400", bgColor: "bg-emerald-400/10" },
     failed: { icon: AlertCircle, label: t("status.failed"), color: "text-red-400", bgColor: "bg-red-400/10" },
+    timeout: { icon: Timer, label: t("status.timeout"), color: "text-orange-400", bgColor: "bg-orange-400/10" },
   };
+
+  const getDisplayStatus = (order: Order) =>
+    order.status === "failed" && order.admin_notes?.includes("payment timeout") ? "timeout" : order.status;
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -78,7 +82,8 @@ const RecentPurchases = () => {
         <div className="max-w-2xl mx-auto space-y-2">
           <AnimatePresence initial={false}>
             {orders.map((order) => {
-              const st = statusConfig[order.status] || statusConfig.pending;
+              const displayStatus = getDisplayStatus(order);
+              const st = statusConfig[displayStatus] || statusConfig.pending;
               const StatusIcon = st.icon;
               return (
                 <motion.div

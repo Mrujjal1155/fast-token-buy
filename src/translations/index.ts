@@ -46,6 +46,7 @@ const en = {
   "status.processing": "Processing",
   "status.completed": "Completed",
   "status.failed": "Failed",
+  "status.timeout": "Timed Out",
 
   // Order Flow
   "order.choosePackage": "Choose Your Package",
@@ -286,6 +287,7 @@ const bn: Record<keyof typeof en, string> = {
   "status.processing": "প্রক্রিয়াধীন",
   "status.completed": "সম্পন্ন",
   "status.failed": "ব্যর্থ",
+  "status.timeout": "টাইম আউট",
 
   // Order Flow
   "order.choosePackage": "আপনার প্যাকেজ বাছুন",
