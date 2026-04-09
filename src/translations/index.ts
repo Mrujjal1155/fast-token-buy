@@ -108,6 +108,8 @@ const en = {
   "track.transactionId": "Transaction ID",
   "track.date": "Date",
   "track.backHome": "Go Home",
+  "track.expiredTitle": "Payment Timed Out",
+  "track.expiredDesc": "This order was automatically cancelled because payment was not completed within 30 minutes. Please place a new order.",
   "track.orderCompleted": "Your order has been completed!",
 
   // Review Form
@@ -346,6 +348,8 @@ const bn: Record<keyof typeof en, string> = {
   "track.transactionId": "ট্রানজেকশন আইডি",
   "track.date": "তারিখ",
   "track.backHome": "হোমে ফিরুন",
+  "track.expiredTitle": "পেমেন্ট সময় শেষ",
+  "track.expiredDesc": "৩০ মিনিটের মধ্যে পেমেন্ট না হওয়ায় এই অর্ডারটি স্বয়ংক্রিয়ভাবে বাতিল হয়েছে। অনুগ্রহ করে নতুন অর্ডার দিন।",
   "track.orderCompleted": "আপনার অর্ডার সম্পন্ন হয়েছে!",
 
   // Review Form
