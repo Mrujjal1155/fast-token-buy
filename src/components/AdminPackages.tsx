@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, Save, Package, Star } from "lucide-react";
 import PackageFeatures from "@/components/PackageFeatures";
+import GlobalFeatures from "@/components/GlobalFeatures";
 import {
   buildPackageSavingsFallback,
   getPackageSavingsText,
@@ -284,6 +285,8 @@ const AdminPackages = () => {
           </div>
         ))}
       </div>
+
+      <GlobalFeatures textLang={textLang as "en" | "bn"} />
 
       {packages.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
