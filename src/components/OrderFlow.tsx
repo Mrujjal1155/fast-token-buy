@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -27,6 +27,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
@@ -82,7 +83,9 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
 
   const currentPayment = activePaymentMethods.find((p) => p.id === selectedPayment) || activePaymentMethods[0];
   const isCrypto = currentPayment?.type === "crypto";
-  const finalPrice = chosenPackage ? Math.max(chosenPackage.price - couponDiscount, 0) : 0;
+  const totalPrice = chosenPackage ? chosenPackage.price * quantity : 0;
+  const totalCredits = chosenPackage ? chosenPackage.credits * quantity : 0;
+  const finalPrice = Math.max(totalPrice - couponDiscount, 0);
 
   const handleEmailSubmit = () => {
     if (!email || !email.includes("@")) {
