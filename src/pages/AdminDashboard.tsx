@@ -147,9 +147,16 @@ const AdminDashboard = () => {
     setStatusChangeDialog({ open: false, orderId: "", orderDisplayId: "", newStatus: "" });
     setUpdatingStatus(orderId);
 
+    const isTimeout = newStatus === "timeout";
+    const dbStatus = isTimeout ? "failed" : newStatus;
+    const dbNotes = isTimeout ? "[Auto-failed: payment timeout 30 min]" : undefined;
+
     const { error } = await supabase
       .from("orders")
-      .update({ status: newStatus as Order["status"] })
+      .update({
+        status: dbStatus as Order["status"],
+        ...(dbNotes !== undefined && { admin_notes: dbNotes }),
+      })
       .eq("id", orderId);
 
     setUpdatingStatus(null);
@@ -157,9 +164,10 @@ const AdminDashboard = () => {
     if (error) {
       toast({ title: "স্ট্যাটাস আপডেট ব্যর্থ", variant: "destructive" });
     } else {
+      const displayLabel = statusConfig[newStatus]?.label || newStatus;
       toast({
         title: "স্ট্যাটাস আপডেট হয়েছে",
-        description: `${orderDisplayId} → ${statusConfig[newStatus]?.label || newStatus}`,
+        description: `${orderDisplayId} → ${displayLabel}`,
       variant: "success" });
       fetchOrders();
     }
@@ -358,7 +366,7 @@ const AdminDashboard = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Object.entries(statusConfig)
-                                    .filter(([key]) => key !== "timeout" && key !== displayStatus)
+                                    .filter(([key]) => key !== displayStatus)
                                     .map(([key, cfg]) => (
                                     <SelectItem key={key} value={key}>
                                       <span className={`flex items-center gap-2 ${cfg.color}`}>
