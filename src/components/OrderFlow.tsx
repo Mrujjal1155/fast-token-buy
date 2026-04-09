@@ -146,7 +146,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .insert({
         email,
         package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
+        credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
         payment_method: `crypto-${selectedCrypto.token}-${selectedCrypto.network}`,
@@ -213,7 +213,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       .insert({
         email,
         package_id: chosenPackage?.id,
-        credits: chosenPackage?.credits,
+        credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
         payment_method: `ajkerpay-${selectedPayment}`,
