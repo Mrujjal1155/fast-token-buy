@@ -173,6 +173,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pricing_features: {
+        Row: {
+          created_at: string
+          id: string
+          is_visible: boolean
+          sort_order: number
+          text_bn: string
+          text_en: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          sort_order?: number
+          text_bn?: string
+          text_en?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          sort_order?: number
+          text_bn?: string
+          text_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reserves: {
         Row: {
           amount: string
@@ -254,6 +284,48 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: string
+        }
+        Relationships: []
+      }
+      trust_badges: {
+        Row: {
+          color: string
+          created_at: string
+          desc_bn: string
+          desc_en: string
+          icon: string
+          id: string
+          is_visible: boolean
+          sort_order: number
+          title_bn: string
+          title_en: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          desc_bn?: string
+          desc_en?: string
+          icon?: string
+          id?: string
+          is_visible?: boolean
+          sort_order?: number
+          title_bn?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          desc_bn?: string
+          desc_en?: string
+          icon?: string
+          id?: string
+          is_visible?: boolean
+          sort_order?: number
+          title_bn?: string
+          title_en?: string
+          updated_at?: string
         }
         Relationships: []
       }
