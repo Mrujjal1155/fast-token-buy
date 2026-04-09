@@ -147,9 +147,16 @@ const AdminDashboard = () => {
     setStatusChangeDialog({ open: false, orderId: "", orderDisplayId: "", newStatus: "" });
     setUpdatingStatus(orderId);
 
+    let updateData: Record<string, unknown>;
+    if (newStatus === "timeout") {
+      updateData = { status: "failed" as Order["status"], admin_notes: "[Auto-failed: payment timeout 30 min]" };
+    } else {
+      updateData = { status: newStatus as Order["status"] };
+    }
+
     const { error } = await supabase
       .from("orders")
-      .update({ status: newStatus as Order["status"] })
+      .update(updateData)
       .eq("id", orderId);
 
     setUpdatingStatus(null);
@@ -157,9 +164,10 @@ const AdminDashboard = () => {
     if (error) {
       toast({ title: "স্ট্যাটাস আপডেট ব্যর্থ", variant: "destructive" });
     } else {
+      const displayLabel = statusConfig[newStatus]?.label || newStatus;
       toast({
         title: "স্ট্যাটাস আপডেট হয়েছে",
-        description: `${orderDisplayId} → ${statusConfig[newStatus]?.label || newStatus}`,
+        description: `${orderDisplayId} → ${displayLabel}`,
       variant: "success" });
       fetchOrders();
     }
