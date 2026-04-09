@@ -361,8 +361,11 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
               </button>
               <span className="text-lg font-bold text-foreground w-6 text-center">{quantity}</span>
               <button
-                onClick={() => setQuantity((q) => Math.min(3, q + 1))}
-                disabled={quantity >= 3}
+                onClick={() => setQuantity((q) => {
+                  const maxQty = chosenPackage?.stock != null ? chosenPackage.stock : 999;
+                  return Math.min(maxQty, q + 1);
+                })}
+                disabled={chosenPackage?.stock != null ? quantity >= chosenPackage.stock : false}
                 className="w-8 h-8 rounded-lg border border-border/50 bg-secondary flex items-center justify-center text-foreground disabled:opacity-30 hover:bg-primary/10 transition-colors"
               >
                 <Plus className="w-4 h-4" />
