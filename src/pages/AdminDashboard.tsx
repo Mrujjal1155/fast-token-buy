@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Timer } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
@@ -173,7 +173,10 @@ const AdminDashboard = () => {
     const matchesPayment =
       paymentFilter === "all" ||
       (paymentFilter === "crypto" ? o.payment_method.startsWith("crypto") : o.payment_method.includes(paymentFilter));
-    const matchesStatus = statusFilter === "all" || o.status === statusFilter;
+    const isTimeout = isTimeoutOrder(o);
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "timeout" ? isTimeout : statusFilter === "failed" ? (o.status === "failed" && !isTimeout) : o.status === statusFilter);
     return matchesSearch && matchesPayment && matchesStatus;
   });
 
@@ -285,6 +288,7 @@ const AdminDashboard = () => {
                   <SelectItem value="processing">Processing</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="failed">Failed</SelectItem>
+                  <SelectItem value="timeout">Timed Out</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -314,7 +318,8 @@ const AdminDashboard = () => {
                       <tr><td colSpan={10} className="p-8 text-center text-muted-foreground">No orders found</td></tr>
                     ) : (
                       filtered.map((order) => {
-                        const config = statusConfig[order.status];
+                        const displayStatus = isTimeoutOrder(order) ? "timeout" : order.status;
+                        const config = statusConfig[displayStatus];
                         const isUpdating = updatingStatus === order.id;
                         return (
                           <tr key={order.id} className="border-b border-border/10 hover:bg-secondary/30 transition">
