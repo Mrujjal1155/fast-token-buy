@@ -4,6 +4,7 @@ import { Package, Clock, CheckCircle, Loader2, AlertCircle, TrendingUp, Timer } 
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getDisplayStatus } from "@/lib/orderUtils";
 
 type Order = Tables<"orders">;
 
@@ -26,8 +27,6 @@ const RecentPurchases = () => {
     timeout: { icon: Timer, label: t("status.timeout"), color: "text-orange-400", bgColor: "bg-orange-400/10" },
   };
 
-  const getDisplayStatus = (order: Order) =>
-    order.status === "failed" && order.admin_notes?.includes("payment timeout") ? "timeout" : order.status;
 
   useEffect(() => {
     const fetchOrders = async () => {
