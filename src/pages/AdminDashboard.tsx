@@ -366,7 +366,7 @@ const AdminDashboard = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Object.entries(statusConfig)
-                                    .filter(([key]) => key !== "timeout" && key !== displayStatus)
+                                    .filter(([key]) => key !== displayStatus)
                                     .map(([key, cfg]) => (
                                     <SelectItem key={key} value={key}>
                                       <span className={`flex items-center gap-2 ${cfg.color}`}>
