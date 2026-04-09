@@ -190,6 +190,36 @@
   animation: float-slow 8s ease-in-out infinite;
 }
 
+@keyframes hero-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -40px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(15px, 30px) scale(1.05); }
+}
+
+@keyframes hero-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-40px, 20px) scale(1.15); }
+  50% { transform: translate(25px, -30px) scale(0.9); }
+  75% { transform: translate(-15px, -20px) scale(1.1); }
+}
+
+@keyframes hero-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -25px) scale(1.12); }
+  66% { transform: translate(-30px, 15px) scale(0.92); }
+}
+
+@keyframes hero-blob-4 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(25px, -20px) scale(1.08) rotate(5deg); }
+}
+
+.animate-hero-blob-1 { animation: hero-blob-1 12s ease-in-out infinite; }
+.animate-hero-blob-2 { animation: hero-blob-2 14s ease-in-out infinite; }
+.animate-hero-blob-3 { animation: hero-blob-3 10s ease-in-out infinite; }
+.animate-hero-blob-4 { animation: hero-blob-4 16s ease-in-out infinite; }
+
 .mask-fade {
   -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
