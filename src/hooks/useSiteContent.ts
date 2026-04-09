@@ -71,17 +71,17 @@ export interface SiteContent {
 
 const defaultContentEn: SiteContent = {
   hero: {
-    badge: "This offer won't last long — grab it now!",
-    headingPrefix: "Get",
+    badge: "🔥 Limited time offer — don't miss out!",
+    headingPrefix: "Only",
     headingPrice: "৳80",
     headingMiddle: "for",
     headingCredits: "105 Credits",
-    headingSuffix: "— Today!",
-    subtext: "Order in 1 minute, delivery in 5 minutes. Thousands of users already trust us.",
+    headingSuffix: "— Grab Yours Now!",
+    subtext: "1-minute checkout, 5-minute delivery. Join thousands of happy buyers today!",
     trustSafe: "100% Safe",
     trustDelivery: "Instant Delivery",
-    btnPrimary: "Get Credits Now",
-    btnSecondary: "Start in 1 Minute",
+    btnPrimary: "Buy Credits Now",
+    btnSecondary: "See All Packages",
   },
   trustBadges: {
     badge1Title: "5-Min Delivery",
@@ -138,17 +138,17 @@ const defaultContentEn: SiteContent = {
 
 const defaultContentBn: SiteContent = {
   hero: {
-    badge: "এই অফার আর বেশিদিন থাকবে না — এখনই নিন!",
+    badge: "🔥 সীমিত সময়ের অফার — মিস করবেন না!",
     headingPrefix: "মাত্র",
     headingPrice: "৳৮০",
-    headingMiddle: "তে পান",
+    headingMiddle: "তে পাচ্ছেন",
     headingCredits: "১০৫ ক্রেডিট",
-    headingSuffix: "— আজই!",
-    subtext: "১ মিনিটে অর্ডার, ৫ মিনিটে ডেলিভারি। হাজারো ইউজার ইতিমধ্যে বিশ্বাস করে।",
+    headingSuffix: "— এখনই কিনুন!",
+    subtext: "১ মিনিটে অর্ডার, ৫ মিনিটে ডেলিভারি। হাজারো সন্তুষ্ট ক্রেতা আজই যোগ দিন!",
     trustSafe: "১০০% নিরাপদ",
     trustDelivery: "তাৎক্ষণিক ডেলিভারি",
-    btnPrimary: "এখনই ক্রেডিট নিন",
-    btnSecondary: "১ মিনিটে শুরু করুন",
+    btnPrimary: "এখনই ক্রেডিট কিনুন",
+    btnSecondary: "সব প্যাকেজ দেখুন",
   },
   trustBadges: {
     badge1Title: "৫ মিনিটে ডেলিভারি",
