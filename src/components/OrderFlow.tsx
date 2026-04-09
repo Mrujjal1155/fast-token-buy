@@ -28,6 +28,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [paymentDeadline, setPaymentDeadline] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
