@@ -107,6 +107,23 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry, d
         </div>
       </div>
 
+      {/* Countdown Timer */}
+      {deadline && state === "checking" && (
+        <div className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border ${
+          timeLeft <= 300
+            ? "bg-destructive/10 border-destructive/30 text-destructive"
+            : timeLeft <= 600
+            ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+            : "bg-primary/10 border-primary/30 text-primary"
+        }`}>
+          <Clock className="w-4 h-4" />
+          <span className="text-sm font-medium">{t("order.timeRemaining")}:</span>
+          <span className={`text-lg font-bold font-mono ${timeLeft <= 300 ? "animate-pulse" : ""}`}>
+            {formatTime(timeLeft)}
+          </span>
+        </div>
+      )}
+
       {state === "checking" && (
         <>
           <a href={paymentUrl} target="_blank" rel="noopener noreferrer" className="block">
