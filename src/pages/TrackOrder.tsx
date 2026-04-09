@@ -27,7 +27,11 @@ const TrackOrder = () => {
     processing: { icon: Loader2, label: t("status.processing"), className: "text-blue-400 bg-blue-400/10" },
     completed: { icon: CheckCircle, label: t("status.completed"), className: "text-primary bg-primary/10" },
     failed: { icon: AlertCircle, label: t("status.failed"), className: "text-destructive bg-destructive/10" },
+    timeout: { icon: Timer, label: t("status.timeout"), className: "text-orange-400 bg-orange-400/10" },
   };
+
+  const getDisplayStatus = (order: Order) =>
+    order.status === "failed" && order.admin_notes?.includes("payment timeout") ? "timeout" : order.status;
 
   const handleSearch = useCallback(async (searchQuery?: string) => {
     const q = (searchQuery || query).trim();
@@ -140,7 +144,8 @@ const TrackOrder = () => {
                 </button>
               </div>
               {(() => {
-                const config = statusConfig[order.status];
+                const displayStatus = getDisplayStatus(order);
+                const config = statusConfig[displayStatus];
                 const Icon = config?.icon || Clock;
                 return (
                   <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${config?.className || ""}`}>
