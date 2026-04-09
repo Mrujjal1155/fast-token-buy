@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus, PackageCheck, AlertTriangle, XCircle } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus, PackageCheck, AlertTriangle, XCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
