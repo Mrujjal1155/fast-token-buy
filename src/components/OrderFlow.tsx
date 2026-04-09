@@ -105,7 +105,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           .update({ status: "failed" as const, admin_notes: "[Auto-failed: payment timeout 30 min]" })
           .eq("order_id", orderId)
           .then(() => {
-            toast({ title: t("order.timeoutTitle") || "সময় শেষ!", description: t("order.timeoutDesc") || "৩০ মিনিটের মধ্যে পেমেন্ট হয়নি। অর্ডার বাতিল হয়েছে।", variant: "destructive" });
+            toast({ title: t("order.timeoutTitle"), description: t("order.timeoutDesc"), variant: "destructive" });
             setStep("package");
             setPaymentDeadline(null);
           });
