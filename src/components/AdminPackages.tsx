@@ -26,6 +26,7 @@ interface PackageRow {
   savings: string | null;
   sort_order: number;
   is_active: boolean;
+  stock: number | null;
 }
 
 type PackageTextState = Record<string, Record<LocalizedCatalogLang, string>>;
@@ -111,6 +112,7 @@ const AdminPackages = () => {
             popular: pkg.popular,
             sort_order: pkg.sort_order,
             is_active: pkg.is_active,
+            stock: pkg.stock,
           })
           .eq("id", pkg.id),
         Promise.all([
@@ -230,7 +232,19 @@ const AdminPackages = () => {
                   className="h-9 bg-secondary border-border/50"
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-1">
+                <label className="text-xs text-muted-foreground mb-1 block">
+                  স্টক ({pkg.stock == null ? "Unlimited" : pkg.stock})
+                </label>
+                <Input
+                  type="number"
+                  value={pkg.stock ?? ""}
+                  onChange={(e) => updateField(pkg.id, "stock", e.target.value === "" ? null : parseInt(e.target.value) || 0)}
+                  placeholder="খালি = Unlimited"
+                  className="h-9 bg-secondary border-border/50"
+                />
+              </div>
+              <div className="col-span-1">
                 <label className="text-xs text-muted-foreground mb-1 block">
                   সেভিংস টেক্সট ({textLang === "en" ? "EN" : "বাংলা"})
                 </label>

@@ -5,6 +5,7 @@ export interface CreditPackage {
   currency: string;
   popular?: boolean;
   savings?: string;
+  stock?: number | null; // null = unlimited
 }
 
 export const packages: CreditPackage[] = [

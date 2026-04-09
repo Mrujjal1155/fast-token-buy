@@ -22,7 +22,7 @@ export const usePackages = () => {
       const [{ data }, textMaps] = await Promise.all([
         supabase
           .from("packages")
-          .select("package_key, credits, price, currency, popular, savings, sort_order")
+          .select("package_key, credits, price, currency, popular, savings, sort_order, stock")
           .eq("is_active", true)
           .order("sort_order"),
         loadPackageTextMaps(),
@@ -45,6 +45,7 @@ export const usePackages = () => {
             currency: pkg.currency,
             popular: pkg.popular,
             savings: getPackageSavingsText(textMaps[lang], pkg.package_key, fallbackSavings) || undefined,
+            stock: pkg.stock,
           };
         });
 
