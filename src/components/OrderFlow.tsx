@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus, PackageCheck, AlertTriangle, XCircle } from "lucide-react";
+import { ArrowLeft, Mail, CreditCard, Check, Copy, Tag, X, Loader2, Coins, Star, Package, Zap, PartyPopper, Minus, Plus, PackageCheck, AlertTriangle, XCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type CreditPackage } from "@/lib/packages";
@@ -28,6 +28,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const [submitting, setSubmitting] = useState(false);
   const [cryptoPaymentUrl, setCryptoPaymentUrl] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [paymentDeadline, setPaymentDeadline] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
 
   // Crypto state
   const [selectedCrypto, setSelectedCrypto] = useState<{ token: string; network: string; label: string }>(cryptoTokens[0]);
@@ -80,6 +82,45 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     };
     fetchSettings();
   }, []);
+
+  // Start countdown when entering payment step
+  useEffect(() => {
+    if (step === "payment" && !paymentDeadline) {
+      setPaymentDeadline(Date.now() + 30 * 60 * 1000);
+    }
+  }, [step, paymentDeadline]);
+
+  // Countdown timer tick
+  useEffect(() => {
+    if (!paymentDeadline) return;
+    if (step === "success") return;
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.floor((paymentDeadline - Date.now()) / 1000));
+      setTimeLeft(remaining);
+      if (remaining <= 0 && orderId) {
+        // Auto-fail the order
+        supabase
+          .from("orders")
+          .update({ status: "failed" as const, admin_notes: "[Auto-failed: payment timeout 30 min]" })
+          .eq("order_id", orderId)
+          .then(() => {
+            toast({ title: t("order.timeoutTitle"), description: t("order.timeoutDesc"), variant: "destructive" });
+            setStep("package");
+            setPaymentDeadline(null);
+          });
+      }
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [paymentDeadline, orderId, step, toast, t]);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
 
   const currentPayment = activePaymentMethods.find((p) => p.id === selectedPayment) || activePaymentMethods[0];
   const isCrypto = currentPayment?.type === "crypto";
@@ -478,6 +519,23 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           </p>
         </div>
 
+        {/* Countdown Timer */}
+        {paymentDeadline && (
+          <div className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border ${
+            timeLeft <= 300
+              ? "bg-destructive/10 border-destructive/30 text-destructive"
+              : timeLeft <= 600
+              ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+              : "bg-primary/10 border-primary/30 text-primary"
+          }`}>
+            <Clock className="w-4 h-4" />
+            <span className="text-sm font-medium">{t("order.timeRemaining")}:</span>
+            <span className={`text-lg font-bold font-mono ${timeLeft <= 300 ? "animate-pulse" : ""}`}>
+              {formatTime(timeLeft)}
+            </span>
+          </div>
+        )}
+
         {/* Payment method tabs */}
         <div className="grid grid-cols-2 gap-3">
           {activePaymentMethods.map((m) => (
@@ -592,6 +650,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         onSuccess={() => setStep("success")}
         onBack={onBack}
         onRetry={() => setStep("payment")}
+        deadline={paymentDeadline}
       />
     ),
   };

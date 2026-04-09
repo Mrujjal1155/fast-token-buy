@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Loader2, Copy, ExternalLink, CheckCircle, XCircle, RefreshCw, Lock, PartyPopper, ShieldX } from "lucide-react";
+import { Loader2, Copy, ExternalLink, CheckCircle, XCircle, RefreshCw, Lock, PartyPopper, ShieldX, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -13,11 +13,31 @@ interface CryptoCheckoutStepProps {
   onSuccess: () => void;
   onBack: () => void;
   onRetry?: () => void;
+  deadline?: number | null;
 }
 
-const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }: CryptoCheckoutStepProps) => {
+const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry, deadline }: CryptoCheckoutStepProps) => {
   const [state, setState] = useState<PaymentState>("checking");
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const { t } = useLanguage();
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // Countdown tick
+  useEffect(() => {
+    if (!deadline || state === "success") return;
+    const tick = () => {
+      const remaining = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+      setTimeLeft(remaining);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [deadline, state]);
 
   const checkStatus = useCallback(async () => {
     const { data } = await supabase
@@ -86,6 +106,23 @@ const CryptoCheckoutStep = ({ orderId, paymentUrl, onSuccess, onBack, onRetry }:
           </button>
         </div>
       </div>
+
+      {/* Countdown Timer */}
+      {deadline && state === "checking" && (
+        <div className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border ${
+          timeLeft <= 300
+            ? "bg-destructive/10 border-destructive/30 text-destructive"
+            : timeLeft <= 600
+            ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+            : "bg-primary/10 border-primary/30 text-primary"
+        }`}>
+          <Clock className="w-4 h-4" />
+          <span className="text-sm font-medium">{t("order.timeRemaining")}:</span>
+          <span className={`text-lg font-bold font-mono ${timeLeft <= 300 ? "animate-pulse" : ""}`}>
+            {formatTime(timeLeft)}
+          </span>
+        </div>
+      )}
 
       {state === "checking" && (
         <>
