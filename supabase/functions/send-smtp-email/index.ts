@@ -13,6 +13,10 @@ const CARD = "#1E293B";
 const TEXT = "#E2E8F0";
 const MUTED = "#94A3B8";
 
+function sanitizeConfigValue(value?: string): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function replacePlaceholders(template: string, d: Record<string, any>): string {
   return template
     .replace(/\{order_id\}/g, d.order_id || "")
@@ -187,16 +191,17 @@ serve(async (req) => {
         cfg[s.key] = s.value;
       }
     });
-    const logoUrl = cfg['site_logo'] || '';
+    const logoUrl = sanitizeConfigValue(cfg['site_logo']);
 
-    const host = cfg['smtp_host'];
-    const port = parseInt(cfg['smtp_port'] || '465');
-    const username = cfg['smtp_username'] || '';
+    const host = sanitizeConfigValue(cfg['smtp_host']);
+    const parsedPort = Number.parseInt(sanitizeConfigValue(cfg['smtp_port']) || '465', 10);
+    const port = Number.isFinite(parsedPort) ? parsedPort : 465;
+    const username = sanitizeConfigValue(cfg['smtp_username']);
     const password = cfg['smtp_password'] || '';
-    const encryption = cfg['smtp_encryption'] || 'ssl';
-    const fromEmail = cfg['smtp_from_email'] || username;
-    const fromName = cfg['smtp_from_name'] || 'FastTokenBuy';
-    const adminEmail = cfg['smtp_admin_email'] || '';
+    const encryption = sanitizeConfigValue(cfg['smtp_encryption']) || 'ssl';
+    const fromEmail = sanitizeConfigValue(cfg['smtp_from_email']) || username;
+    const fromName = sanitizeConfigValue(cfg['smtp_from_name']) || 'FastTokenBuy';
+    const adminEmail = sanitizeConfigValue(cfg['smtp_admin_email']);
 
     if (!host || !username || !password) {
       return new Response(JSON.stringify({ error: 'Incomplete SMTP configuration' }), {
@@ -206,19 +211,32 @@ serve(async (req) => {
 
     const client = new SMTPClient({
       connection: { hostname: host, port, tls: encryption === 'ssl', auth: { username, password } },
+      debug: {
+        allowUnsecure: encryption === 'none',
+        noStartTLS: encryption === 'none',
+      },
     });
 
+    const customerEmail = typeof data?.email === 'string' ? data.email.trim() : '';
     const sn = fromName;
-    const emailData = { ...data, site_name: sn, logo_url: logoUrl };
+    const emailData = {
+      ...data,
+      email: customerEmail,
+      payment_method: typeof data?.payment_method === 'string' ? data.payment_method.trim() : data?.payment_method,
+      site_name: sn,
+      logo_url: logoUrl,
+    };
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
     if (type === 'order_submitted') {
       const subjectTpl = tpl.email_tpl_order_subject || `✅ অর্ডার কনফার্ম — {order_id} | {site_name}`;
-      emails.push({
-        to: data.email,
-        subject: replacePlaceholders(subjectTpl, emailData),
-        html: buildEmail('customer_order', emailData, tpl),
-      });
+      if (customerEmail) {
+        emails.push({
+          to: customerEmail,
+          subject: replacePlaceholders(subjectTpl, emailData),
+          html: buildEmail('customer_order', emailData, tpl),
+        });
+      }
       if (adminEmail) {
         const adminSubjectTpl = tpl.email_tpl_admin_subject || `🔔 নতুন অর্ডার — {order_id} | ৳{amount}`;
         emails.push({
@@ -229,18 +247,22 @@ serve(async (req) => {
       }
     } else if (type === 'credit_delivered') {
       const subjectTpl = tpl.email_tpl_delivered_subject || `🎉 ক্রেডিট ডেলিভারি সম্পন্ন — {order_id} | {site_name}`;
-      emails.push({
-        to: data.email,
-        subject: replacePlaceholders(subjectTpl, emailData),
-        html: buildEmail('credit_delivered', emailData, tpl),
-      });
+      if (customerEmail) {
+        emails.push({
+          to: customerEmail,
+          subject: replacePlaceholders(subjectTpl, emailData),
+          html: buildEmail('credit_delivered', emailData, tpl),
+        });
+      }
     } else if (type === 'order_timeout') {
       const subjectTpl = tpl.email_tpl_timeout_subject || `⏰ অর্ডার টাইম আউট — {order_id} | {site_name}`;
-      emails.push({
-        to: data.email,
-        subject: replacePlaceholders(subjectTpl, emailData),
-        html: buildEmail('order_timeout', emailData, tpl),
-      });
+      if (customerEmail) {
+        emails.push({
+          to: customerEmail,
+          subject: replacePlaceholders(subjectTpl, emailData),
+          html: buildEmail('order_timeout', emailData, tpl),
+        });
+      }
       if (adminEmail) {
         emails.push({
           to: adminEmail,
@@ -250,11 +272,13 @@ serve(async (req) => {
       }
     } else if (type === 'order_failed') {
       const subjectTpl = tpl.email_tpl_failed_subject || `❌ অর্ডার ব্যর্থ — {order_id} | {site_name}`;
-      emails.push({
-        to: data.email,
-        subject: replacePlaceholders(subjectTpl, emailData),
-        html: buildEmail('order_failed', emailData, tpl),
-      });
+      if (customerEmail) {
+        emails.push({
+          to: customerEmail,
+          subject: replacePlaceholders(subjectTpl, emailData),
+          html: buildEmail('order_failed', emailData, tpl),
+        });
+      }
       if (adminEmail) {
         emails.push({
           to: adminEmail,
@@ -262,6 +286,12 @@ serve(async (req) => {
           html: buildEmail('order_failed', { ...emailData, is_admin: true }, tpl),
         });
       }
+    }
+
+    if (emails.length === 0) {
+      return new Response(JSON.stringify({ error: 'No valid email recipients found' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     for (const em of emails) {
