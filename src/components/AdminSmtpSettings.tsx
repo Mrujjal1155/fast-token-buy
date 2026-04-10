@@ -25,6 +25,46 @@ const SMTP_KEYS = [
   "smtp_admin_email",
 ];
 
+const TRIMMABLE_SMTP_KEYS = new Set(
+  SMTP_KEYS.filter((key) => key !== "smtp_password")
+);
+
+const normalizeSmtpSettings = (values: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(values).map(([key, value]) => [
+      key,
+      TRIMMABLE_SMTP_KEYS.has(key) ? value.trim() : value,
+    ])
+  ) as Record<string, string>;
+
+const getFunctionErrorMessage = async (error: unknown, fallback?: string) => {
+  if (fallback) return fallback;
+
+  if (!error || typeof error !== "object") {
+    return "অজানা সমস্যা হয়েছে";
+  }
+
+  const functionError = error as { message?: string; context?: Response };
+
+  if (functionError.context) {
+    try {
+      const payload = await functionError.context.clone().json();
+      if (payload?.error && typeof payload.error === "string") {
+        return payload.error;
+      }
+    } catch {
+      try {
+        const text = await functionError.context.clone().text();
+        if (text) return text;
+      } catch {
+        // Ignore parse errors and fall back to the base message.
+      }
+    }
+  }
+
+  return functionError.message || "অজানা সমস্যা হয়েছে";
+};
+
 const AdminSmtpSettings = () => {
   const [settings, setSettings] = useState<Record<string, string>>({
     smtp_host: "",
@@ -56,66 +96,99 @@ const AdminSmtpSettings = () => {
     if (data) {
       const map: Record<string, string> = {};
       data.forEach((s) => {
-        map[s.key] = s.value;
+        map[s.key] = TRIMMABLE_SMTP_KEYS.has(s.key) ? s.value.trim() : s.value;
       });
       setSettings((prev) => ({ ...prev, ...map }));
     }
     setLoading(false);
   };
 
-  const handleSave = async () => {
+  const handleSave = async ({ silent = false }: { silent?: boolean } = {}) => {
     setSaving(true);
-    for (const key of SMTP_KEYS) {
-      const value = settings[key] || "";
-      const { data: existing } = await supabase
-        .from("site_settings")
-        .select("id")
-        .eq("key", key)
-        .maybeSingle();
+    const normalizedSettings = normalizeSmtpSettings(settings);
+    setSettings((prev) => ({ ...prev, ...normalizedSettings }));
 
-      if (existing) {
-        await supabase
+    try {
+      for (const key of SMTP_KEYS) {
+        const value = normalizedSettings[key] || "";
+        const { data: existing, error: fetchError } = await supabase
           .from("site_settings")
-          .update({ value, updated_at: new Date().toISOString() })
-          .eq("key", key);
-      } else {
-        await supabase.from("site_settings").insert({ key, value });
+          .select("id")
+          .eq("key", key)
+          .maybeSingle();
+
+        if (fetchError) throw fetchError;
+
+        if (existing) {
+          const { error: updateError } = await supabase
+            .from("site_settings")
+            .update({ value, updated_at: new Date().toISOString() })
+            .eq("key", key);
+
+          if (updateError) throw updateError;
+        } else {
+          const { error: insertError } = await supabase.from("site_settings").insert({ key, value });
+          if (insertError) throw insertError;
+        }
       }
+
+      if (!silent) {
+        toast({ title: "SMTP সেটিংস সেভ হয়েছে!", variant: "success" });
+      }
+
+      return true;
+    } catch (error) {
+      const description = error instanceof Error ? error.message : "সেভ করা যায়নি";
+      toast({
+        title: "SMTP সেটিংস সেভ ব্যর্থ",
+        description,
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    toast({ title: "SMTP সেটিংস সেভ হয়েছে!", variant: "success" });
   };
 
   const handleTestEmail = async () => {
-    if (!settings.smtp_host || !settings.smtp_username || !settings.smtp_password) {
+    const normalizedSettings = normalizeSmtpSettings(settings);
+    setSettings((prev) => ({ ...prev, ...normalizedSettings }));
+
+    if (!normalizedSettings.smtp_host || !normalizedSettings.smtp_username || !normalizedSettings.smtp_password) {
       toast({ title: "প্রথমে SMTP সেটিংস পূরণ করুন", variant: "destructive" });
       return;
     }
+
     setTesting(true);
-    await handleSave();
+    try {
+      const saved = await handleSave({ silent: true });
+      if (!saved) return;
 
-    const { data, error } = await supabase.functions.invoke("send-smtp-email", {
-      body: {
-        type: "order_submitted",
-        data: {
-          order_id: "TEST-ORDER-001",
-          email: settings.smtp_admin_email || settings.smtp_username,
-          credits: 100,
-          amount: 850,
-          payment_method: "Test Payment",
+      const { data, error } = await supabase.functions.invoke("send-smtp-email", {
+        body: {
+          type: "order_submitted",
+          data: {
+            order_id: "TEST-ORDER-001",
+            email: normalizedSettings.smtp_admin_email || normalizedSettings.smtp_username,
+            credits: 100,
+            amount: 850,
+            payment_method: "Test Payment",
+          },
         },
-      },
-    });
-
-    setTesting(false);
-    if (error || data?.error) {
-      toast({
-        title: "টেস্ট ইমেইল ব্যর্থ",
-        description: error?.message || data?.error,
-        variant: "destructive",
       });
-    } else {
+
+      if (error || data?.error) {
+        toast({
+          title: "টেস্ট ইমেইল ব্যর্থ",
+          description: await getFunctionErrorMessage(error, data?.error),
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({ title: "টেস্ট ইমেইল পাঠানো হয়েছে! ✉️", variant: "success" });
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -296,7 +369,9 @@ const AdminSmtpSettings = () => {
 
           {/* Save Button - Purple Gradient */}
           <Button
-            onClick={handleSave}
+            onClick={() => {
+              void handleSave();
+            }}
             disabled={saving}
             className="w-full bg-gradient-to-r from-purple-600 via-purple-500 to-fuchsia-400 hover:from-purple-700 hover:via-purple-600 hover:to-fuchsia-500 text-white border-0 py-6 text-base font-semibold rounded-xl"
           >
