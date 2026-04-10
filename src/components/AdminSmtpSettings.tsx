@@ -50,11 +50,17 @@ const AdminSmtpSettings = () => {
     const { data } = await supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", SMTP_KEYS);
+      .or(`key.in.(${SMTP_KEYS.join(",")}),key.eq.site_logo`);
 
     if (data) {
       const map: Record<string, string> = {};
-      data.forEach((s) => (map[s.key] = s.value));
+      data.forEach((s) => {
+        if (s.key === "site_logo") {
+          setLogoUrl(s.value);
+        } else {
+          map[s.key] = s.value;
+        }
+      });
       setSettings((prev) => ({ ...prev, ...map }));
     }
     setLoading(false);
