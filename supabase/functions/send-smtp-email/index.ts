@@ -53,6 +53,7 @@ function heroIcon(emoji: string, color: string): string {
 
 function buildEmail(type: string, d: Record<string, any>): string {
   const sn = d.site_name || "FastTokenBuy";
+  const logo = d.logo_url || "";
 
   if (type === "admin_order") {
     const inner = heroIcon("🔔", BRAND) +
