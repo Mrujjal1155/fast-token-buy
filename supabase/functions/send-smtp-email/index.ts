@@ -180,45 +180,45 @@ serve(async (req) => {
       emails.push({
         to: data.email,
         subject: `✅ অর্ডার কনফার্ম — ${data.order_id} | ${sn}`,
-        html: buildEmail('customer_order', { ...data, site_name: sn }),
+        html: buildEmail('customer_order', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `🔔 নতুন অর্ডার — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('admin_order', { ...data, site_name: sn }),
+          html: buildEmail('admin_order', emailData),
         });
       }
     } else if (type === 'credit_delivered') {
       emails.push({
         to: data.email,
         subject: `🎉 ক্রেডিট ডেলিভারি সম্পন্ন — ${data.order_id} | ${sn}`,
-        html: buildEmail('credit_delivered', { ...data, site_name: sn }),
+        html: buildEmail('credit_delivered', emailData),
       });
     } else if (type === 'order_timeout') {
       emails.push({
         to: data.email,
         subject: `⏰ অর্ডার টাইম আউট — ${data.order_id} | ${sn}`,
-        html: buildEmail('order_timeout', { ...data, site_name: sn }),
+        html: buildEmail('order_timeout', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `⏰ অর্ডার টাইমআউট — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('order_timeout', { ...data, site_name: sn, is_admin: true }),
+          html: buildEmail('order_timeout', { ...emailData, is_admin: true }),
         });
       }
     } else if (type === 'order_failed') {
       emails.push({
         to: data.email,
         subject: `❌ অর্ডার ব্যর্থ — ${data.order_id} | ${sn}`,
-        html: buildEmail('order_failed', { ...data, site_name: sn }),
+        html: buildEmail('order_failed', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `❌ অর্ডার ব্যর্থ — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('order_failed', { ...data, site_name: sn, is_admin: true }),
+          html: buildEmail('order_failed', { ...emailData, is_admin: true }),
         });
       }
     }
