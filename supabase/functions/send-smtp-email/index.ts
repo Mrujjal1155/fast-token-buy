@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Professional email template
-function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_delivered", data: Record<string, any>): string {
+function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_delivered" | "order_timeout" | "order_failed", data: Record<string, any>): string {
   const brandColor = "#FF7A18";
   const bgColor = "#0F172A";
   const cardBg = "#1E293B";
