@@ -141,7 +141,7 @@ serve(async (req) => {
     const { data: settings } = await supabase
       .from('site_settings')
       .select('key, value')
-      .like('key', 'smtp_%');
+      .or('key.like.smtp_%,key.eq.site_logo');
 
     if (!settings || settings.length === 0) {
       return new Response(JSON.stringify({ error: 'SMTP not configured' }), {
@@ -151,6 +151,7 @@ serve(async (req) => {
 
     const cfg: Record<string, string> = {};
     settings.forEach((s: { key: string; value: string }) => { cfg[s.key] = s.value; });
+    const logoUrl = cfg['site_logo'] || '';
 
     const host = cfg['smtp_host'];
     const port = parseInt(cfg['smtp_port'] || '465');
