@@ -209,10 +209,35 @@ const en = {
   "crypto.toastSuccess": "Payment successful!",
   "crypto.toastFailed": "Payment failed",
 
-  // SEO
-  "seo.title": "Buy Lovable Credits — Cheapest in Bangladesh",
-  "seo.description": "Buy Lovable AI credits with bKash, Nagad, Rocket & Crypto. Starting from ৳40. 5-minute delivery. Save up to 24%! Thousands of happy customers.",
-  "seo.keywords": "lovable credits, lovable credit buy, buy lovable credits bangladesh, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits",
+  // SEO — Home
+  "seo.title": "Buy Lovable Credits — Cheapest in Bangladesh | LovableCredit.com",
+  "seo.description": "Buy Lovable AI credits from Bangladesh at the lowest price. Pay with bKash, Nagad, Rocket & Crypto. 5-minute delivery. Save up to 24%! Trusted by thousands.",
+  "seo.keywords": "lovable credits, buy lovable credits, lovable credit buy bangladesh, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price bangladesh, lovable ai credits, lovable platform credits, lovable credit cheap, buy lovable ai credits online",
+
+  // SEO — FAQ
+  "seo.faq.title": "FAQ — Lovable Credits Bangladesh | Common Questions Answered",
+  "seo.faq.description": "Frequently asked questions about buying Lovable Credits in Bangladesh. Learn about payment methods, delivery time, pricing, refund policy and more.",
+  "seo.faq.keywords": "lovable credit faq, lovable credit questions, how to buy lovable credit bangladesh, lovable credit delivery time, lovable credit bkash, lovable credit support",
+
+  // SEO — Track Order
+  "seo.track.title": "Track Your Order — Lovable Credits | LovableCredit.com",
+  "seo.track.description": "Track your Lovable Credits order status in real-time. Enter your Order ID or email to check delivery progress instantly.",
+  "seo.track.keywords": "lovable credit order track, track lovable order, lovable credit status, lovable credit delivery status",
+
+  // SEO — Terms
+  "seo.terms.title": "Terms of Service — LovableCredit.com",
+  "seo.terms.description": "Terms of service for LovableCredit.com. Read about credit purchase, delivery, usage policies and responsibilities.",
+  "seo.terms.keywords": "lovable credit terms of service, lovable credit terms, lovable credit usage policy",
+
+  // SEO — Privacy
+  "seo.privacy.title": "Privacy Policy — LovableCredit.com",
+  "seo.privacy.description": "Privacy policy for LovableCredit.com. Learn how your personal data is collected, used and protected when buying Lovable Credits.",
+  "seo.privacy.keywords": "lovable credit privacy policy, lovable credit data protection, lovable credit security",
+
+  // SEO — Refund
+  "seo.refund.title": "Refund Policy — LovableCredit.com",
+  "seo.refund.description": "Refund policy for LovableCredit.com. Learn about refund conditions, process, and money-back guarantee for Lovable Credits.",
+  "seo.refund.keywords": "lovable credit refund, lovable credit refund policy, lovable credit money back, lovable credit return",
 
   // 404
   "notFound.title": "404 — Page Not Found",
@@ -450,10 +475,35 @@ const bn: Record<keyof typeof en, string> = {
   "crypto.toastSuccess": "পেমেন্ট সফল হয়েছে!",
   "crypto.toastFailed": "পেমেন্ট ব্যর্থ হয়েছে",
 
-  // SEO
-  "seo.title": "Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায়",
-  "seo.description": "bKash, Nagad, Rocket ও Crypto দিয়ে Lovable AI ক্রেডিট কিনুন। মাত্র ৳৪০ থেকে শুরু। ৫ মিনিটে ডেলিভারি। ২৪% পর্যন্ত সাশ্রয়! হাজারো সন্তুষ্ট গ্রাহক।",
-  "seo.keywords": "lovable credits, lovable credit buy, buy lovable credits bangladesh, lovable ক্রেডিট কিনুন, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits, লাভেবল ক্রেডিট, lovable credit বাংলাদেশ",
+  // SEO — Home
+  "seo.title": "Lovable Credits কিনুন — বাংলাদেশে সবচেয়ে সস্তায় | LovableCredit.com",
+  "seo.description": "বাংলাদেশ থেকে Lovable AI ক্রেডিট কিনুন সবচেয়ে কম দামে। bKash, Nagad, Rocket ও Crypto দিয়ে পেমেন্ট করুন। ৫ মিনিটে ডেলিভারি। ২৪% পর্যন্ত সাশ্রয়! হাজারো সন্তুষ্ট গ্রাহক।",
+  "seo.keywords": "lovable credits, lovable credit buy, buy lovable credits bangladesh, lovable ক্রেডিট কিনুন, bkash lovable, lovable credit bd, cheap lovable credits, lovable credit price, lovable ai credits, লাভেবল ক্রেডিট, lovable credit বাংলাদেশ, lovable credit কিনুন, lovable ai, lovable credit cheap",
+
+  // SEO — FAQ
+  "seo.faq.title": "সচরাচর জিজ্ঞাসা — Lovable Credits বাংলাদেশ | LovableCredit.com",
+  "seo.faq.description": "Lovable Credits কেনা নিয়ে সচরাচর জিজ্ঞাসা। পেমেন্ট মেথড, ডেলিভারি সময়, মূল্য, রিফান্ড পলিসি এবং আরো অনেক প্রশ্নের উত্তর পান।",
+  "seo.faq.keywords": "lovable credit প্রশ্ন, lovable credit faq বাংলা, lovable credit কিভাবে কিনব, lovable credit ডেলিভারি সময়, lovable credit বিকাশ",
+
+  // SEO — Track Order
+  "seo.track.title": "অর্ডার ট্র্যাক করুন — Lovable Credits | LovableCredit.com",
+  "seo.track.description": "আপনার Lovable Credits অর্ডারের স্ট্যাটাস রিয়েল-টাইমে ট্র্যাক করুন। অর্ডার আইডি বা ইমেইল দিয়ে ডেলিভারি প্রগ্রেস চেক করুন।",
+  "seo.track.keywords": "lovable credit অর্ডার ট্র্যাক, lovable order track, lovable credit status, lovable credit ডেলিভারি স্ট্যাটাস",
+
+  // SEO — Terms
+  "seo.terms.title": "সেবার শর্তাবলী — LovableCredit.com",
+  "seo.terms.description": "LovableCredit.com এর সেবার শর্তাবলী। ক্রেডিট কেনা, ডেলিভারি, ব্যবহার নীতি ও দায়বদ্ধতা সম্পর্কে জানুন।",
+  "seo.terms.keywords": "lovable credit শর্তাবলী, lovable credit terms বাংলা, lovable credit ব্যবহার নীতি",
+
+  // SEO — Privacy
+  "seo.privacy.title": "গোপনীয়তা নীতি — LovableCredit.com",
+  "seo.privacy.description": "LovableCredit.com এর গোপনীয়তা নীতি। Lovable Credits কেনার সময় আপনার ব্যক্তিগত তথ্য কীভাবে সংগ্রহ, ব্যবহার ও সুরক্ষিত রাখা হয় তা জানুন।",
+  "seo.privacy.keywords": "lovable credit গোপনীয়তা নীতি, lovable credit privacy বাংলা, lovable credit তথ্য সুরক্ষা",
+
+  // SEO — Refund
+  "seo.refund.title": "ফেরত নীতি — LovableCredit.com",
+  "seo.refund.description": "LovableCredit.com এর ফেরত নীতি। Lovable Credits এর রিফান্ড শর্ত, প্রক্রিয়া এবং মানি-ব্যাক গ্যারান্টি সম্পর্কে জানুন।",
+  "seo.refund.keywords": "lovable credit রিফান্ড, lovable credit ফেরত নীতি, lovable credit টাকা ফেরত, lovable credit refund বাংলা",
 
   // 404
   "notFound.title": "৪০৪ — পেজ পাওয়া যায়নি",
