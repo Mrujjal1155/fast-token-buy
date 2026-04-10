@@ -108,6 +108,20 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             toast({ title: t("order.timeoutTitle"), description: t("order.timeoutDesc"), variant: "destructive" });
             setStep("package");
             setPaymentDeadline(null);
+
+            // Send timeout email notification (fire & forget)
+            supabase.functions.invoke("send-smtp-email", {
+              body: {
+                type: "order_timeout",
+                data: {
+                  order_id: orderId,
+                  email,
+                  credits: totalCredits,
+                  amount: finalPrice,
+                  payment_method: currentPayment?.name || selectedPayment,
+                },
+              },
+            }).catch(console.error);
           });
       }
     };
