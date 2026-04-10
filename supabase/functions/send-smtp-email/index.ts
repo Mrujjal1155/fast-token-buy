@@ -173,6 +173,7 @@ serve(async (req) => {
     });
 
     const sn = fromName;
+    const emailData = { ...data, site_name: sn, logo_url: logoUrl };
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
     if (type === 'order_submitted') {
