@@ -3,39 +3,53 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://lovablecredit.com/</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lovablecredit.com/" />
   </url>
   <url>
     <loc>https://lovablecredit.com/track</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/track" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/track" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lovablecredit.com/track" />
   </url>
   <url>
     <loc>https://lovablecredit.com/faq</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lovablecredit.com/faq" />
   </url>
   <url>
     <loc>https://lovablecredit.com/terms</loc>
     <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/terms" />
   </url>
   <url>
     <loc>https://lovablecredit.com/privacy</loc>
     <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/privacy" />
   </url>
   <url>
     <loc>https://lovablecredit.com/refund</loc>
     <lastmod>2026-04-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://lovablecredit.com/refund" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lovablecredit.com/refund" />
   </url>
 </urlset>

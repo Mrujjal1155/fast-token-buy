@@ -9,10 +9,10 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Terms of Service — Lovable Credits"
-        description="Terms of service for LovableCredit.com. Details about credit purchase, delivery, usage and responsibilities."
+        title={t("seo.terms.title")}
+        description={t("seo.terms.description")}
         path="/terms"
-        keywords="lovable credit terms, terms of service, lovable credit usage terms"
+        keywords={t("seo.terms.keywords")}
       />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">

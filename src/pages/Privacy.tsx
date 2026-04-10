@@ -9,10 +9,10 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Privacy Policy — Lovable Credits"
-        description="Privacy policy for LovableCredit.com. Learn how your personal data is collected, used and protected."
+        title={t("seo.privacy.title")}
+        description={t("seo.privacy.description")}
         path="/privacy"
-        keywords="lovable credit privacy policy, data protection, lovable credit security"
+        keywords={t("seo.privacy.keywords")}
       />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">

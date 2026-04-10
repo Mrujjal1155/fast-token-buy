@@ -96,10 +96,10 @@ const TrackOrder = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Track Order — Lovable Credits"
-        description="Track your Lovable credit order in real-time. Search by order ID or email."
+        title={t("seo.track.title")}
+        description={t("seo.track.description")}
         path="/track"
-        keywords="order track, lovable credit order track, order status"
+        keywords={t("seo.track.keywords")}
       />
       <Navbar />
 
