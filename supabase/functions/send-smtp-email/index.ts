@@ -13,14 +13,17 @@ const CARD = "#1E293B";
 const TEXT = "#E2E8F0";
 const MUTED = "#94A3B8";
 
-function emailShell(siteName: string, subtitle: string, inner: string): string {
+function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?: string): string {
   const year = new Date().getFullYear();
+  const logoBlock = logoUrl
+    ? `<img src="${logoUrl}" alt="${siteName}" style="max-width:180px;max-height:60px;margin-bottom:10px;" />`
+    : `<h1 style="color:${BRAND};font-size:24px;margin:0;">${siteName}</h1>`;
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:${BG};font-family:'Segoe UI',Arial,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
   <div style="text-align:center;margin-bottom:30px;">
-    <h1 style="color:${BRAND};font-size:24px;margin:0;">${siteName}</h1>
+    ${logoBlock}
     <p style="color:${MUTED};font-size:13px;margin:5px 0 0;">${subtitle}</p>
   </div>
   <div style="background:${CARD};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.05);">
