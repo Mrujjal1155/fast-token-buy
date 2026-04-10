@@ -29,10 +29,10 @@ const FAQ = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="FAQ — Lovable Credits"
-        description="Frequently asked questions about Lovable Credits. Learn how to buy, delivery times, payment methods and more."
+        title={t("seo.faq.title")}
+        description={t("seo.faq.description")}
         path="/faq"
-        keywords="lovable credit faq, lovable credit questions, how to buy lovable credit, lovable credit delivery time"
+        keywords={t("seo.faq.keywords")}
       />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">

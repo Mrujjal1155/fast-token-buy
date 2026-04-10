@@ -9,10 +9,10 @@ const Refund = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Refund Policy — Lovable Credits"
-        description="Refund policy for LovableCredit.com. Learn when and how to get refunds, conditions and process."
+        title={t("seo.refund.title")}
+        description={t("seo.refund.description")}
         path="/refund"
-        keywords="lovable credit refund, refund policy, lovable credit return policy, lovable credit money back"
+        keywords={t("seo.refund.keywords")}
       />
       <Navbar />
       <div className="container max-w-3xl px-4 pt-28 pb-16 md:pt-32">
