@@ -108,7 +108,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       `<table style="width:100%;border-collapse:collapse;">${rows}` +
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge(lbl, col)}</td></tr></table>` +
       infoBox(foot, col);
-    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner);
+    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo);
   }
 
   // customer_order (default)
