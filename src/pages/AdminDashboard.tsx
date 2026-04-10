@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Timer } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Timer, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
@@ -35,6 +35,7 @@ import AdminReviews from "@/components/AdminReviews";
 import AdminSiteContent from "@/components/AdminSiteContent";
 import AdminImages from "@/components/AdminImages";
 import AdminTrustBadges from "@/components/AdminTrustBadges";
+import AdminSmtpSettings from "@/components/AdminSmtpSettings";
 
 
 type Order = Tables<"orders">;
@@ -74,7 +75,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -232,6 +233,7 @@ const AdminDashboard = () => {
             { id: "badges" as const, label: "Badges", icon: ShieldCheck },
             { id: "content" as const, label: "Content", icon: Globe },
             { id: "images" as const, label: "Images", icon: ImageIcon },
+            { id: "email" as const, label: "Email", icon: Mail },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -413,6 +415,8 @@ const AdminDashboard = () => {
           <AdminSiteContent />
         ) : activeTab === "images" ? (
           <AdminImages />
+        ) : activeTab === "email" ? (
+          <AdminSmtpSettings />
         ) : (
           <AdminPaymentMethods />
         )}
