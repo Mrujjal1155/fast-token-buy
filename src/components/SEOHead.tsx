@@ -12,7 +12,7 @@ interface SEOHeadProps {
 }
 
 const BASE_URL = "https://lovablecredit.com";
-const DEFAULT_OG_IMAGE = "https://lovablecredit.com/og-image.png";
+const DEFAULT_OG_IMAGE = "https://lovablecredit.com/og-image.jpg";
 const SITE_NAME = "LovableCredit.com";
 
 const SEOHead = ({
