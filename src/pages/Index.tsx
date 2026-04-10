@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import SEOHead from "@/components/SEOHead";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import TrustBadges from "@/components/TrustBadges";
 import PricingSection from "@/components/PricingSection";
-import Testimonials from "@/components/Testimonials";
-import OurReserves from "@/components/OurReserves";
-import RecentPurchases from "@/components/RecentPurchases";
-import Footer from "@/components/Footer";
-import OrderFlow from "@/components/OrderFlow";
 import { type CreditPackage } from "@/lib/packages";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+// Below-fold sections — lazy loaded
+const Testimonials = lazy(() => import("@/components/Testimonials"));
+const OurReserves = lazy(() => import("@/components/OurReserves"));
+const RecentPurchases = lazy(() => import("@/components/RecentPurchases"));
+const Footer = lazy(() => import("@/components/Footer"));
+const OrderFlow = lazy(() => import("@/components/OrderFlow"));
 
 const Index = () => {
   const [showOrderFlow, setShowOrderFlow] = useState(false);
@@ -19,10 +21,12 @@ const Index = () => {
 
   if (showOrderFlow) {
     return (
-      <OrderFlow
-        selectedPackage={selectedPackage}
-        onBack={() => { setShowOrderFlow(false); setSelectedPackage(null); }}
-      />
+      <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+        <OrderFlow
+          selectedPackage={selectedPackage}
+          onBack={() => { setShowOrderFlow(false); setSelectedPackage(null); }}
+        />
+      </Suspense>
     );
   }
 
@@ -38,10 +42,12 @@ const Index = () => {
       <HeroSection onBuyNow={() => setShowOrderFlow(true)} />
       <TrustBadges />
       <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
-      <OurReserves />
-      <Testimonials />
-      <RecentPurchases />
-      <Footer />
+      <Suspense fallback={null}>
+        <OurReserves />
+        <Testimonials />
+        <RecentPurchases />
+        <Footer />
+      </Suspense>
     </div>
   );
 };
