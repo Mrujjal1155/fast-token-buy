@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Professional email template
-function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_delivered", data: Record<string, any>): string {
+function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_delivered" | "order_timeout", data: Record<string, any>): string {
   const brandColor = "#FF7A18";
   const bgColor = "#0F172A";
   const cardBg = "#1E293B";
@@ -189,12 +189,24 @@ serve(async (req) => {
         });
       }
     } else if (type === 'credit_delivered') {
-      // Email to customer when order completed
       emails.push({
         to: data.email,
         subject: `🎉 ক্রেডিট ডেলিভারি সম্পন্ন — ${data.order_id} | ${siteName}`,
         html: buildOrderEmailHtml('credit_delivered', { ...data, site_name: siteName }),
       });
+    } else if (type === 'order_timeout') {
+      emails.push({
+        to: data.email,
+        subject: `⏰ অর্ডার টাইম আউট — ${data.order_id} | ${siteName}`,
+        html: buildOrderEmailHtml('order_timeout', { ...data, site_name: siteName }),
+      });
+      if (adminEmail) {
+        emails.push({
+          to: adminEmail,
+          subject: `⏰ অর্ডার টাইমআউট — ${data.order_id} | ৳${data.amount}`,
+          html: buildOrderEmailHtml('order_timeout', { ...data, site_name: siteName, is_admin: true }),
+        });
+      }
     }
 
     for (const email of emails) {
