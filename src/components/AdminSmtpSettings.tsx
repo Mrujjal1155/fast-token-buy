@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Send, Loader2, Eye, EyeOff, Save } from "lucide-react";
+import { Mail, Send, Loader2, Eye, EyeOff, Save, Settings, Globe } from "lucide-react";
 
 const SMTP_KEYS = [
   "smtp_host",
@@ -35,7 +35,7 @@ const AdminSmtpSettings = () => {
     smtp_from_name: "FastTokenBuy",
     smtp_admin_email: "",
   });
-  const [logoUrl, setLogoUrl] = useState("");
+  const [activeTab, setActiveTab] = useState<"smtp" | "templates">("smtp");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -50,16 +50,12 @@ const AdminSmtpSettings = () => {
     const { data } = await supabase
       .from("site_settings")
       .select("key, value")
-      .or(`key.in.(${SMTP_KEYS.join(",")}),key.eq.site_logo`);
+      .in("key", SMTP_KEYS);
 
     if (data) {
       const map: Record<string, string> = {};
       data.forEach((s) => {
-        if (s.key === "site_logo") {
-          setLogoUrl(s.value);
-        } else {
-          map[s.key] = s.value;
-        }
+        map[s.key] = s.value;
       });
       setSettings((prev) => ({ ...prev, ...map }));
     }
@@ -82,9 +78,7 @@ const AdminSmtpSettings = () => {
           .update({ value, updated_at: new Date().toISOString() })
           .eq("key", key);
       } else {
-        await supabase
-          .from("site_settings")
-          .insert({ key, value });
+        await supabase.from("site_settings").insert({ key, value });
       }
     }
     setSaving(false);
@@ -97,8 +91,6 @@ const AdminSmtpSettings = () => {
       return;
     }
     setTesting(true);
-
-    // Save settings first
     await handleSave();
 
     const { data, error } = await supabase.functions.invoke("send-smtp-email", {
@@ -115,7 +107,6 @@ const AdminSmtpSettings = () => {
     });
 
     setTesting(false);
-
     if (error || data?.error) {
       toast({
         title: "টেস্ট ইমেইল ব্যর্থ",
@@ -137,14 +128,15 @@ const AdminSmtpSettings = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
             <Mail className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-foreground">Email Notification Settings</h2>
-            <p className="text-sm text-muted-foreground">SMTP কনফিগার করুন ইমেইল নোটিফিকেশনের জন্য</p>
+            <h2 className="text-lg font-bold text-primary">Email Notification Settings</h2>
+            <p className="text-sm text-muted-foreground">Configure SMTP for sending emails</p>
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={handleTestEmail} disabled={testing}>
@@ -153,132 +145,173 @@ const AdminSmtpSettings = () => {
         </Button>
       </div>
 
-      <div className="bg-card border border-border/30 rounded-xl p-6 space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="space-y-2">
-            <Label className="text-foreground">SMTP Host</Label>
-            <Input
-              placeholder="e.g. smtp.gmail.com"
-              value={settings.smtp_host}
-              onChange={(e) => setSettings((s) => ({ ...s, smtp_host: e.target.value }))}
-              className="bg-secondary border-border/50"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-foreground">Port</Label>
-            <Input
-              placeholder="465"
-              value={settings.smtp_port}
-              onChange={(e) => setSettings((s) => ({ ...s, smtp_port: e.target.value }))}
-              className="bg-secondary border-border/50"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-foreground">Encryption</Label>
-          <Select
-            value={settings.smtp_encryption}
-            onValueChange={(val) => setSettings((s) => ({ ...s, smtp_encryption: val }))}
-          >
-            <SelectTrigger className="bg-secondary border-border/50">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ssl">SSL</SelectItem>
-              <SelectItem value="tls">TLS</SelectItem>
-              <SelectItem value="none">None</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="space-y-2">
-            <Label className="text-foreground">Username / Email</Label>
-            <Input
-              placeholder="your@email.com"
-              value={settings.smtp_username}
-              onChange={(e) => setSettings((s) => ({ ...s, smtp_username: e.target.value }))}
-              className="bg-secondary border-border/50"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-foreground">Password</Label>
-            <div className="relative">
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="App password"
-                value={settings.smtp_password}
-                onChange={(e) => setSettings((s) => ({ ...s, smtp_password: e.target.value }))}
-                className="bg-secondary border-border/50 pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="space-y-2">
-            <Label className="text-foreground">From Email</Label>
-            <Input
-              placeholder="noreply@yourdomain.com"
-              value={settings.smtp_from_email}
-              onChange={(e) => setSettings((s) => ({ ...s, smtp_from_email: e.target.value }))}
-              className="bg-secondary border-border/50"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-foreground">From Name</Label>
-            <Input
-              placeholder="FastTokenBuy"
-              value={settings.smtp_from_name}
-              onChange={(e) => setSettings((s) => ({ ...s, smtp_from_name: e.target.value }))}
-              className="bg-secondary border-border/50"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-foreground">Admin Email (নতুন অর্ডার নোটিফিকেশন)</Label>
-          <Input
-            placeholder="admin@yourdomain.com"
-            value={settings.smtp_admin_email}
-            onChange={(e) => setSettings((s) => ({ ...s, smtp_admin_email: e.target.value }))}
-            className="bg-secondary border-border/50"
-          />
-          <p className="text-xs text-muted-foreground">নতুন অর্ডার হলে এই ইমেইলে নোটিফিকেশন যাবে</p>
-        </div>
-
-        {/* Email Logo Preview */}
-        <div className="border border-border/30 rounded-xl p-5 space-y-3">
-          <Label className="text-foreground font-semibold">📧 ইমেইল লোগো প্রিভিউ</Label>
-          <p className="text-xs text-muted-foreground">ইমেইলে লোগো এভাবে দেখাবে। লোগো পরিবর্তন করতে "ইমেজ ম্যানেজমেন্ট" ট্যাবে যান।</p>
-          <div className="bg-[#181c2a] rounded-lg p-6 flex flex-col items-center gap-3 border border-border/20">
-            <div className="bg-[#1a1f2e] rounded-xl px-8 py-5 flex flex-col items-center gap-2 w-full max-w-md border border-[#2a2f3e]">
-              {logoUrl ? (
-                <img src={logoUrl} alt="Site Logo" className="max-w-[180px] max-h-[60px] object-contain" />
-              ) : (
-                <span className="text-lg font-bold text-primary">{settings.smtp_from_name || "FastTokenBuy"}</span>
-              )}
-              <span className="text-[11px] text-muted-foreground mt-1">— ইমেইল হেডারে এভাবে দেখাবে —</span>
-            </div>
-            {!logoUrl && (
-              <p className="text-xs text-yellow-400/80 mt-1">⚠️ কোনো লোগো সেট করা নেই। "ইমেজ ম্যানেজমেন্ট" ট্যাব থেকে সাইট লোগো আপলোড করুন।</p>
-            )}
-          </div>
-        </div>
-
-        <Button onClick={handleSave} disabled={saving} className="w-full" variant="hero">
-          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          Save SMTP Settings
-        </Button>
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setActiveTab("smtp")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+            activeTab === "smtp"
+              ? "bg-primary text-primary-foreground"
+              : "bg-secondary/50 text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Settings className="w-4 h-4" />
+          SMTP Settings
+        </button>
+        <button
+          onClick={() => setActiveTab("templates")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+            activeTab === "templates"
+              ? "bg-primary text-primary-foreground"
+              : "bg-secondary/50 text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Globe className="w-4 h-4" />
+          Email Templates
+        </button>
       </div>
+
+      {activeTab === "smtp" && (
+        <div className="bg-card border border-border/30 rounded-2xl p-6 space-y-6">
+          {/* Email Send Method */}
+          <div className="space-y-2">
+            <Label className="text-muted-foreground text-sm">Email Send Method</Label>
+            <Select defaultValue="smtp">
+              <SelectTrigger className="bg-secondary/50 border-border/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="smtp">SMTP</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* SMTP Configuration Header */}
+          <h3 className="text-lg font-semibold text-cyan-400">SMTP Configuration</h3>
+
+          {/* Host, Port, Encryption - 3 columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">Host</Label>
+              <Input
+                placeholder="e.g. smtp.gmail.com"
+                value={settings.smtp_host}
+                onChange={(e) => setSettings((s) => ({ ...s, smtp_host: e.target.value }))}
+                className="bg-secondary/50 border-border/50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">Port</Label>
+              <Input
+                placeholder="465"
+                value={settings.smtp_port}
+                onChange={(e) => setSettings((s) => ({ ...s, smtp_port: e.target.value }))}
+                className="bg-secondary/50 border-border/50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">Encryption</Label>
+              <Select
+                value={settings.smtp_encryption}
+                onValueChange={(val) => setSettings((s) => ({ ...s, smtp_encryption: val }))}
+              >
+                <SelectTrigger className="bg-secondary/50 border-border/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ssl">SSL</SelectItem>
+                  <SelectItem value="tls">TLS</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Username & Password */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">Username</Label>
+              <Input
+                placeholder="your@email.com"
+                value={settings.smtp_username}
+                onChange={(e) => setSettings((s) => ({ ...s, smtp_username: e.target.value }))}
+                className="bg-secondary/50 border-border/50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">Password</Label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="App password"
+                  value={settings.smtp_password}
+                  onChange={(e) => setSettings((s) => ({ ...s, smtp_password: e.target.value }))}
+                  className="bg-secondary/50 border-border/50 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* From Name & From Email */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">From Name</Label>
+              <Input
+                placeholder="FastTokenBuy"
+                value={settings.smtp_from_name}
+                onChange={(e) => setSettings((s) => ({ ...s, smtp_from_name: e.target.value }))}
+                className="bg-secondary/50 border-border/50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-cyan-400 text-sm font-medium">From Email</Label>
+              <Input
+                placeholder="noreply@yourdomain.com"
+                value={settings.smtp_from_email}
+                onChange={(e) => setSettings((s) => ({ ...s, smtp_from_email: e.target.value }))}
+                className="bg-secondary/50 border-border/50"
+              />
+            </div>
+          </div>
+
+          {/* Admin Email */}
+          <div className="space-y-2">
+            <Label className="text-cyan-400 text-sm font-medium">Admin Email (নতুন অর্ডার নোটিফিকেশন)</Label>
+            <Input
+              placeholder="admin@yourdomain.com"
+              value={settings.smtp_admin_email}
+              onChange={(e) => setSettings((s) => ({ ...s, smtp_admin_email: e.target.value }))}
+              className="bg-secondary/50 border-border/50"
+            />
+            <p className="text-xs text-muted-foreground">নতুন অর্ডার হলে এই ইমেইলে নোটিফিকেশন যাবে</p>
+          </div>
+
+          {/* Save Button - Purple Gradient */}
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full bg-gradient-to-r from-purple-600 via-purple-500 to-fuchsia-400 hover:from-purple-700 hover:via-purple-600 hover:to-fuchsia-500 text-white border-0 py-6 text-base font-semibold rounded-xl"
+          >
+            {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
+            Save Settings
+          </Button>
+        </div>
+      )}
+
+      {activeTab === "templates" && (
+        <div className="bg-card border border-border/30 rounded-2xl p-6">
+          <p className="text-muted-foreground text-center py-8">
+            Email Templates সেকশন শীঘ্রই আসছে...
+          </p>
+        </div>
+      )}
     </div>
   );
 };
