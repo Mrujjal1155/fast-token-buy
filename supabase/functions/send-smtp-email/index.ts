@@ -79,6 +79,40 @@ function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_de
 </body></html>`;
   }
 
+  if (type === "order_timeout") {
+    const isAdmin = data.is_admin;
+    return `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:${bgColor};font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:0 auto;padding:40px 20px;">
+  <div style="text-align:center;margin-bottom:30px;">
+    <h1 style="color:${brandColor};font-size:24px;margin:0;">${siteName}</h1>
+    <p style="color:${mutedColor};font-size:13px;margin:5px 0 0;">${isAdmin ? 'Admin Alert' : 'Order Update'}</p>
+  </div>
+  <div style="background:${cardBg};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.05);">
+    <div style="text-align:center;margin-bottom:25px;">
+      <div style="width:60px;height:60px;border-radius:50%;background:#EF444420;display:inline-flex;align-items:center;justify-content:center;">
+        <span style="font-size:28px;">⏰</span>
+      </div>
+      <h2 style="color:${textColor};font-size:20px;margin:15px 0 5px;">${isAdmin ? 'অর্ডার টাইমআউট হয়েছে' : 'আপনার অর্ডার টাইম আউট হয়েছে'}</h2>
+      <p style="color:${mutedColor};font-size:14px;margin:0;">${isAdmin ? 'Order payment timed out' : 'Your order has expired due to payment timeout'}</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${mutedColor};font-size:13px;">Order ID</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${textColor};font-size:14px;font-weight:600;text-align:right;font-family:monospace;">${data.order_id}</td></tr>
+      ${isAdmin ? `<tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${mutedColor};font-size:13px;">Customer</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${textColor};font-size:14px;text-align:right;">${data.email}</td></tr>` : ''}
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${mutedColor};font-size:13px;">Credits</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${brandColor};font-size:16px;font-weight:700;text-align:right;">${data.credits}</td></tr>
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${mutedColor};font-size:13px;">Amount</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:${textColor};font-size:14px;font-weight:600;text-align:right;">৳${data.amount}</td></tr>
+      <tr><td style="padding:12px 0;color:${mutedColor};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;"><span style="background:#EF444420;color:#EF4444;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">⏰ Timed Out</span></td></tr>
+    </table>
+    <div style="margin-top:25px;padding:15px;background:#EF444410;border-radius:12px;border:1px solid #EF444430;">
+      <p style="color:${textColor};font-size:13px;margin:0;text-align:center;">${isAdmin ? 'এই অর্ডারটি ৩০ মিনিটের মধ্যে পেমেন্ট না করায় অটো ক্যান্সেল হয়েছে।' : 'নির্ধারিত সময়ের মধ্যে পেমেন্ট সম্পন্ন না হওয়ায় অর্ডারটি বাতিল হয়েছে। পুনরায় অর্ডার করতে আমাদের ওয়েবসাইট ভিজিট করুন।'}</p>
+    </div>
+  </div>
+  <p style="text-align:center;color:${mutedColor};font-size:11px;margin-top:30px;">© ${new Date().getFullYear()} ${siteName}</p>
+</div>
+</body></html>`;
+  }
+
   // customer_order (default)
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
