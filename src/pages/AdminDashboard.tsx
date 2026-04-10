@@ -169,6 +169,25 @@ const AdminDashboard = () => {
         title: "স্ট্যাটাস আপডেট হয়েছে",
         description: `${orderDisplayId} → ${displayLabel}`,
       variant: "success" });
+
+      // Send credit delivered email when status changes to completed
+      if (dbStatus === "completed") {
+        const order = orders.find((o) => o.id === orderId);
+        if (order) {
+          supabase.functions.invoke("send-smtp-email", {
+            body: {
+              type: "credit_delivered",
+              data: {
+                order_id: order.order_id,
+                email: order.email,
+                credits: order.credits,
+                amount: order.amount,
+              },
+            },
+          }).catch(console.error);
+        }
+      }
+
       fetchOrders();
     }
   };
