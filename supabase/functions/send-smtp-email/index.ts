@@ -79,6 +79,55 @@ function buildOrderEmailHtml(type: "customer_order" | "admin_order" | "credit_de
 </body></html>`;
   }
 
+  // order_timeout & order_failed share similar layout
+  if (type === "order_timeout" || type === "order_failed") {
+    const isTimeout = type === "order_timeout";
+    const isAdmin = data.is_admin;
+    const emoji = isTimeout ? "⏰" : "❌";
+    const statusColor = "#EF4444";
+    const heading = isAdmin
+      ? (isTimeout ? "অর্ডার টাইমআউট হয়েছে" : "অর্ডার ব্যর্থ হয়েছে")
+      : (isTimeout ? "আপনার অর্ডার টাইম আউট হয়েছে" : "আপনার অর্ডার ব্যর্থ হয়েছে");
+    const subheading = isAdmin
+      ? (isTimeout ? "Order payment timed out" : "Order has been marked as failed")
+      : (isTimeout ? "Your order expired due to payment timeout" : "Your order could not be completed");
+    const statusLabel = isTimeout ? "⏰ Timed Out" : "❌ Failed";
+    const footerMsg = isAdmin
+      ? (isTimeout ? "এই অর্ডারটি ৩০ মিনিটের মধ্যে পেমেন্ট না করায় অটো ক্যান্সেল হয়েছে।" : "এই অর্ডারটি অ্যাডমিন দ্বারা ব্যর্থ চিহ্নিত করা হয়েছে।")
+      : (isTimeout ? "নির্ধারিত সময়ের মধ্যে পেমেন্ট সম্পন্ন না হওয়ায় অর্ডারটি বাতিল হয়েছে। পুনরায় অর্ডার করতে আমাদের ওয়েবসাইট ভিজিট করুন।" : "আপনার অর্ডারটি সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন অথবা আমাদের সাথে যোগাযোগ করুন।");
+
+    return \`<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:\${bgColor};font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:0 auto;padding:40px 20px;">
+  <div style="text-align:center;margin-bottom:30px;">
+    <h1 style="color:\${brandColor};font-size:24px;margin:0;">\${siteName}</h1>
+    <p style="color:\${mutedColor};font-size:13px;margin:5px 0 0;">\${isAdmin ? 'Admin Alert' : 'Order Update'}</p>
+  </div>
+  <div style="background:\${cardBg};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.05);">
+    <div style="text-align:center;margin-bottom:25px;">
+      <div style="width:60px;height:60px;border-radius:50%;background:\${statusColor}20;display:inline-flex;align-items:center;justify-content:center;">
+        <span style="font-size:28px;">\${emoji}</span>
+      </div>
+      <h2 style="color:\${textColor};font-size:20px;margin:15px 0 5px;">\${heading}</h2>
+      <p style="color:\${mutedColor};font-size:14px;margin:0;">\${subheading}</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${mutedColor};font-size:13px;">Order ID</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${textColor};font-size:14px;font-weight:600;text-align:right;font-family:monospace;">\${data.order_id}</td></tr>
+      \${isAdmin ? \`<tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${mutedColor};font-size:13px;">Customer</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${textColor};font-size:14px;text-align:right;">\${data.email}</td></tr>\` : ''}
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${mutedColor};font-size:13px;">Credits</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${brandColor};font-size:16px;font-weight:700;text-align:right;">\${data.credits}</td></tr>
+      <tr><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${mutedColor};font-size:13px;">Amount</td><td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:\${textColor};font-size:14px;font-weight:600;text-align:right;">৳\${data.amount}</td></tr>
+      <tr><td style="padding:12px 0;color:\${mutedColor};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;"><span style="background:\${statusColor}20;color:\${statusColor};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">\${statusLabel}</span></td></tr>
+    </table>
+    <div style="margin-top:25px;padding:15px;background:\${statusColor}10;border-radius:12px;border:1px solid \${statusColor}30;">
+      <p style="color:\${textColor};font-size:13px;margin:0;text-align:center;">\${footerMsg}</p>
+    </div>
+  </div>
+  <p style="text-align:center;color:\${mutedColor};font-size:11px;margin-top:30px;">© \${new Date().getFullYear()} \${siteName}</p>
+</div>
+</body></html>\`;
+  }
+
   // customer_order (default)
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
