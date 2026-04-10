@@ -255,6 +255,25 @@ const AdminSmtpSettings = () => {
           <p className="text-xs text-muted-foreground">নতুন অর্ডার হলে এই ইমেইলে নোটিফিকেশন যাবে</p>
         </div>
 
+        {/* Email Logo Preview */}
+        <div className="border border-border/30 rounded-xl p-5 space-y-3">
+          <Label className="text-foreground font-semibold">📧 ইমেইল লোগো প্রিভিউ</Label>
+          <p className="text-xs text-muted-foreground">ইমেইলে লোগো এভাবে দেখাবে। লোগো পরিবর্তন করতে "ইমেজ ম্যানেজমেন্ট" ট্যাবে যান।</p>
+          <div className="bg-[#181c2a] rounded-lg p-6 flex flex-col items-center gap-3 border border-border/20">
+            <div className="bg-[#1a1f2e] rounded-xl px-8 py-5 flex flex-col items-center gap-2 w-full max-w-md border border-[#2a2f3e]">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Site Logo" className="max-w-[180px] max-h-[60px] object-contain" />
+              ) : (
+                <span className="text-lg font-bold text-primary">{settings.smtp_from_name || "FastTokenBuy"}</span>
+              )}
+              <span className="text-[11px] text-muted-foreground mt-1">— ইমেইল হেডারে এভাবে দেখাবে —</span>
+            </div>
+            {!logoUrl && (
+              <p className="text-xs text-yellow-400/80 mt-1">⚠️ কোনো লোগো সেট করা নেই। "ইমেজ ম্যানেজমেন্ট" ট্যাব থেকে সাইট লোগো আপলোড করুন।</p>
+            )}
+          </div>
+        </div>
+
         <Button onClick={handleSave} disabled={saving} className="w-full" variant="hero">
           {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
           Save SMTP Settings
