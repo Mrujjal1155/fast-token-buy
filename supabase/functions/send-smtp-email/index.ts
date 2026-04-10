@@ -13,14 +13,17 @@ const CARD = "#1E293B";
 const TEXT = "#E2E8F0";
 const MUTED = "#94A3B8";
 
-function emailShell(siteName: string, subtitle: string, inner: string): string {
+function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?: string): string {
   const year = new Date().getFullYear();
+  const logoBlock = logoUrl
+    ? `<img src="${logoUrl}" alt="${siteName}" style="max-width:180px;max-height:60px;margin-bottom:10px;" />`
+    : `<h1 style="color:${BRAND};font-size:24px;margin:0;">${siteName}</h1>`;
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:${BG};font-family:'Segoe UI',Arial,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
   <div style="text-align:center;margin-bottom:30px;">
-    <h1 style="color:${BRAND};font-size:24px;margin:0;">${siteName}</h1>
+    ${logoBlock}
     <p style="color:${MUTED};font-size:13px;margin:5px 0 0;">${subtitle}</p>
   </div>
   <div style="background:${CARD};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.05);">
@@ -50,6 +53,7 @@ function heroIcon(emoji: string, color: string): string {
 
 function buildEmail(type: string, d: Record<string, any>): string {
   const sn = d.site_name || "FastTokenBuy";
+  const logo = d.logo_url || "";
 
   if (type === "admin_order") {
     const inner = heroIcon("🔔", BRAND) +
@@ -62,7 +66,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       row("Payment", d.payment_method) +
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Pending", BRAND)}</td></tr>` +
       `</table>`;
-    return emailShell(sn, "Admin Notification", inner);
+    return emailShell(sn, "Admin Notification", inner, logo);
   }
 
   if (type === "credit_delivered") {
@@ -75,7 +79,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("✅ Completed", "#10B981")}</td></tr>` +
       `</table>` +
       infoBox("আপনার একাউন্টে ক্রেডিট যোগ করা হয়েছে। ধন্যবাদ!", BRAND);
-    return emailShell(sn, "Order Update", inner);
+    return emailShell(sn, "Order Update", inner, logo);
   }
 
   if (type === "order_timeout" || type === "order_failed") {
@@ -104,7 +108,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       `<table style="width:100%;border-collapse:collapse;">${rows}` +
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge(lbl, col)}</td></tr></table>` +
       infoBox(foot, col);
-    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner);
+    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo);
   }
 
   // customer_order (default)
@@ -118,7 +122,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
     `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Processing", BRAND)}</td></tr>` +
     `</table>` +
     infoBox("আপনার অর্ডারটি প্রক্রিয়াধীন আছে। শীঘ্রই ক্রেডিট ডেলিভারি করা হবে।", BRAND);
-  return emailShell(sn, "Order Confirmation", inner);
+  return emailShell(sn, "Order Confirmation", inner, logo);
 }
 
 serve(async (req) => {
@@ -137,7 +141,7 @@ serve(async (req) => {
     const { data: settings } = await supabase
       .from('site_settings')
       .select('key, value')
-      .like('key', 'smtp_%');
+      .or('key.like.smtp_%,key.eq.site_logo');
 
     if (!settings || settings.length === 0) {
       return new Response(JSON.stringify({ error: 'SMTP not configured' }), {
@@ -147,6 +151,7 @@ serve(async (req) => {
 
     const cfg: Record<string, string> = {};
     settings.forEach((s: { key: string; value: string }) => { cfg[s.key] = s.value; });
+    const logoUrl = cfg['site_logo'] || '';
 
     const host = cfg['smtp_host'];
     const port = parseInt(cfg['smtp_port'] || '465');
@@ -168,51 +173,52 @@ serve(async (req) => {
     });
 
     const sn = fromName;
+    const emailData = { ...data, site_name: sn, logo_url: logoUrl };
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
     if (type === 'order_submitted') {
       emails.push({
         to: data.email,
         subject: `✅ অর্ডার কনফার্ম — ${data.order_id} | ${sn}`,
-        html: buildEmail('customer_order', { ...data, site_name: sn }),
+        html: buildEmail('customer_order', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `🔔 নতুন অর্ডার — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('admin_order', { ...data, site_name: sn }),
+          html: buildEmail('admin_order', emailData),
         });
       }
     } else if (type === 'credit_delivered') {
       emails.push({
         to: data.email,
         subject: `🎉 ক্রেডিট ডেলিভারি সম্পন্ন — ${data.order_id} | ${sn}`,
-        html: buildEmail('credit_delivered', { ...data, site_name: sn }),
+        html: buildEmail('credit_delivered', emailData),
       });
     } else if (type === 'order_timeout') {
       emails.push({
         to: data.email,
         subject: `⏰ অর্ডার টাইম আউট — ${data.order_id} | ${sn}`,
-        html: buildEmail('order_timeout', { ...data, site_name: sn }),
+        html: buildEmail('order_timeout', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `⏰ অর্ডার টাইমআউট — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('order_timeout', { ...data, site_name: sn, is_admin: true }),
+          html: buildEmail('order_timeout', { ...emailData, is_admin: true }),
         });
       }
     } else if (type === 'order_failed') {
       emails.push({
         to: data.email,
         subject: `❌ অর্ডার ব্যর্থ — ${data.order_id} | ${sn}`,
-        html: buildEmail('order_failed', { ...data, site_name: sn }),
+        html: buildEmail('order_failed', emailData),
       });
       if (adminEmail) {
         emails.push({
           to: adminEmail,
           subject: `❌ অর্ডার ব্যর্থ — ${data.order_id} | ৳${data.amount}`,
-          html: buildEmail('order_failed', { ...data, site_name: sn, is_admin: true }),
+          html: buildEmail('order_failed', { ...emailData, is_admin: true }),
         });
       }
     }
