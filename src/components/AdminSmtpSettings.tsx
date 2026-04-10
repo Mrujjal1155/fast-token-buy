@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Send, Loader2, Eye, EyeOff, Save, Settings, Globe } from "lucide-react";
+import AdminEmailTemplates from "./AdminEmailTemplates";
 
 const SMTP_KEYS = [
   "smtp_host",
@@ -305,13 +306,7 @@ const AdminSmtpSettings = () => {
         </div>
       )}
 
-      {activeTab === "templates" && (
-        <div className="bg-card border border-border/30 rounded-2xl p-6">
-          <p className="text-muted-foreground text-center py-8">
-            Email Templates সেকশন শীঘ্রই আসছে...
-          </p>
-        </div>
-      )}
+      {activeTab === "templates" && <AdminEmailTemplates />}
     </div>
   );
 };
