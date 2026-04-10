@@ -170,10 +170,10 @@ const AdminDashboard = () => {
         description: `${orderDisplayId} → ${displayLabel}`,
       variant: "success" });
 
-      // Send credit delivered email when status changes to completed
-      if (dbStatus === "completed") {
-        const order = orders.find((o) => o.id === orderId);
-        if (order) {
+      // Send email notifications on status change
+      const order = orders.find((o) => o.id === orderId);
+      if (order) {
+        if (dbStatus === "completed") {
           supabase.functions.invoke("send-smtp-email", {
             body: {
               type: "credit_delivered",
@@ -182,6 +182,19 @@ const AdminDashboard = () => {
                 email: order.email,
                 credits: order.credits,
                 amount: order.amount,
+              },
+            },
+          }).catch(console.error);
+        } else if (dbStatus === "failed" && !isTimeout) {
+          supabase.functions.invoke("send-smtp-email", {
+            body: {
+              type: "order_failed",
+              data: {
+                order_id: order.order_id,
+                email: order.email,
+                credits: order.credits,
+                amount: order.amount,
+                payment_method: order.payment_method,
               },
             },
           }).catch(console.error);
