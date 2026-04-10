@@ -369,7 +369,9 @@ const AdminSmtpSettings = () => {
 
           {/* Save Button - Purple Gradient */}
           <Button
-            onClick={handleSave}
+            onClick={() => {
+              void handleSave();
+            }}
             disabled={saving}
             className="w-full bg-gradient-to-r from-purple-600 via-purple-500 to-fuchsia-400 hover:from-purple-700 hover:via-purple-600 hover:to-fuchsia-500 text-white border-0 py-6 text-base font-semibold rounded-xl"
           >
