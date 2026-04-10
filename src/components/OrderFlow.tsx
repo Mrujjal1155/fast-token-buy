@@ -237,6 +237,20 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     setStep("crypto-checkout");
     setSubmitting(false);
 
+    // Send order notification emails (fire & forget)
+    supabase.functions.invoke("send-smtp-email", {
+      body: {
+        type: "order_submitted",
+        data: {
+          order_id: orderData.order_id,
+          email,
+          credits: totalCredits,
+          amount: finalPrice,
+          payment_method: `Crypto (${selectedCrypto.label})`,
+        },
+      },
+    }).catch(console.error);
+
     // Also try to open in new tab
     window.open(paymentData.payment_url, "_blank");
   };
@@ -303,6 +317,21 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     setCryptoPaymentUrl(paymentData.payment_url);
     setStep("crypto-checkout");
     setSubmitting(false);
+
+    // Send order notification emails (fire & forget)
+    supabase.functions.invoke("send-smtp-email", {
+      body: {
+        type: "order_submitted",
+        data: {
+          order_id: orderData.order_id,
+          email,
+          credits: totalCredits,
+          amount: finalPrice,
+          payment_method: `AjkerPay (${currentPayment?.name || selectedPayment})`,
+        },
+      },
+    }).catch(console.error);
+
     window.open(paymentData.payment_url, "_blank");
   };
 
