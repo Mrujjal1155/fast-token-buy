@@ -99,7 +99,7 @@ const TrackOrder = () => {
         title={t("seo.track.title")}
         description={t("seo.track.description")}
         path="/track"
-        keywords="order track, lovable credit order track, order status"
+        keywords={t("seo.track.keywords")}
       />
       <Navbar />
 
