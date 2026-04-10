@@ -35,6 +35,7 @@ const AdminSmtpSettings = () => {
     smtp_from_name: "FastTokenBuy",
     smtp_admin_email: "",
   });
+  const [logoUrl, setLogoUrl] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
