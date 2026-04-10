@@ -66,7 +66,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       row("Payment", d.payment_method) +
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Pending", BRAND)}</td></tr>` +
       `</table>`;
-    return emailShell(sn, "Admin Notification", inner);
+    return emailShell(sn, "Admin Notification", inner, logo);
   }
 
   if (type === "credit_delivered") {
@@ -79,7 +79,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
       `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("✅ Completed", "#10B981")}</td></tr>` +
       `</table>` +
       infoBox("আপনার একাউন্টে ক্রেডিট যোগ করা হয়েছে। ধন্যবাদ!", BRAND);
-    return emailShell(sn, "Order Update", inner);
+    return emailShell(sn, "Order Update", inner, logo);
   }
 
   if (type === "order_timeout" || type === "order_failed") {
@@ -122,7 +122,7 @@ function buildEmail(type: string, d: Record<string, any>): string {
     `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Processing", BRAND)}</td></tr>` +
     `</table>` +
     infoBox("আপনার অর্ডারটি প্রক্রিয়াধীন আছে। শীঘ্রই ক্রেডিট ডেলিভারি করা হবে।", BRAND);
-  return emailShell(sn, "Order Confirmation", inner);
+  return emailShell(sn, "Order Confirmation", inner, logo);
 }
 
 serve(async (req) => {
