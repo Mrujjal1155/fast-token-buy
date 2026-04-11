@@ -13,6 +13,7 @@ const OurReserves = lazy(() => import("@/components/OurReserves"));
 const RecentPurchases = lazy(() => import("@/components/RecentPurchases"));
 const Footer = lazy(() => import("@/components/Footer"));
 const OrderFlow = lazy(() => import("@/components/OrderFlow"));
+const HowToOrder = lazy(() => import("@/components/HowToOrder"));
 
 const Index = () => {
   const [showOrderFlow, setShowOrderFlow] = useState(false);
@@ -45,6 +46,7 @@ const Index = () => {
       <Suspense fallback={null}>
         <RecentPurchases />
         <OurReserves />
+        <HowToOrder />
         <Testimonials />
         <Footer />
       </Suspense>

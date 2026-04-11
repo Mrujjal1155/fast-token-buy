@@ -262,6 +262,18 @@ const en = {
 
   // WhatsApp
   "whatsapp.chat": "Chat with us",
+
+  // How to Order
+  "howToOrder.heading": "How to Order",
+  "howToOrder.subtext": "Follow these simple steps to get your credits instantly.",
+  "howToOrder.step1.title": "Choose Package",
+  "howToOrder.step1.desc": "Select the credit package that best suits your needs from our available options.",
+  "howToOrder.step2.title": "Enter Email",
+  "howToOrder.step2.desc": "Provide a valid email address where you'll receive your delivery confirmation.",
+  "howToOrder.step3.title": "Make Payment",
+  "howToOrder.step3.desc": "Complete the payment securely through our trusted bKash, Nagad, or Crypto gateway.",
+  "howToOrder.step4.title": "Get Credits",
+  "howToOrder.step4.desc": "Your credits will be instantly delivered to your email after payment confirmation.",
 } as const;
 
 const bn: Record<keyof typeof en, string> = {
@@ -528,6 +540,18 @@ const bn: Record<keyof typeof en, string> = {
 
   // WhatsApp
   "whatsapp.chat": "আমাদের সাথে চ্যাট করুন",
+
+  // How to Order
+  "howToOrder.heading": "কিভাবে অর্ডার করবেন",
+  "howToOrder.subtext": "মাত্র কয়েকটি সহজ ধাপে আপনার ক্রেডিট পেয়ে যান।",
+  "howToOrder.step1.title": "প্যাকেজ নির্বাচন করুন",
+  "howToOrder.step1.desc": "আমাদের উপলব্ধ অপশন থেকে আপনার প্রয়োজন অনুযায়ী ক্রেডিট প্যাকেজ বেছে নিন।",
+  "howToOrder.step2.title": "ইমেল লিখুন",
+  "howToOrder.step2.desc": "একটি সঠিক ইমেল অ্যাড্রেস দিন যেখানে আপনি ডেলিভারি কনফার্মেশন পাবেন।",
+  "howToOrder.step3.title": "পেমেন্ট করুন",
+  "howToOrder.step3.desc": "বিকাশ, নগদ বা ক্রিপ্টো গেটওয়ে দিয়ে নিরাপদে পেমেন্ট সম্পন্ন করুন।",
+  "howToOrder.step4.title": "ক্রেডিট পান",
+  "howToOrder.step4.desc": "পেমেন্ট কনফার্ম হওয়ার পর আপনার ইমেইলে তৎক্ষণাৎ ক্রেডিট পৌঁছে যাবে।",
 };
 
 export type TranslationKey = keyof typeof en;
