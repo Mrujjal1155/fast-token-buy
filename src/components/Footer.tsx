@@ -115,7 +115,7 @@ const Footer = () => {
 
         {/* Payment Methods */}
         <div className="mt-8 pt-6 border-t border-border/20">
-          <p className="text-xs text-muted-foreground text-center mb-3">{t("footer.paymentMethods") || "Accepted Payment Methods"}</p>
+          <p className="text-xs text-muted-foreground text-center mb-3">Accepted Payment Methods</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
               <img src={bkashLogo} alt="bKash" loading="lazy" className="h-6 w-6 object-contain" />
