@@ -46,26 +46,20 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const { t } = useLanguage();
 
   // Fetch payment settings
-  const [activeGateway, setActiveGateway] = useState<"ajkerpay" | "nowpaybd">("ajkerpay");
-
   useEffect(() => {
     const fetchSettings = async () => {
       const { data } = await supabase
         .from("site_settings")
         .select("key, value")
-        .or("key.like.payment_method_%,key.eq.ajkerpay_enabled,key.eq.nowpaybd_enabled");
+        .or("key.like.payment_method_%,key.eq.nowpaybd_enabled");
 
       if (data) {
         const enabledMap: Record<string, boolean> = {};
         const iconMap: Record<string, string> = {};
-        let ajkerpayEnabled = false;
-        let nowpaybdEnabled = false;
 
         data.forEach((s) => {
-          if (s.key === "ajkerpay_enabled") {
-            ajkerpayEnabled = s.value === "true";
-          } else if (s.key === "nowpaybd_enabled") {
-            nowpaybdEnabled = s.value === "true";
+          if (s.key === "nowpaybd_enabled") {
+            // just consume, no action needed
           } else if (s.key.endsWith("_enabled")) {
             const id = s.key.replace("payment_method_", "").replace("_enabled", "");
             enabledMap[id] = s.value === "true";
@@ -74,10 +68,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             iconMap[id] = s.value;
           }
         });
-
-        // Prefer NowPayBD if enabled, else AjkerPay
-        if (nowpaybdEnabled) setActiveGateway("nowpaybd");
-        else if (ajkerpayEnabled) setActiveGateway("ajkerpay");
 
         const filtered = paymentMethods
           .filter((m) => enabledMap[m.id] !== false)
