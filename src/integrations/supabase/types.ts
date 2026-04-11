@@ -242,6 +242,33 @@ export type Database = {
         }
         Relationships: []
       }
+      proof_screenshots: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          is_visible: boolean
+          sort_order: number
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_visible?: boolean
+          sort_order?: number
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_visible?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
       reserves: {
         Row: {
           amount: string

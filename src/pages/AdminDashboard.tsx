@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Timer, Mail, CreditCard } from "lucide-react";
+import { LogOut, Search, Package, DollarSign, Clock, CheckCircle, Tag, Filter, BarChart3, Bell, Power, Wallet, AlertTriangle, Loader2, MessageSquare, Globe, ImageIcon, ShieldCheck, Timer, Mail, CreditCard, Camera } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import type { Tables } from "@/integrations/supabase/types";
@@ -37,6 +37,7 @@ import AdminImages from "@/components/AdminImages";
 import AdminTrustBadges from "@/components/AdminTrustBadges";
 import AdminSmtpSettings from "@/components/AdminSmtpSettings";
 import AdminFooterPayments from "@/components/AdminFooterPayments";
+import AdminProofScreenshots from "@/components/AdminProofScreenshots";
 
 type Order = Tables<"orders">;
 
@@ -75,7 +76,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email" | "footer-pay">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email" | "footer-pay" | "proof">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -267,6 +268,7 @@ const AdminDashboard = () => {
             { id: "images" as const, label: "Images", icon: ImageIcon },
             { id: "email" as const, label: "Email", icon: Mail },
             { id: "footer-pay" as const, label: "Footer Pay", icon: CreditCard },
+            { id: "proof" as const, label: "Proof", icon: Camera },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -452,6 +454,8 @@ const AdminDashboard = () => {
           <AdminSmtpSettings />
         ) : activeTab === "footer-pay" ? (
           <AdminFooterPayments />
+        ) : activeTab === "proof" ? (
+          <AdminProofScreenshots />
         ) : (
           <AdminPaymentMethods />
         )}
