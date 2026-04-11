@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
+import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck, Bitcoin } from "lucide-react";
+import bkashLogo from "@/assets/bkash-logo.png";
+import nagadLogo from "@/assets/nagad-logo.png";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
 import { useLanguage } from "@/contexts/LanguageContext";
