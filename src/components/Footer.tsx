@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
+import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck, Bitcoin } from "lucide-react";
+import bkashLogo from "@/assets/bkash-logo.png";
+import nagadLogo from "@/assets/nagad-logo.png";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -111,7 +113,26 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-border/20 flex flex-col md:flex-row items-center justify-between gap-3">
+        {/* Payment Methods */}
+        <div className="mt-8 pt-6 border-t border-border/20">
+          <p className="text-xs text-muted-foreground text-center mb-3">Accepted Payment Methods</p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
+              <img src={bkashLogo} alt="bKash" loading="lazy" className="h-6 w-6 object-contain" />
+              <span className="text-xs font-medium text-[#E2136E]">bKash</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
+              <img src={nagadLogo} alt="Nagad" loading="lazy" className="h-6 w-6 object-contain" />
+              <span className="text-xs font-medium text-[#F6921E]">Nagad</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
+              <Bitcoin className="w-5 h-5 text-[#F7931A]" />
+              <span className="text-xs font-medium text-[#F7931A]">Crypto</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-border/20 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">{c.copyright}</p>
           <p className="text-xs text-muted-foreground">{c.tagline}</p>
         </div>
