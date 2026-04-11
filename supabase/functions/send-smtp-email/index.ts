@@ -12,6 +12,8 @@ const BG = "#0F172A";
 const CARD = "#1E293B";
 const TEXT = "#E2E8F0";
 const MUTED = "#94A3B8";
+const GREEN = "#10B981";
+const RED = "#EF4444";
 
 function sanitizeConfigValue(value?: string): string {
   return typeof value === "string" ? value.trim() : "";
@@ -31,7 +33,7 @@ function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?:
   const year = new Date().getFullYear();
   const logoBlock = logoUrl
     ? `<img src="${logoUrl}" alt="${siteName}" style="max-width:180px;max-height:60px;margin-bottom:10px;" />`
-    : `<h1 style="color:${BRAND};font-size:24px;margin:0;">${siteName}</h1>`;
+    : `<h1 style="color:${BRAND};font-size:24px;margin:0;font-weight:700;">${siteName}</h1>`;
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:${BG};font-family:'Segoe UI',Arial,sans-serif;">
@@ -40,29 +42,37 @@ function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?:
     ${logoBlock}
     <p style="color:${MUTED};font-size:13px;margin:5px 0 0;">${subtitle}</p>
   </div>
-  <div style="background:${CARD};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.05);">
+  <div style="background:${CARD};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.08);">
     ${inner}
   </div>
-  <p style="text-align:center;color:${MUTED};font-size:11px;margin-top:30px;">&copy; ${year} ${siteName}</p>
+  <p style="text-align:center;color:${MUTED};font-size:11px;margin-top:30px;">&copy; ${year} ${siteName}. All rights reserved.</p>
 </div>
 </body></html>`;
 }
 
 function row(label: string, value: string, isLast = false): string {
-  const border = isLast ? "" : "border-bottom:1px solid rgba(255,255,255,0.05);";
-  return `<tr><td style="padding:12px 0;${border}color:${MUTED};font-size:13px;">${label}</td><td style="padding:12px 0;${border}color:${TEXT};font-size:14px;font-weight:600;text-align:right;">${value}</td></tr>`;
+  const border = isLast ? "" : "border-bottom:1px solid rgba(255,255,255,0.06);";
+  return `<tr><td style="padding:14px 0;${border}color:${MUTED};font-size:13px;width:40%;">${label}</td><td style="padding:14px 0;${border}color:${TEXT};font-size:14px;font-weight:600;text-align:right;">${value}</td></tr>`;
 }
 
 function badge(text: string, color: string): string {
-  return `<span style="background:${color}20;color:${color};padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">${text}</span>`;
+  return `<span style="background:${color}15;color:${color};padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.3px;">${text}</span>`;
 }
 
 function infoBox(msg: string, color: string): string {
-  return `<div style="margin-top:25px;padding:15px;background:${color}10;border-radius:12px;border:1px solid ${color}30;"><p style="color:${TEXT};font-size:13px;margin:0;text-align:center;">${msg}</p></div>`;
+  return `<div style="margin-top:25px;padding:16px 20px;background:${color}0A;border-radius:12px;border-left:3px solid ${color};"><p style="color:${TEXT};font-size:13px;margin:0;line-height:1.6;">${msg}</p></div>`;
 }
 
-function heroIcon(emoji: string, color: string): string {
-  return `<div style="text-align:center;margin-bottom:25px;"><div style="width:60px;height:60px;border-radius:50%;background:${color}20;display:inline-flex;align-items:center;justify-content:center;"><span style="font-size:28px;">${emoji}</span></div>`;
+function statusIcon(type: string): string {
+  const configs: Record<string, { bg: string; icon: string; color: string }> = {
+    order: { bg: `${BRAND}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${BRAND}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`, color: BRAND },
+    admin: { bg: `${BRAND}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${BRAND}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`, color: BRAND },
+    delivered: { bg: `${GREEN}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${GREEN}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`, color: GREEN },
+    timeout: { bg: `${RED}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${RED}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, color: RED },
+    failed: { bg: `${RED}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${RED}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`, color: RED },
+  };
+  const c = configs[type] || configs.order;
+  return `<div style="text-align:center;margin-bottom:25px;"><div style="width:64px;height:64px;border-radius:50%;background:${c.bg};display:inline-flex;align-items:center;justify-content:center;">${c.icon}</div>`;
 }
 
 function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, string>): string {
@@ -72,15 +82,15 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
   if (type === "admin_order") {
     const heading = replacePlaceholders(tpl.email_tpl_admin_heading || "নতুন অর্ডার এসেছে!", d);
     const headingEn = replacePlaceholders(tpl.email_tpl_admin_heading_en || "New Order Received", d);
-    const inner = heroIcon("🔔", BRAND) +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0;">${headingEn}</p></div>` +
+    const inner = statusIcon("admin") +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
       `<table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;">${d.order_id}</span>`) +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
       row("Customer", d.email) +
-      row("Credits", `<span style="color:${BRAND}">${d.credits}</span>`) +
-      row("Amount", "৳" + d.amount) +
+      row("Credits", `<span style="color:${BRAND};font-weight:700;">${d.credits}</span>`) +
+      row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
       row("Payment", d.payment_method) +
-      `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Pending", BRAND)}</td></tr>` +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Pending", BRAND)}</td></tr>` +
       `</table>`;
     return emailShell(sn, "Admin Notification", inner, logo);
   }
@@ -89,23 +99,22 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     const heading = replacePlaceholders(tpl.email_tpl_delivered_heading || "আপনার ক্রেডিট ডেলিভারি সম্পন্ন!", d);
     const headingEn = replacePlaceholders(tpl.email_tpl_delivered_heading_en || "Your credits have been delivered", d);
     const footer = replacePlaceholders(tpl.email_tpl_delivered_footer || "আপনার একাউন্টে ক্রেডিট যোগ করা হয়েছে। ধন্যবাদ!", d);
-    const inner = heroIcon("🎉", "#10B981") +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0;">${headingEn}</p></div>` +
+    const inner = statusIcon("delivered") +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
       `<table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;">${d.order_id}</span>`) +
-      row("Credits", `<span style="color:${BRAND};font-size:18px;font-weight:700;">${d.credits} Credits</span>`) +
-      row("Amount Paid", "৳" + d.amount) +
-      `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("✅ Completed", "#10B981")}</td></tr>` +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
+      row("Credits", `<span style="color:${GREEN};font-size:18px;font-weight:700;">${d.credits} Credits</span>`) +
+      row("Amount Paid", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN)}</td></tr>` +
       `</table>` +
-      infoBox(footer, BRAND);
+      infoBox(footer, GREEN);
     return emailShell(sn, "Order Update", inner, logo);
   }
 
   if (type === "order_timeout" || type === "order_failed") {
     const isTimeout = type === "order_timeout";
     const isAdmin = d.is_admin;
-    const emoji = isTimeout ? "⏰" : "❌";
-    const col = "#EF4444";
+    const iconType = isTimeout ? "timeout" : "failed";
 
     let heading: string, sub: string, foot: string;
 
@@ -127,17 +136,17 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
         : replacePlaceholders(tpl.email_tpl_failed_footer || "আপনার অর্ডারটি সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন অথবা আমাদের সাথে যোগাযোগ করুন।", d);
     }
 
-    const lbl = isTimeout ? "⏰ Timed Out" : "❌ Failed";
-    let rows = row("Order ID", `<span style="font-family:monospace;">${d.order_id}</span>`);
+    const statusLabel = isTimeout ? "Timed Out" : "Failed";
+    let rows = row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`);
     if (isAdmin) rows += row("Customer", d.email);
     rows += row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`);
-    rows += row("Amount", "৳" + d.amount);
+    rows += row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`);
 
-    const inner = heroIcon(emoji, col) +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0;">${sub}</p></div>` +
+    const inner = statusIcon(iconType) +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${sub}</p></div>` +
       `<table style="width:100%;border-collapse:collapse;">${rows}` +
-      `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge(lbl, col)}</td></tr></table>` +
-      infoBox(foot, col);
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED)}</td></tr></table>` +
+      infoBox(foot, RED);
     return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo);
   }
 
@@ -145,14 +154,14 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
   const heading = replacePlaceholders(tpl.email_tpl_order_heading || "অর্ডার সফলভাবে জমা হয়েছে!", d);
   const headingEn = replacePlaceholders(tpl.email_tpl_order_heading_en || "Your order has been placed successfully", d);
   const footer = replacePlaceholders(tpl.email_tpl_order_footer || "আপনার অর্ডারটি প্রক্রিয়াধীন আছে। শীঘ্রই ক্রেডিট ডেলিভারি করা হবে।", d);
-  const inner = heroIcon("📦", BRAND) +
-    `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0;">${headingEn}</p></div>` +
+  const inner = statusIcon("order") +
+    `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
     `<table style="width:100%;border-collapse:collapse;">` +
-    row("Order ID", `<span style="font-family:monospace;">${d.order_id}</span>`) +
+    row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
     row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`) +
-    row("Amount", "৳" + d.amount) +
+    row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
     row("Payment", d.payment_method) +
-    `<tr><td style="padding:12px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:12px 0;text-align:right;">${badge("⏳ Processing", BRAND)}</td></tr>` +
+    `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND)}</td></tr>` +
     `</table>` +
     infoBox(footer, BRAND);
   return emailShell(sn, "Order Confirmation", inner, logo);
@@ -229,7 +238,7 @@ serve(async (req) => {
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
     if (type === 'order_submitted') {
-      const subjectTpl = tpl.email_tpl_order_subject || `✅ অর্ডার কনফার্ম — {order_id} | {site_name}`;
+      const subjectTpl = tpl.email_tpl_order_subject || 'Order Confirmed - {order_id} | {site_name}';
       if (customerEmail) {
         emails.push({
           to: customerEmail,
@@ -238,7 +247,7 @@ serve(async (req) => {
         });
       }
       if (adminEmail) {
-        const adminSubjectTpl = tpl.email_tpl_admin_subject || `🔔 নতুন অর্ডার — {order_id} | ৳{amount}`;
+        const adminSubjectTpl = tpl.email_tpl_admin_subject || 'New Order - {order_id} | BDT {amount}';
         emails.push({
           to: adminEmail,
           subject: replacePlaceholders(adminSubjectTpl, emailData),
@@ -246,7 +255,7 @@ serve(async (req) => {
         });
       }
     } else if (type === 'credit_delivered') {
-      const subjectTpl = tpl.email_tpl_delivered_subject || `🎉 ক্রেডিট ডেলিভারি সম্পন্ন — {order_id} | {site_name}`;
+      const subjectTpl = tpl.email_tpl_delivered_subject || 'Credit Delivered - {order_id} | {site_name}';
       if (customerEmail) {
         emails.push({
           to: customerEmail,
@@ -255,7 +264,7 @@ serve(async (req) => {
         });
       }
     } else if (type === 'order_timeout') {
-      const subjectTpl = tpl.email_tpl_timeout_subject || `⏰ অর্ডার টাইম আউট — {order_id} | {site_name}`;
+      const subjectTpl = tpl.email_tpl_timeout_subject || 'Order Timed Out - {order_id} | {site_name}';
       if (customerEmail) {
         emails.push({
           to: customerEmail,
@@ -266,12 +275,12 @@ serve(async (req) => {
       if (adminEmail) {
         emails.push({
           to: adminEmail,
-          subject: replacePlaceholders(`⏰ অর্ডার টাইমআউট — {order_id} | ৳{amount}`, emailData),
+          subject: replacePlaceholders('Order Timeout - {order_id} | BDT {amount}', emailData),
           html: buildEmail('order_timeout', { ...emailData, is_admin: true }, tpl),
         });
       }
     } else if (type === 'order_failed') {
-      const subjectTpl = tpl.email_tpl_failed_subject || `❌ অর্ডার ব্যর্থ — {order_id} | {site_name}`;
+      const subjectTpl = tpl.email_tpl_failed_subject || 'Order Failed - {order_id} | {site_name}';
       if (customerEmail) {
         emails.push({
           to: customerEmail,
@@ -282,7 +291,7 @@ serve(async (req) => {
       if (adminEmail) {
         emails.push({
           to: adminEmail,
-          subject: replacePlaceholders(`❌ অর্ডার ব্যর্থ — {order_id} | ৳{amount}`, emailData),
+          subject: replacePlaceholders('Order Failed - {order_id} | BDT {amount}', emailData),
           html: buildEmail('order_failed', { ...emailData, is_admin: true }, tpl),
         });
       }
@@ -299,8 +308,8 @@ serve(async (req) => {
         from: `${fromName} <${fromEmail}>`,
         to: em.to,
         subject: em.subject,
-        content: "auto",
         html: em.html,
+        content: "auto",
       });
       console.log(`Email sent to: ${em.to}`);
     }
