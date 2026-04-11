@@ -14,7 +14,7 @@ interface PaymentMethodConfig {
   iconUrl: string | null;
 }
 
-interface AjkerPayConfig {
+interface GatewayConfig {
   enabled: boolean;
   apiKey: string;
   secretKey: string;
@@ -23,7 +23,10 @@ interface AjkerPayConfig {
 
 const AdminPaymentMethods = () => {
   const [methods, setMethods] = useState<PaymentMethodConfig[]>([]);
-  const [ajkerpay, setAjkerpay] = useState<AjkerPayConfig>({
+  const [ajkerpay, setAjkerpay] = useState<GatewayConfig>({
+    enabled: false, apiKey: "", secretKey: "", brandKey: "",
+  });
+  const [nowpaybd, setNowpaybd] = useState<GatewayConfig>({
     enabled: false, apiKey: "", secretKey: "", brandKey: "",
   });
   const [showKeys, setShowKeys] = useState(false);
