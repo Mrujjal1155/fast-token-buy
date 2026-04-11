@@ -262,6 +262,18 @@ const en = {
 
   // WhatsApp
   "whatsapp.chat": "Chat with us",
+
+  // How to Order
+  "howToOrder.heading": "How to Order",
+  "howToOrder.subtext": "Follow these simple steps to get your credits instantly.",
+  "howToOrder.step1.title": "Choose Package",
+  "howToOrder.step1.desc": "Select the credit package that best suits your needs from our available options.",
+  "howToOrder.step2.title": "Enter Email",
+  "howToOrder.step2.desc": "Provide a valid email address where you'll receive your delivery confirmation.",
+  "howToOrder.step3.title": "Make Payment",
+  "howToOrder.step3.desc": "Complete the payment securely through our trusted bKash, Nagad, or Crypto gateway.",
+  "howToOrder.step4.title": "Get Credits",
+  "howToOrder.step4.desc": "Your credits will be instantly delivered to your email after payment confirmation.",
 } as const;
 
 const bn: Record<keyof typeof en, string> = {
