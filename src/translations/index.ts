@@ -274,6 +274,7 @@ const en = {
   "howToOrder.step3.desc": "Complete the payment securely through our trusted bKash, Nagad, or Crypto gateway.",
   "howToOrder.step4.title": "Get Credits",
   "howToOrder.step4.desc": "Your credits will be instantly delivered to your email after payment confirmation.",
+  "howToOrder.cta": "Order Now",
 } as const;
 
 const bn: Record<keyof typeof en, string> = {
@@ -552,6 +553,7 @@ const bn: Record<keyof typeof en, string> = {
   "howToOrder.step3.desc": "বিকাশ, নগদ বা ক্রিপ্টো গেটওয়ে দিয়ে নিরাপদে পেমেন্ট সম্পন্ন করুন।",
   "howToOrder.step4.title": "ক্রেডিট পান",
   "howToOrder.step4.desc": "পেমেন্ট কনফার্ম হওয়ার পর আপনার ইমেইলে তৎক্ষণাৎ ক্রেডিট পৌঁছে যাবে।",
+  "howToOrder.cta": "এখনই অর্ডার করুন",
 };
 
 export type TranslationKey = keyof typeof en;

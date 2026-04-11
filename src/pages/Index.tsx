@@ -46,7 +46,7 @@ const Index = () => {
       <Suspense fallback={null}>
         <RecentPurchases />
         <OurReserves />
-        <HowToOrder />
+        <HowToOrder onBuyNow={() => setShowOrderFlow(true)} />
         <Testimonials />
         <Footer />
       </Suspense>

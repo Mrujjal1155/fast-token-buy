@@ -33,7 +33,11 @@ const steps = [
   },
 ];
 
-const HowToOrder = () => {
+interface HowToOrderProps {
+  onBuyNow?: () => void;
+}
+
+const HowToOrder = ({ onBuyNow }: HowToOrderProps) => {
   const { t } = useLanguage();
 
   return (
@@ -107,6 +111,25 @@ const HowToOrder = () => {
             })}
           </div>
         </div>
+
+        {/* CTA Button */}
+        {onBuyNow && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="text-center mt-10"
+          >
+            <button
+              onClick={onBuyNow}
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-base text-primary-foreground bg-gradient-primary hover:opacity-90 shadow-glow transition-all duration-300 hover:scale-105"
+            >
+              <Sparkles className="w-5 h-5" />
+              {t("howToOrder.cta")}
+            </button>
+          </motion.div>
+        )}
       </div>
     </section>
   );
