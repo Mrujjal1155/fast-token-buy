@@ -75,7 +75,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email" | "footer-pay">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -266,6 +266,7 @@ const AdminDashboard = () => {
             { id: "content" as const, label: "Content", icon: Globe },
             { id: "images" as const, label: "Images", icon: ImageIcon },
             { id: "email" as const, label: "Email", icon: Mail },
+            { id: "footer-pay" as const, label: "Footer Pay", icon: CreditCard },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -449,8 +450,11 @@ const AdminDashboard = () => {
           <AdminImages />
         ) : activeTab === "email" ? (
           <AdminSmtpSettings />
+        ) : activeTab === "footer-pay" ? (
+          <AdminFooterPayments />
         ) : (
           <AdminPaymentMethods />
+        )}
         )}
       </div>
 
