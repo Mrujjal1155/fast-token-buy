@@ -137,6 +137,7 @@ const en = {
   "footer.privacy": "Privacy Policy",
   "footer.refund": "Refund Policy",
   "footer.contact": "Contact",
+  "footer.acceptedPayments": "Accepted Payment Methods",
 
   // FAQ
   "faq.heading": "Frequently Asked Questions",
@@ -416,6 +417,7 @@ const bn: Record<keyof typeof en, string> = {
   "footer.privacy": "গোপনীয়তা নীতি",
   "footer.refund": "ফেরত নীতি",
   "footer.contact": "যোগাযোগ",
+  "footer.acceptedPayments": "গ্রহণযোগ্য পেমেন্ট মেথড",
 
   // FAQ
   "faq.heading": "সচরাচর জিজ্ঞাসা",

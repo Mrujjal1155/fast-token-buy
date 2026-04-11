@@ -129,7 +129,7 @@ const Footer = () => {
         {/* Payment Methods */}
         {paymentMethods.length > 0 && (
           <div className="mt-8 pt-6 border-t border-border/20">
-            <p className="text-xs text-muted-foreground text-center mb-3">Accepted Payment Methods</p>
+            <p className="text-xs text-muted-foreground text-center mb-3">{t("footer.acceptedPayments")}</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               {paymentMethods.map((pm) => (
                 <div
