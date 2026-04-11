@@ -37,14 +37,14 @@ const ProofGallery = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
             <Camera className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">
-              {language === "bn" ? "ডেলিভারি প্রুফ" : "Delivery Proof"}
+              {lang === "bn" ? "ডেলিভারি প্রুফ" : "Delivery Proof"}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-            {language === "bn" ? "আমাদের সাম্প্রতিক ডেলিভারি" : "Our Recent Deliveries"}
+            {lang === "bn" ? "আমাদের সাম্প্রতিক ডেলিভারি" : "Our Recent Deliveries"}
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
-            {language === "bn"
+            {lang === "bn"
               ? "আমাদের সফল ক্রেডিট ডেলিভারির স্ক্রিনশট দেখুন"
               : "See screenshots of our successful credit deliveries"}
           </p>
