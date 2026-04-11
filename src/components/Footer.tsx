@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck, Bitcoin } from "lucide-react";
-import bkashLogo from "@/assets/bkash-logo.png";
-import nagadLogo from "@/assets/nagad-logo.png";
+import { Mail, MessageCircle, ExternalLink, Globe, Send, ShieldCheck } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useSiteImages } from "@/hooks/useSiteImages";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -21,6 +21,19 @@ const Footer = () => {
   const c = content.footer;
   const { logo } = useSiteImages();
   const { t } = useLanguage();
+
+  const { data: paymentMethods = [] } = useQuery({
+    queryKey: ["footer-payment-methods"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("payment_methods")
+        .select("*")
+        .eq("is_visible", true)
+        .order("sort_order", { ascending: true });
+      return data || [];
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
   return (
     <footer className="relative border-t border-border/10 pt-1">
@@ -114,23 +127,31 @@ const Footer = () => {
         </div>
 
         {/* Payment Methods */}
-        <div className="mt-8 pt-6 border-t border-border/20">
-          <p className="text-xs text-muted-foreground text-center mb-3">Accepted Payment Methods</p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
-              <img src={bkashLogo} alt="bKash" loading="lazy" className="h-6 w-6 object-contain" />
-              <span className="text-xs font-medium text-[#E2136E]">bKash</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
-              <img src={nagadLogo} alt="Nagad" loading="lazy" className="h-6 w-6 object-contain" />
-              <span className="text-xs font-medium text-[#F6921E]">Nagad</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass">
-              <Bitcoin className="w-5 h-5 text-[#F7931A]" />
-              <span className="text-xs font-medium text-[#F7931A]">Crypto</span>
+        {paymentMethods.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-border/20">
+            <p className="text-xs text-muted-foreground text-center mb-3">Accepted Payment Methods</p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {paymentMethods.map((pm) => (
+                <div
+                  key={pm.id}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass"
+                >
+                  {pm.icon_url ? (
+                    <img src={pm.icon_url} alt={pm.name} loading="lazy" className="h-6 w-6 object-contain" />
+                  ) : (
+                    <span
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold"
+                      style={{ backgroundColor: pm.brand_color + "20", color: pm.brand_color }}
+                    >
+                      {pm.name.charAt(0)}
+                    </span>
+                  )}
+                  <span className="text-xs font-medium" style={{ color: pm.brand_color }}>{pm.name}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         <div className="mt-6 pt-6 border-t border-border/20 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">{c.copyright}</p>
