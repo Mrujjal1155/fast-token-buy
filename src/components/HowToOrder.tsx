@@ -83,21 +83,46 @@ const HowToOrder = ({ onBuyNow }: HowToOrderProps) => {
                   transition={{ delay: i * 0.1, type: "spring", stiffness: 200, damping: 20 }}
                   className="flex gap-4 md:gap-6 items-start group"
                 >
-                  {/* Step number circle */}
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-lg font-bold text-foreground relative z-10 transition-transform duration-300 group-hover:scale-110"
+                  {/* Step number circle with pulse animation */}
+                  <motion.div
+                    className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-lg font-bold text-foreground relative z-10"
                     style={{
                       background: step.gradient,
                       boxShadow: `0 0 20px ${step.shadow}`,
                     }}
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    whileInView={{
+                      boxShadow: [
+                        `0 0 20px ${step.shadow}`,
+                        `0 0 35px ${step.shadow}`,
+                        `0 0 20px ${step.shadow}`,
+                      ],
+                    }}
+                    transition={{
+                      boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 },
+                      scale: { type: "spring", stiffness: 300 },
+                    }}
                   >
                     {i + 1}
-                  </div>
+                  </motion.div>
 
                   {/* Content card */}
                   <div className="flex-1 glass rounded-xl p-4 md:p-5 transition-all duration-300 group-hover:border-border/40 group-hover:shadow-lg">
                     <div className="flex items-center gap-2 mb-1.5">
-                      <Icon className="w-4 h-4 text-muted-foreground" />
+                      <motion.div
+                        whileInView={{
+                          y: [0, -3, 0],
+                          rotate: [0, -8, 8, 0],
+                        }}
+                        transition={{
+                          duration: 2.5,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: i * 0.4,
+                        }}
+                      >
+                        <Icon className="w-4 h-4 text-muted-foreground" />
+                      </motion.div>
                       <h3 className="text-base md:text-lg font-semibold text-foreground">
                         {t(step.titleKey)}
                       </h3>
