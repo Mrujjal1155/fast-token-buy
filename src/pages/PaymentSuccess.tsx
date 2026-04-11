@@ -10,7 +10,6 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id") || "";
   const transactionId = searchParams.get("transactionId") || "";
-  const gateway = searchParams.get("gateway") || "ajkerpay";
   const [verifying, setVerifying] = useState(false);
   const { t } = useLanguage();
 
@@ -18,15 +17,14 @@ const PaymentSuccess = () => {
     if (transactionId && orderId) {
       const verify = async () => {
         setVerifying(true);
-        const verifyFn = gateway === "nowpaybd" ? "verify-nowpaybd-payment" : "verify-ajkerpay-payment";
-        await supabase.functions.invoke(verifyFn, {
+        await supabase.functions.invoke("verify-nowpaybd-payment", {
           body: { transaction_id: transactionId, order_id: orderId },
         });
         setVerifying(false);
       };
       verify();
     }
-  }, [transactionId, orderId, gateway]);
+  }, [transactionId, orderId]);
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">

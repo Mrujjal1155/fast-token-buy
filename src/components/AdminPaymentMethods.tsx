@@ -23,9 +23,6 @@ interface GatewayConfig {
 
 const AdminPaymentMethods = () => {
   const [methods, setMethods] = useState<PaymentMethodConfig[]>([]);
-  const [ajkerpay, setAjkerpay] = useState<GatewayConfig>({
-    enabled: false, apiKey: "", secretKey: "", brandKey: "",
-  });
   const [nowpaybd, setNowpaybd] = useState<GatewayConfig>({
     enabled: false, apiKey: "", secretKey: "", brandKey: "",
   });
@@ -42,19 +39,14 @@ const AdminPaymentMethods = () => {
     const { data } = await supabase
       .from("site_settings")
       .select("key, value")
-      .or("key.like.payment_method_%,key.like.ajkerpay_%,key.like.nowpaybd_%");
+      .or("key.like.payment_method_%,key.like.nowpaybd_%");
 
     const savedConfig: Record<string, any> = {};
-    const ajkerConfig: Partial<GatewayConfig> = {};
     const nowConfig: Partial<GatewayConfig> = {};
 
     if (data) {
       data.forEach((s) => {
-        if (s.key === "ajkerpay_enabled") ajkerConfig.enabled = s.value === "true";
-        else if (s.key === "ajkerpay_api_key") ajkerConfig.apiKey = s.value;
-        else if (s.key === "ajkerpay_secret_key") ajkerConfig.secretKey = s.value;
-        else if (s.key === "ajkerpay_brand_key") ajkerConfig.brandKey = s.value;
-        else if (s.key === "nowpaybd_enabled") nowConfig.enabled = s.value === "true";
+        if (s.key === "nowpaybd_enabled") nowConfig.enabled = s.value === "true";
         else if (s.key === "nowpaybd_api_key") nowConfig.apiKey = s.value;
         else if (s.key === "nowpaybd_secret_key") nowConfig.secretKey = s.value;
         else if (s.key === "nowpaybd_brand_key") nowConfig.brandKey = s.value;
@@ -66,13 +58,6 @@ const AdminPaymentMethods = () => {
         }
       });
     }
-
-    setAjkerpay({
-      enabled: ajkerConfig.enabled ?? false,
-      apiKey: ajkerConfig.apiKey ?? "",
-      secretKey: ajkerConfig.secretKey ?? "",
-      brandKey: ajkerConfig.brandKey ?? "",
-    });
 
     setNowpaybd({
       enabled: nowConfig.enabled ?? false,
@@ -151,10 +136,6 @@ const AdminPaymentMethods = () => {
         saveSetting(`payment_method_${m.id}_enabled`, m.enabled ? "true" : "false"),
         saveSetting(`payment_method_${m.id}_icon`, m.iconUrl || ""),
       ]),
-      saveSetting("ajkerpay_enabled", ajkerpay.enabled ? "true" : "false"),
-      saveSetting("ajkerpay_api_key", ajkerpay.apiKey),
-      saveSetting("ajkerpay_secret_key", ajkerpay.secretKey),
-      saveSetting("ajkerpay_brand_key", ajkerpay.brandKey),
       saveSetting("nowpaybd_enabled", nowpaybd.enabled ? "true" : "false"),
       saveSetting("nowpaybd_api_key", nowpaybd.apiKey),
       saveSetting("nowpaybd_secret_key", nowpaybd.secretKey),
@@ -183,73 +164,11 @@ const AdminPaymentMethods = () => {
         </Button>
       </div>
 
-      {/* AjkerPay Config */}
-      <div className="bg-card border border-border/30 rounded-xl p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Settings className="w-5 h-5 text-primary" />
-            <div>
-              <span className="font-semibold text-foreground">AjkerPay গেটওয়ে (bKash/Nagad/Rocket)</span>
-              <p className="text-xs text-muted-foreground">অটো পেমেন্ট প্রসেসিং</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">{ajkerpay.enabled ? "চালু" : "বন্ধ"}</span>
-            <Switch
-              checked={ajkerpay.enabled}
-              onCheckedChange={(v) => setAjkerpay((p) => ({ ...p, enabled: v }))}
-            />
-          </div>
-        </div>
-
-        {ajkerpay.enabled && (
-          <div className="space-y-3 pt-2 border-t border-border/20">
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">API Key</label>
-              <Input
-                type={showKeys ? "text" : "password"}
-                value={ajkerpay.apiKey}
-                onChange={(e) => setAjkerpay((p) => ({ ...p, apiKey: e.target.value }))}
-                placeholder="আপনার AjkerPay API Key"
-                className="h-9 bg-secondary border-border/50"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Secret Key</label>
-              <Input
-                type={showKeys ? "text" : "password"}
-                value={ajkerpay.secretKey}
-                onChange={(e) => setAjkerpay((p) => ({ ...p, secretKey: e.target.value }))}
-                placeholder="আপনার AjkerPay Secret Key"
-                className="h-9 bg-secondary border-border/50"
-              />
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Brand Key</label>
-              <Input
-                type={showKeys ? "text" : "password"}
-                value={ajkerpay.brandKey}
-                onChange={(e) => setAjkerpay((p) => ({ ...p, brandKey: e.target.value }))}
-                placeholder="আপনার AjkerPay Brand Key"
-                className="h-9 bg-secondary border-border/50"
-              />
-            </div>
-            <button
-              onClick={() => setShowKeys(!showKeys)}
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition"
-            >
-              {showKeys ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              {showKeys ? "কী লুকান" : "কী দেখুন"}
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* NowPayBD Config */}
       <div className="bg-card border border-border/30 rounded-xl p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Settings className="w-5 h-5 text-emerald-400" />
+            <Settings className="w-5 h-5 text-primary" />
             <div>
               <span className="font-semibold text-foreground">NowPayBD গেটওয়ে (bKash/Nagad/Rocket/Bank)</span>
               <p className="text-xs text-muted-foreground">অটো পেমেন্ট প্রসেসিং - NowPayBD</p>
@@ -386,8 +305,7 @@ const AdminPaymentMethods = () => {
         <ul className="list-disc list-inside space-y-1">
           <li>বন্ধ করা মেথড কাস্টমারদের কাছে দেখাবে না</li>
           <li>অন্তত একটি পেমেন্ট মেথড চালু রাখুন</li>
-          <li>NowPayBD চালু থাকলে সেটি প্রাথমিক গেটওয়ে হিসেবে ব্যবহৃত হবে</li>
-          <li>AjkerPay ও NowPayBD দুটোই চালু থাকলে NowPayBD অগ্রাধিকার পাবে</li>
+          <li>NowPayBD চালু থাকলে bKash/Nagad/Rocket অটো পেমেন্ট হবে</li>
           <li>আইকন সাইজ: সর্বোচ্চ ২MB, PNG/JPG/SVG সাপোর্টেড</li>
         </ul>
       </div>
