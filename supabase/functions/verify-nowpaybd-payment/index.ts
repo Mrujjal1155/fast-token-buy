@@ -34,6 +34,21 @@ serve(async (req) => {
       );
     }
 
+    // Idempotency check: skip if order already completed/failed
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("status")
+      .eq("order_id", order_id)
+      .single();
+
+    if (existingOrder && (existingOrder.status === "completed" || existingOrder.status === "failed")) {
+      console.log(`Order ${order_id} already ${existingOrder.status}, skipping verification`);
+      return new Response(
+        JSON.stringify({ status: existingOrder.status, already_processed: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Verify with NowPayBD
     const verifyResponse = await fetch(NOWPAYBD_VERIFY_URL, {
       method: "POST",
@@ -50,10 +65,6 @@ serve(async (req) => {
     console.log("NowPayBD verify response:", JSON.stringify(verifyData));
 
     // Update order in database
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
     const status = verifyData.status === "COMPLETED" ? "completed" : 
                    verifyData.status === "PENDING" ? "pending" : "failed";
 
@@ -65,30 +76,6 @@ serve(async (req) => {
         admin_notes: `NowPayBD: ${verifyData.status} | Method: ${verifyData.payment_method || "N/A"}`,
       })
       .eq("order_id", order_id);
-
-    // Send email on completion
-    if (status === "completed") {
-      const { data: orderData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("order_id", order_id)
-        .single();
-
-      if (orderData) {
-        await supabase.functions.invoke("send-smtp-email", {
-          body: {
-            type: "order_delivered",
-            data: {
-              order_id: orderData.order_id,
-              email: orderData.email,
-              credits: orderData.credits,
-              amount: orderData.amount,
-              payment_method: `NowPayBD (${verifyData.payment_method || "N/A"})`,
-            },
-          },
-        });
-      }
-    }
 
     return new Response(
       JSON.stringify({ status, verify_data: verifyData }),
