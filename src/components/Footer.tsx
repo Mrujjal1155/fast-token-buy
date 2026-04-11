@@ -40,18 +40,20 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
             <div className="flex flex-wrap gap-2.5 pt-2">
               {[
-                { icon: Globe, href: c.socialWebsite || "#" },
-                { icon: Send, href: c.socialTelegram || "#" },
-                { icon: MessageCircle, href: c.socialWhatsapp || "#" },
-                { icon: Mail, href: c.socialEmail || "mailto:support@lovablecredits.com" },
-                { icon: FacebookIcon, href: c.socialFacebook || "#" },
-                { icon: YoutubeIcon, href: c.socialYoutube || "#" },
-                { icon: InstagramIcon, href: c.socialInstagram || "#" },
-              ].map(({ icon: Icon, href }, i) => (
+                { icon: Globe, href: c.socialWebsite || "#", color: "text-blue-400", hoverBg: "hover:bg-blue-500/10" },
+                { icon: Send, href: c.socialTelegram || "#", color: "text-[#26A5E4]", hoverBg: "hover:bg-[#26A5E4]/10" },
+                { icon: MessageCircle, href: c.socialWhatsapp || "#", color: "text-[#25D366]", hoverBg: "hover:bg-[#25D366]/10" },
+                { icon: Mail, href: c.socialEmail || "mailto:support@lovablecredits.com", color: "text-[#EA4335]", hoverBg: "hover:bg-[#EA4335]/10" },
+                { icon: FacebookIcon, href: c.socialFacebook || "#", color: "text-[#1877F2]", hoverBg: "hover:bg-[#1877F2]/10" },
+                { icon: YoutubeIcon, href: c.socialYoutube || "#", color: "text-[#FF0000]", hoverBg: "hover:bg-[#FF0000]/10" },
+                { icon: InstagramIcon, href: c.socialInstagram || "#", color: "text-[#E4405F]", hoverBg: "hover:bg-[#E4405F]/10" },
+              ].map(({ icon: Icon, href, color, hoverBg }, i) => (
                 <a
                   key={i}
                   href={href}
-                  className="w-9 h-9 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-foreground hover:shadow-glow transition-all duration-300"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-9 h-9 rounded-full glass flex items-center justify-center ${color} ${hoverBg} hover:scale-110 transition-all duration-300`}
                 >
                   <Icon className="w-4 h-4" />
                 </a>
