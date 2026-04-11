@@ -46,19 +46,27 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
   const { t } = useLanguage();
 
   // Fetch payment settings
+  const [activeGateway, setActiveGateway] = useState<"ajkerpay" | "nowpaybd">("ajkerpay");
+
   useEffect(() => {
     const fetchSettings = async () => {
       const { data } = await supabase
         .from("site_settings")
         .select("key, value")
-        .or("key.like.payment_method_%,key.eq.ajkerpay_enabled");
+        .or("key.like.payment_method_%,key.eq.ajkerpay_enabled,key.eq.nowpaybd_enabled");
 
       if (data) {
         const enabledMap: Record<string, boolean> = {};
         const iconMap: Record<string, string> = {};
+        let ajkerpayEnabled = false;
+        let nowpaybdEnabled = false;
 
         data.forEach((s) => {
-          if (s.key.endsWith("_enabled") && s.key !== "ajkerpay_enabled") {
+          if (s.key === "ajkerpay_enabled") {
+            ajkerpayEnabled = s.value === "true";
+          } else if (s.key === "nowpaybd_enabled") {
+            nowpaybdEnabled = s.value === "true";
+          } else if (s.key.endsWith("_enabled")) {
             const id = s.key.replace("payment_method_", "").replace("_enabled", "");
             enabledMap[id] = s.value === "true";
           } else if (s.key.endsWith("_icon") && s.value) {
@@ -66,6 +74,10 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             iconMap[id] = s.value;
           }
         });
+
+        // Prefer NowPayBD if enabled, else AjkerPay
+        if (nowpaybdEnabled) setActiveGateway("nowpaybd");
+        else if (ajkerpayEnabled) setActiveGateway("ajkerpay");
 
         const filtered = paymentMethods
           .filter((m) => enabledMap[m.id] !== false)
@@ -255,12 +267,14 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     window.open(paymentData.payment_url, "_blank");
   };
 
-  const handleAjkerPayPayment = async () => {
+  const handleMFSPayment = async () => {
     setSubmitting(true);
 
     if (couponApplied && couponCode) {
       await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
     }
+
+    const gatewayName = activeGateway === "nowpaybd" ? "nowpaybd" : "ajkerpay";
 
     // Create order first
     const { data: orderData, error: orderError } = await supabase
@@ -271,8 +285,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
-        payment_method: `ajkerpay-${selectedPayment}`,
-        transaction_id: "pending-ajkerpay",
+        payment_method: `${gatewayName}-${selectedPayment}`,
+        transaction_id: `pending-${gatewayName}`,
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
         discount_amount: couponDiscount,
       })
@@ -285,11 +299,13 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       return;
     }
 
-    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}`;
+    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}&gateway=${gatewayName}`;
     const cancelUrl = `${window.location.origin}/?cancelled=true`;
 
+    const edgeFn = activeGateway === "nowpaybd" ? "create-nowpaybd-payment" : "create-ajkerpay-payment";
+
     const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-      "create-ajkerpay-payment",
+      edgeFn,
       {
         body: {
           amount: finalPrice,
@@ -305,14 +321,14 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     if (paymentError || !paymentData?.payment_url) {
       toast({
         title: t("order.paymentFailed"),
-        description: paymentError?.message || paymentData?.error || "AjkerPay error",
+        description: paymentError?.message || paymentData?.error || `${gatewayName} error`,
         variant: "destructive",
       });
       setSubmitting(false);
       return;
     }
 
-    // Redirect to AjkerPay payment page
+    // Redirect to payment page
     setOrderId(orderData.order_id);
     setCryptoPaymentUrl(paymentData.payment_url);
     setStep("crypto-checkout");
@@ -327,7 +343,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           email,
           credits: totalCredits,
           amount: finalPrice,
-          payment_method: `AjkerPay (${currentPayment?.name || selectedPayment})`,
+          payment_method: `${gatewayName === "nowpaybd" ? "NowPayBD" : "AjkerPay"} (${currentPayment?.name || selectedPayment})`,
         },
       },
     }).catch(console.error);
@@ -340,8 +356,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       return handleCryptoPayment();
     }
 
-    // All non-crypto methods use AjkerPay auto payment
-    return handleAjkerPayPayment();
+    // All non-crypto methods use active MFS gateway
+    return handleMFSPayment();
   };
 
 
