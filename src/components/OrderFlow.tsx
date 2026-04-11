@@ -630,7 +630,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
             </Button>
           </div>
         ) : (
-          /* AjkerPay auto payment UI */
+          /* NowPay BD auto payment UI */
           <div className="space-y-4">
             <div className="bg-secondary/50 rounded-xl p-6 space-y-3">
               <div className="flex items-center gap-2 mb-2">
