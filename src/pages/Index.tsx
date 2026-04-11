@@ -14,6 +14,7 @@ const RecentPurchases = lazy(() => import("@/components/RecentPurchases"));
 const Footer = lazy(() => import("@/components/Footer"));
 const OrderFlow = lazy(() => import("@/components/OrderFlow"));
 const HowToOrder = lazy(() => import("@/components/HowToOrder"));
+const ProofGallery = lazy(() => import("@/components/ProofGallery"));
 
 const Index = () => {
   const [showOrderFlow, setShowOrderFlow] = useState(false);
@@ -45,6 +46,7 @@ const Index = () => {
       <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
       <Suspense fallback={null}>
         <RecentPurchases />
+        <ProofGallery />
         <OurReserves />
         <HowToOrder onBuyNow={() => setShowOrderFlow(true)} />
         <Testimonials />
