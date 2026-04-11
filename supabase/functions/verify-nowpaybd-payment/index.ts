@@ -64,9 +64,13 @@ serve(async (req) => {
     const verifyData = await verifyResponse.json();
     console.log("NowPayBD verify response:", JSON.stringify(verifyData));
 
-    // Update order in database
-    const status = verifyData.status === "COMPLETED" ? "completed" : 
-                   verifyData.status === "PENDING" ? "pending" : "failed";
+    // Payment success = "processing" (admin manually marks "completed" after delivery)
+    const rawStatus = String(verifyData.status || "").toUpperCase();
+    const isPaid = rawStatus === "COMPLETED" || rawStatus === "SUCCESS" || rawStatus === "PAID" ||
+                   rawStatus === "TRUE" || rawStatus === "1" ||
+                   verifyData.status === true || verifyData.status === 1;
+    const isPending = rawStatus === "PENDING" || rawStatus === "PROCESSING";
+    const status = isPaid ? "processing" : isPending ? "pending" : "failed";
 
     await supabase
       .from("orders")
