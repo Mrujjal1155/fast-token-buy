@@ -13,7 +13,7 @@ interface ProofScreenshot {
 const ProofGallery = () => {
   const [screenshots, setScreenshots] = useState<ProofScreenshot[]>([]);
   const [selectedImage, setSelectedImage] = useState<ProofScreenshot | null>(null);
-  const { language } = useLanguage();
+  const { lang } = useLanguage();
 
   useEffect(() => {
     const fetch = async () => {
