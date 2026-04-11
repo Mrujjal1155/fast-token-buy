@@ -25,6 +25,10 @@ serve(async (req) => {
       );
     }
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const { transaction_id, order_id } = await req.json();
 
     if (!transaction_id || !order_id) {
@@ -64,9 +68,15 @@ serve(async (req) => {
     const verifyData = await verifyResponse.json();
     console.log("NowPayBD verify response:", JSON.stringify(verifyData));
 
-    // Update order in database
-    const status = verifyData.status === "COMPLETED" ? "completed" : 
-                   verifyData.status === "PENDING" ? "pending" : "failed";
+    // Determine status - handle multiple possible response formats from NowPayBD
+    const rawStatus = String(verifyData.status || "").toUpperCase();
+    const isPaid = rawStatus === "COMPLETED" || rawStatus === "SUCCESS" || rawStatus === "PAID" || 
+                   rawStatus === "TRUE" || rawStatus === "1" || 
+                   verifyData.status === true || verifyData.status === 1 ||
+                   verifyData.payment_status === "COMPLETED" || verifyData.payment_status === "SUCCESS";
+    const isPending = rawStatus === "PENDING" || rawStatus === "PROCESSING";
+
+    const status = isPaid ? "completed" : isPending ? "pending" : "failed";
 
     await supabase
       .from("orders")
