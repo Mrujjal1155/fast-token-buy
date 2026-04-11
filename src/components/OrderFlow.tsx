@@ -264,8 +264,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       await supabase.rpc("use_coupon", { p_code: couponCode.trim().toUpperCase() });
     }
 
-    const gatewayName = activeGateway === "nowpaybd" ? "nowpaybd" : "ajkerpay";
-
     // Create order first
     const { data: orderData, error: orderError } = await supabase
       .from("orders")
@@ -275,8 +273,8 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
         credits: totalCredits,
         amount: finalPrice,
         currency: chosenPackage?.currency,
-        payment_method: `${gatewayName}-${selectedPayment}`,
-        transaction_id: `pending-${gatewayName}`,
+        payment_method: `nowpaybd-${selectedPayment}`,
+        transaction_id: "pending-nowpaybd",
         coupon_code: couponApplied ? couponCode.trim().toUpperCase() : null,
         discount_amount: couponDiscount,
       })
@@ -289,13 +287,11 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
       return;
     }
 
-    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}&gateway=${gatewayName}`;
+    const successUrl = `${window.location.origin}/payment-success?order_id=${orderData.order_id}`;
     const cancelUrl = `${window.location.origin}/?cancelled=true`;
 
-    const edgeFn = activeGateway === "nowpaybd" ? "create-nowpaybd-payment" : "create-ajkerpay-payment";
-
     const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-      edgeFn,
+      "create-nowpaybd-payment",
       {
         body: {
           amount: finalPrice,
@@ -311,7 +307,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     if (paymentError || !paymentData?.payment_url) {
       toast({
         title: t("order.paymentFailed"),
-        description: paymentError?.message || paymentData?.error || `${gatewayName} error`,
+        description: paymentError?.message || paymentData?.error || "NowPayBD error",
         variant: "destructive",
       });
       setSubmitting(false);
@@ -333,7 +329,7 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
           email,
           credits: totalCredits,
           amount: finalPrice,
-          payment_method: `${gatewayName === "nowpaybd" ? "NowPayBD" : "AjkerPay"} (${currentPayment?.name || selectedPayment})`,
+          payment_method: `NowPayBD (${currentPayment?.name || selectedPayment})`,
         },
       },
     }).catch(console.error);
@@ -345,8 +341,6 @@ const OrderFlow = ({ selectedPackage: initialPackage, onBack }: OrderFlowProps) 
     if (isCrypto) {
       return handleCryptoPayment();
     }
-
-    // All non-crypto methods use active MFS gateway
     return handleMFSPayment();
   };
 
