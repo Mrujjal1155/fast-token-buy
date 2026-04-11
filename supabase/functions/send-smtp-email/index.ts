@@ -304,12 +304,14 @@ serve(async (req) => {
     }
 
     for (const em of emails) {
+      // Strip HTML tags for plain text fallback
+      const plainText = em.html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
       await client.send({
         from: `${fromName} <${fromEmail}>`,
         to: em.to,
         subject: em.subject,
+        content: plainText,
         html: em.html,
-        content: "auto",
       });
       console.log(`Email sent to: ${em.to}`);
     }
