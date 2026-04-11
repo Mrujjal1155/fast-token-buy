@@ -5,8 +5,25 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Save, Plus, Trash2, Upload, ImageIcon, X, GripVertical, Link as LinkIcon, Info,
+  Save, Plus, Trash2, Upload, X, GripVertical, Info,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface PaymentMethod {
   id: string;
@@ -24,6 +41,132 @@ const IMAGE_GUIDE = {
   tip: "সাদা বা স্বচ্ছ ব্যাকগ্রাউন্ডের লোগো ব্যবহার করুন",
 };
 
+interface SortableItemProps {
+  method: PaymentMethod;
+  uploading: string | null;
+  fileRefs: React.MutableRefObject<Record<string, HTMLInputElement | null>>;
+  onUpdate: (id: string, field: keyof PaymentMethod, value: any) => void;
+  onUpload: (id: string, file: File) => void;
+  onDelete: (id: string) => void;
+}
+
+const SortablePaymentItem = ({ method: m, uploading, fileRefs, onUpdate, onUpload, onDelete }: SortableItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: m.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto" as const,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`bg-card border rounded-xl p-4 transition-all ${
+        m.is_visible ? "border-border/30" : "border-border/10 opacity-60"
+      } ${isDragging ? "shadow-lg ring-2 ring-primary/30" : ""}`}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <button
+          {...attributes}
+          {...listeners}
+          className="touch-none cursor-grab active:cursor-grabbing p-1 rounded hover:bg-secondary transition"
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </button>
+
+        <div
+          className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border border-border/30"
+          style={{ backgroundColor: m.brand_color + "15" }}
+        >
+          {m.icon_url ? (
+            <img src={m.icon_url} alt={m.name} className="w-7 h-7 object-contain" />
+          ) : (
+            <span className="text-xs font-bold" style={{ color: m.brand_color }}>{m.name.charAt(0)}</span>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <Input
+            value={m.name}
+            onChange={(e) => onUpdate(m.id, "name", e.target.value)}
+            className="h-8 text-sm bg-secondary border-border/50"
+            placeholder="মেথডের নাম"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={m.brand_color}
+            onChange={(e) => onUpdate(m.id, "brand_color", e.target.value)}
+            className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+            title="ব্র্যান্ড কালার"
+          />
+          <Switch
+            checked={m.is_visible}
+            onCheckedChange={(v) => onUpdate(m.id, "is_visible", v)}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+            onClick={() => onDelete(m.id)}
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 ml-[52px]">
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={(el) => { fileRefs.current[m.id] = el; }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) onUpload(m.id, file);
+          }}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 text-xs"
+          onClick={() => fileRefs.current[m.id]?.click()}
+          disabled={uploading === m.id}
+        >
+          {uploading === m.id ? "আপলোড হচ্ছে..." : (
+            <><Upload className="w-3 h-3 mr-1" /> আপলোড</>
+          )}
+        </Button>
+
+        <span className="text-muted-foreground text-xs">অথবা</span>
+
+        <Input
+          value={m.icon_url}
+          onChange={(e) => onUpdate(m.id, "icon_url", e.target.value)}
+          className="h-8 text-xs bg-secondary border-border/50 flex-1"
+          placeholder="ইমেজ URL পেস্ট করুন (https://...)"
+        />
+
+        {m.icon_url && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => onUpdate(m.id, "icon_url", "")}
+          >
+            <X className="w-3.5 h-3.5" />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const AdminFooterPayments = () => {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +175,12 @@ const AdminFooterPayments = () => {
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchMethods();
-  }, []);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  useEffect(() => { fetchMethods(); }, []);
 
   const fetchMethods = async () => {
     const { data } = await supabase
@@ -47,6 +193,18 @@ const AdminFooterPayments = () => {
 
   const update = (id: string, field: keyof PaymentMethod, value: any) => {
     setMethods((prev) => prev.map((m) => (m.id === id ? { ...m, [field]: value } : m)));
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setMethods((prev) => {
+      const oldIndex = prev.findIndex((m) => m.id === active.id);
+      const newIndex = prev.findIndex((m) => m.id === over.id);
+      const reordered = arrayMove(prev, oldIndex, newIndex);
+      return reordered.map((m, i) => ({ ...m, sort_order: i + 1 }));
+    });
   };
 
   const handleUpload = async (id: string, file: File) => {
@@ -120,7 +278,7 @@ const AdminFooterPayments = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-foreground">ফুটার পেমেন্ট মেথড</h2>
-          <p className="text-sm text-muted-foreground">ফুটারে দেখানো পেমেন্ট আইকন ম্যানেজ করুন</p>
+          <p className="text-sm text-muted-foreground">ড্র্যাগ করে ক্রম পরিবর্তন করুন • সেভ করতে ভুলবেন না</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={addMethod}>
@@ -148,120 +306,24 @@ const AdminFooterPayments = () => {
         </div>
       </div>
 
-      {/* Methods List */}
-      <div className="space-y-3">
-        {methods.map((m, i) => (
-          <div
-            key={m.id}
-            className={`bg-card border rounded-xl p-4 transition-all ${
-              m.is_visible ? "border-border/30" : "border-border/10 opacity-60"
-            }`}
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
-
-              {/* Preview */}
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border border-border/30"
-                style={{ backgroundColor: m.brand_color + "15" }}
-              >
-                {m.icon_url ? (
-                  <img src={m.icon_url} alt={m.name} className="w-7 h-7 object-contain" />
-                ) : (
-                  <span className="text-xs font-bold" style={{ color: m.brand_color }}>{m.name.charAt(0)}</span>
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <Input
-                  value={m.name}
-                  onChange={(e) => update(m.id, "name", e.target.value)}
-                  className="h-8 text-sm bg-secondary border-border/50"
-                  placeholder="মেথডের নাম"
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={m.brand_color}
-                  onChange={(e) => update(m.id, "brand_color", e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
-                  title="ব্র্যান্ড কালার"
-                />
-                <Switch
-                  checked={m.is_visible}
-                  onCheckedChange={(v) => update(m.id, "is_visible", v)}
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                  onClick={() => deleteMethod(m.id)}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Icon upload / URL */}
-            <div className="flex items-center gap-2 ml-[52px]">
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                ref={(el) => { fileRefs.current[m.id] = el; }}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleUpload(m.id, file);
-                }}
+      {/* Sortable Methods List */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={methods.map((m) => m.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-3">
+            {methods.map((m) => (
+              <SortablePaymentItem
+                key={m.id}
+                method={m}
+                uploading={uploading}
+                fileRefs={fileRefs}
+                onUpdate={update}
+                onUpload={handleUpload}
+                onDelete={deleteMethod}
               />
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 text-xs"
-                onClick={() => fileRefs.current[m.id]?.click()}
-                disabled={uploading === m.id}
-              >
-                {uploading === m.id ? "আপলোড হচ্ছে..." : (
-                  <><Upload className="w-3 h-3 mr-1" /> আপলোড</>
-                )}
-              </Button>
-
-              <span className="text-muted-foreground text-xs">অথবা</span>
-
-              <Input
-                value={m.icon_url}
-                onChange={(e) => update(m.id, "icon_url", e.target.value)}
-                className="h-8 text-xs bg-secondary border-border/50 flex-1"
-                placeholder="ইমেজ URL পেস্ট করুন (https://...)"
-              />
-
-              {m.icon_url && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => update(m.id, "icon_url", "")}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </Button>
-              )}
-            </div>
-
-            {/* Sort order */}
-            <div className="flex items-center gap-2 ml-[52px] mt-2">
-              <label className="text-xs text-muted-foreground">ক্রম:</label>
-              <Input
-                type="number"
-                value={m.sort_order}
-                onChange={(e) => update(m.id, "sort_order", parseInt(e.target.value) || 0)}
-                className="h-7 w-16 text-xs bg-secondary border-border/50"
-              />
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };
