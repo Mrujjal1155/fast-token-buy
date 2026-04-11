@@ -126,7 +126,7 @@ const HowToOrder = ({ onBuyNow }: HowToOrderProps) => {
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-base text-primary-foreground bg-gradient-primary hover:opacity-90 shadow-glow transition-all duration-300 hover:scale-105"
             >
               <Sparkles className="w-5 h-5" />
-              {t("howToOrder.step1.title")}
+              {t("howToOrder.cta")}
             </button>
           </motion.div>
         )}
