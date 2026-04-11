@@ -43,9 +43,9 @@ const Index = () => {
       <TrustBadges />
       <PricingSection onSelectPackage={(pkg) => { setSelectedPackage(pkg); setShowOrderFlow(true); }} />
       <Suspense fallback={null}>
+        <RecentPurchases />
         <OurReserves />
         <Testimonials />
-        <RecentPurchases />
         <Footer />
       </Suspense>
     </div>
