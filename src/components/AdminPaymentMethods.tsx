@@ -386,7 +386,8 @@ const AdminPaymentMethods = () => {
         <ul className="list-disc list-inside space-y-1">
           <li>বন্ধ করা মেথড কাস্টমারদের কাছে দেখাবে না</li>
           <li>অন্তত একটি পেমেন্ট মেথড চালু রাখুন</li>
-          <li>AjkerPay চালু থাকলে bKash/Nagad/Rocket অটো পেমেন্ট হবে</li>
+          <li>NowPayBD চালু থাকলে সেটি প্রাথমিক গেটওয়ে হিসেবে ব্যবহৃত হবে</li>
+          <li>AjkerPay ও NowPayBD দুটোই চালু থাকলে NowPayBD অগ্রাধিকার পাবে</li>
           <li>আইকন সাইজ: সর্বোচ্চ ২MB, PNG/JPG/SVG সাপোর্টেড</li>
         </ul>
       </div>
