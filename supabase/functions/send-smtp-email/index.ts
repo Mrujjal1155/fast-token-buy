@@ -228,7 +228,7 @@ serve(async (req) => {
     const { data: settings } = await supabase
       .from('site_settings')
       .select('key, value')
-      .or('key.like.smtp_%,key.eq.site_logo,key.like.email_tpl_%');
+      .or('key.like.smtp_%,key.eq.site_logo,key.like.email_tpl_%,key.eq.site_url');
 
     if (!settings || settings.length === 0) {
       return new Response(JSON.stringify({ error: 'SMTP not configured' }), {
