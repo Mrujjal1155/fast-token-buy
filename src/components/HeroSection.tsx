@@ -82,11 +82,18 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
+              transformStyle: 'preserve-3d',
+              rotateX: `${(mousePos.y - 0.5) * -20}deg`,
+              rotateY: `${(mousePos.x - 0.5) * 20}deg`,
             }}
             initial={{ opacity: 0, scale: 0, rotate: icon.rotation - 20 }}
-            animate={{ opacity: 1, scale: 1, rotate: icon.rotation }}
-            transition={{ delay: 0.5 + i * 0.15, duration: 0.8, type: "spring", bounce: 0.4 }}
-            whileHover={{ scale: 1.3, rotate: 0, zIndex: 50, transition: { duration: 0.3 } }}
+            animate={{
+              opacity: 1, scale: 1, rotate: icon.rotation,
+              rotateX: (mousePos.y - 0.5) * -15,
+              rotateY: (mousePos.x - 0.5) * 15,
+            }}
+            transition={{ delay: 0.5 + i * 0.15, duration: 0.8, type: "spring", bounce: 0.4, rotateX: { duration: 0.3, type: "tween" }, rotateY: { duration: 0.3, type: "tween" } }}
+            whileHover={{ scale: 1.3, rotate: 0, zIndex: 50, rotateX: 0, rotateY: 0, transition: { duration: 0.3 } }}
           >
             <motion.div
               animate={{
