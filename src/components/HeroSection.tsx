@@ -48,7 +48,7 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   }, []);
 
   return (
-    <section className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20">
+    <section ref={sectionRef} onMouseMove={handleMouseMove} className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20" style={{ perspective: '1200px' }}>
       {/* Animated gradient mesh */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#FF7A18]/10 blur-[100px] md:blur-[150px] animate-hero-blob-1" />
