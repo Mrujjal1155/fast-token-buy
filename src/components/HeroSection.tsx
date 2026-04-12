@@ -57,6 +57,10 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
       });
     }, 800);
   }, []);
+
+  useEffect(() => {
+    const fetchIcons = async () => {
+      const { data } = await supabase
         .from("hero_floating_icons")
         .select("id, image_url, label, position_x, position_y, rotation, size")
         .eq("is_visible", true)
