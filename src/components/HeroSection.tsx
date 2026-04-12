@@ -37,6 +37,15 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
 
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  }, []);
+
   const [sparkles, setSparkles] = useState<Record<string, Sparkle[]>>({});
 
   const handleIconClick = useCallback((iconId: string) => {
