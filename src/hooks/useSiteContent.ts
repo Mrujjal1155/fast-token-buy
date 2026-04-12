@@ -267,8 +267,9 @@ export const useSiteContent = () => {
 
   // Single realtime channel for invalidation
   useEffect(() => {
+    const channelName = `site-content-realtime-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("site-content-realtime")
+      .channel(channelName)
       .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
         queryClient.invalidateQueries({ queryKey: ["site-content"] });
       })
