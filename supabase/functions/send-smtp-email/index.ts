@@ -149,7 +149,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
       row("Amount Paid", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
       `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN, GREEN2)}</td></tr>` +
       `</table></div>` +
-      infoBox(footer, GREEN);
+      infoBox(footer, GREEN) +
+      trackButton(d.order_id, siteUrl, GREEN, GREEN2);
     return emailShell(sn, "Order Update", inner, logo, GREEN, GREEN2);
   }
 
