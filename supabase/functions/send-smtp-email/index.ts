@@ -8,17 +8,12 @@ const corsHeaders = {
 };
 
 const BRAND = "#FF7A18";
-const BRAND2 = "#FF9A4E";
 const BG = "#0F172A";
-const BG2 = "#131C2E";
 const CARD = "#1E293B";
 const TEXT = "#E2E8F0";
 const MUTED = "#94A3B8";
 const GREEN = "#10B981";
-const GREEN2 = "#34D399";
 const RED = "#EF4444";
-const RED2 = "#F87171";
-const BLUE = "#3B82F6";
 
 function sanitizeConfigValue(value?: string): string {
   return typeof value === "string" ? value.trim() : "";
@@ -34,77 +29,50 @@ function replacePlaceholders(template: string, d: Record<string, any>): string {
     .replace(/\{payment_method\}/g, d.payment_method || "");
 }
 
-function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?: string, gradientFrom?: string, gradientTo?: string): string {
+function emailShell(siteName: string, subtitle: string, inner: string, logoUrl?: string): string {
   const year = new Date().getFullYear();
-  const gFrom = gradientFrom || BRAND;
-  const gTo = gradientTo || BRAND2;
   const logoBlock = logoUrl
     ? `<img src="${logoUrl}" alt="${siteName}" style="max-width:180px;max-height:60px;margin-bottom:10px;" />`
-    : `<h1 style="color:#ffffff;font-size:26px;margin:0;font-weight:800;letter-spacing:-0.5px;">${siteName}</h1>`;
+    : `<h1 style="color:${BRAND};font-size:24px;margin:0;font-weight:700;">${siteName}</h1>`;
   return `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:${BG};font-family:'Segoe UI',Arial,sans-serif;">
 <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
-  <!-- Gradient Header -->
-  <div style="background:linear-gradient(135deg,${gFrom},${gTo});border-radius:20px 20px 0 0;padding:35px 30px;text-align:center;">
+  <div style="text-align:center;margin-bottom:30px;">
     ${logoBlock}
-    <p style="color:rgba(255,255,255,0.85);font-size:13px;margin:8px 0 0;letter-spacing:0.5px;">${subtitle}</p>
+    <p style="color:${MUTED};font-size:13px;margin:5px 0 0;">${subtitle}</p>
   </div>
-  <!-- Content Card -->
-  <div style="background:${CARD};border-radius:0 0 20px 20px;padding:30px;border:1px solid rgba(255,255,255,0.06);border-top:none;">
+  <div style="background:${CARD};border-radius:16px;padding:30px;border:1px solid rgba(255,255,255,0.08);">
     ${inner}
   </div>
-  <!-- Footer -->
-  <div style="text-align:center;margin-top:25px;">
-    <p style="color:${MUTED};font-size:11px;margin:0;">&copy; ${year} ${siteName}. All rights reserved.</p>
-    <div style="margin-top:10px;width:40px;height:3px;background:linear-gradient(90deg,${gFrom},${gTo});border-radius:2px;display:inline-block;"></div>
-  </div>
+  <p style="text-align:center;color:${MUTED};font-size:11px;margin-top:30px;">&copy; ${year} ${siteName}. All rights reserved.</p>
 </div>
 </body></html>`;
 }
 
 function row(label: string, value: string, isLast = false): string {
   const border = isLast ? "" : "border-bottom:1px solid rgba(255,255,255,0.06);";
-  return `<tr><td style="padding:14px 0;${border}color:${MUTED};font-size:13px;width:40%;vertical-align:middle;">${label}</td><td style="padding:14px 0;${border}color:${TEXT};font-size:14px;font-weight:600;text-align:right;vertical-align:middle;">${value}</td></tr>`;
+  return `<tr><td style="padding:14px 0;${border}color:${MUTED};font-size:13px;width:40%;">${label}</td><td style="padding:14px 0;${border}color:${TEXT};font-size:14px;font-weight:600;text-align:right;">${value}</td></tr>`;
 }
 
-function badge(text: string, color: string, color2?: string): string {
-  const bg = color2 ? `linear-gradient(135deg,${color},${color2})` : color;
-  return `<span style="background:${bg};color:#ffffff;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;display:inline-block;">${text}</span>`;
+function badge(text: string, color: string): string {
+  return `<span style="background:${color}15;color:${color};padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.3px;">${text}</span>`;
 }
 
 function infoBox(msg: string, color: string): string {
-  return `<div style="margin-top:25px;padding:18px 22px;background:${color}12;border-radius:14px;border-left:4px solid ${color};"><p style="color:${TEXT};font-size:13px;margin:0;line-height:1.7;">${msg}</p></div>`;
+  return `<div style="margin-top:25px;padding:16px 20px;background:${color}0A;border-radius:12px;border-left:3px solid ${color};"><p style="color:${TEXT};font-size:13px;margin:0;line-height:1.6;">${msg}</p></div>`;
 }
 
 function statusIcon(type: string): string {
-  const configs: Record<string, { svg: string; gradient: string[] }> = {
-    order: {
-      svg: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 7L12 3L4 7M20 7V17L12 21M20 7L12 11M12 21L4 17V7M12 21V11M4 7L12 11" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      gradient: [BRAND, BRAND2],
-    },
-    admin: {
-      svg: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 8A6 6 0 1 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      gradient: [BRAND, BRAND2],
-    },
-    delivered: {
-      svg: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 4L12 14.01l-3-3" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      gradient: [GREEN, GREEN2],
-    },
-    timeout: {
-      svg: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#ffffff" stroke-width="1.8"/><path d="M12 6v6l4 2" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      gradient: [RED, RED2],
-    },
-    failed: {
-      svg: `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#ffffff" stroke-width="1.8"/><path d="M15 9l-6 6M9 9l6 6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-      gradient: [RED, RED2],
-    },
+  const configs: Record<string, { emoji: string; bg: string; color: string }> = {
+    order: { emoji: "📦", bg: `${BRAND}22`, color: BRAND },
+    admin: { emoji: "🔔", bg: `${BRAND}22`, color: BRAND },
+    delivered: { emoji: "✅", bg: `${GREEN}22`, color: GREEN },
+    timeout: { emoji: "⏰", bg: `${RED}22`, color: RED },
+    failed: { emoji: "❌", bg: `${RED}22`, color: RED },
   };
   const c = configs[type] || configs.order;
-  return `<div style="text-align:center;margin-bottom:25px;">
-    <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,${c.gradient[0]},${c.gradient[1]});display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 25px ${c.gradient[0]}40;">
-      <table cellpadding="0" cellspacing="0" border="0"><tr><td align="center" valign="middle" style="width:76px;height:76px;">${c.svg}</td></tr></table>
-    </div>`;
+  return `<div style="text-align:center;margin-bottom:25px;"><div style="width:72px;height:72px;border-radius:50%;background:${c.bg};display:inline-block;line-height:72px;font-size:32px;border:2px solid ${c.color}33;">${c.emoji}</div>`;
 }
 
 function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, string>): string {
@@ -115,16 +83,16 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     const heading = replacePlaceholders(tpl.email_tpl_admin_heading || "নতুন অর্ডার এসেছে!", d);
     const headingEn = replacePlaceholders(tpl.email_tpl_admin_heading_en || "New Order Received", d);
     const inner = statusIcon("admin") +
-      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
-      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
+      `<table style="width:100%;border-collapse:collapse;">` +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
       row("Customer", d.email) +
       row("Credits", `<span style="color:${BRAND};font-weight:700;">${d.credits}</span>`) +
       row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
       row("Payment", d.payment_method) +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Pending", BRAND, BRAND2)}</td></tr>` +
-      `</table></div>`;
-    return emailShell(sn, "Admin Notification", inner, logo, BRAND, BRAND2);
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Pending", BRAND)}</td></tr>` +
+      `</table>`;
+    return emailShell(sn, "Admin Notification", inner, logo);
   }
 
   if (type === "credit_delivered") {
@@ -132,15 +100,15 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     const headingEn = replacePlaceholders(tpl.email_tpl_delivered_heading_en || "Your credits have been delivered", d);
     const footer = replacePlaceholders(tpl.email_tpl_delivered_footer || "আপনার একাউন্টে ক্রেডিট যোগ করা হয়েছে। ধন্যবাদ!", d);
     const inner = statusIcon("delivered") +
-      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
-      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
+      `<table style="width:100%;border-collapse:collapse;">` +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
       row("Credits", `<span style="color:${GREEN};font-size:18px;font-weight:700;">${d.credits} Credits</span>`) +
       row("Amount Paid", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN, GREEN2)}</td></tr>` +
-      `</table></div>` +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN)}</td></tr>` +
+      `</table>` +
       infoBox(footer, GREEN);
-    return emailShell(sn, "Order Update", inner, logo, GREEN, GREEN2);
+    return emailShell(sn, "Order Update", inner, logo);
   }
 
   if (type === "order_timeout" || type === "order_failed") {
@@ -169,17 +137,17 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     }
 
     const statusLabel = isTimeout ? "Timed Out" : "Failed";
-    let rows = row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`);
+    let rows = row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`);
     if (isAdmin) rows += row("Customer", d.email);
     rows += row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`);
     rows += row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`);
 
     const inner = statusIcon(iconType) +
-      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${sub}</p></div>` +
-      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">${rows}` +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED, RED2)}</td></tr></table></div>` +
+      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${sub}</p></div>` +
+      `<table style="width:100%;border-collapse:collapse;">${rows}` +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED)}</td></tr></table>` +
       infoBox(foot, RED);
-    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo, RED, RED2);
+    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo);
   }
 
   // customer_order (default)
@@ -187,16 +155,16 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
   const headingEn = replacePlaceholders(tpl.email_tpl_order_heading_en || "Your order has been placed successfully", d);
   const footer = replacePlaceholders(tpl.email_tpl_order_footer || "আপনার অর্ডারটি প্রক্রিয়াধীন আছে। শীঘ্রই ক্রেডিট ডেলিভারি করা হবে।", d);
   const inner = statusIcon("order") +
-    `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
-    `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
-    row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
+    `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
+    `<table style="width:100%;border-collapse:collapse;">` +
+    row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
     row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`) +
     row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
     row("Payment", d.payment_method) +
-    `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND, BRAND2)}</td></tr>` +
-    `</table></div>` +
+    `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND)}</td></tr>` +
+    `</table>` +
     infoBox(footer, BRAND);
-  return emailShell(sn, "Order Confirmation", inner, logo, BRAND, BRAND2);
+  return emailShell(sn, "Order Confirmation", inner, logo);
 }
 
 serve(async (req) => {
