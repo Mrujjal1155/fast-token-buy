@@ -157,7 +157,9 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 />
                 <img
                   src={icon.image_url}
-                  alt="icon"
+                  alt={icon.label || "icon"}
+                  loading="lazy"
+                  decoding="async"
                   className="relative z-10 object-contain transition-transform duration-300 group-hover:scale-110"
                   style={{ 
                     width: `clamp(${mobileSize}px, 5vw, ${icon.size}px)`, 
