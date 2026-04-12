@@ -79,14 +79,13 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 delay: floatDelay,
               }}
             >
-              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1.5 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
+              <div className="rounded-lg md:rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
                 <img
                   src={icon.image_url}
                   alt="icon"
                   className="object-contain transition-transform duration-300 group-hover:scale-110"
-                  style={{ width: Math.min(icon.size, 32), height: Math.min(icon.size, 32) }}
+                  style={{ width: `clamp(${mobileSize}px, 5vw, ${icon.size}px)`, height: `clamp(${mobileSize}px, 5vw, ${icon.size}px)` }}
                 />
-                <style>{`@media(min-width:768px){[data-icon-id="${icon.id}"] img{width:${icon.size}px!important;height:${icon.size}px!important}}`}</style>
               </div>
             </motion.div>
           </motion.div>
