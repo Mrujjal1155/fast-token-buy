@@ -113,10 +113,7 @@ const AdminHeroIcons = () => {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) {
-                const label = prompt("আইকনের লেবেল দিন (যেমন: WordPress, Flutter)") || "Icon";
-                handleUpload(file, label);
-              }
+              if (file) handleUpload(file, "");
               e.target.value = "";
             }}
             disabled={uploading}
@@ -141,16 +138,9 @@ const AdminHeroIcons = () => {
             <div key={icon.id} className="bg-card border border-border/30 rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-lg bg-secondary/50 flex items-center justify-center overflow-hidden shrink-0">
-                  <img src={icon.image_url} alt={icon.label} className="max-w-full max-h-full object-contain" />
+                  <img src={icon.image_url} alt="icon" className="max-w-full max-h-full object-contain" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <Input
-                    value={icon.label}
-                    onChange={(e) => updateIcon(icon.id, { label: e.target.value })}
-                    className="text-sm h-8"
-                    placeholder="লেবেল"
-                  />
-                </div>
+                <div className="flex-1" />
                 <Button variant="ghost" size="sm" onClick={() => deleteIcon(icon.id)} className="text-destructive shrink-0">
                   <Trash2 className="w-4 h-4" />
                 </Button>

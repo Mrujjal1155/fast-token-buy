@@ -65,18 +65,14 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
             transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
           >
             <div
-              className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2 flex items-center gap-2"
-              style={{ width: icon.size + 20 }}
+              className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2"
             >
               <img
                 src={icon.image_url}
-                alt={icon.label}
+                alt="icon"
                 className="object-contain"
-                style={{ width: icon.size * 0.5, height: icon.size * 0.5 }}
+                style={{ width: icon.size, height: icon.size }}
               />
-              {icon.label && (
-                <span className="text-[10px] font-medium text-foreground/70 truncate">{icon.label}</span>
-              )}
             </div>
           </motion.div>
         </motion.div>
