@@ -9,7 +9,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id") || "";
-  const transactionId = searchParams.get("transactionId") || "";
+  const transactionId =
+    searchParams.get("transactionId") ||
+    searchParams.get("transaction_id") ||
+    searchParams.get("trx_id") ||
+    searchParams.get("invoice_id") ||
+    "";
   const [verifying, setVerifying] = useState(false);
   const { t } = useLanguage();
 
