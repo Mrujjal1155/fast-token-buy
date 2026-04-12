@@ -1,9 +1,20 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Zap, ArrowRight, Flame, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+
+interface Sparkle {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  angle: number;
+}
+
+const SPARKLE_COLORS = ['#FF7A18', '#FF3CAC', '#7B61FF', '#4D8DFF', '#FFD700', '#00FF88'];
 
 interface FloatingIcon {
   id: string;
