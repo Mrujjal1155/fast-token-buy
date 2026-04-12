@@ -41,8 +41,9 @@ export const useSiteImages = () => {
   });
 
   useEffect(() => {
+    const channelName = `site-images-realtime-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("site-images-realtime")
+      .channel(channelName)
       .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
         queryClient.invalidateQueries({ queryKey: ["site-images"] });
       })
