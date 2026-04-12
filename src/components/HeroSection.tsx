@@ -65,7 +65,6 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
             transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
           >
             <div
-            <div
               className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2"
             >
               <img
