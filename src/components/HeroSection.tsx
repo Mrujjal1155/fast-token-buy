@@ -52,6 +52,8 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         const floatDelay = i * 0.3;
         const isLeft = icon.position_x < 50;
 
+        const mobileSize = Math.max(24, Math.round(icon.size * 0.45));
+
         return (
           <motion.div
             key={icon.id}
