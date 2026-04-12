@@ -207,7 +207,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     row("Payment", d.payment_method) +
     `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND, BRAND2)}</td></tr>` +
     `</table></div>` +
-    infoBox(footer, BRAND);
+    infoBox(footer, BRAND) +
+    trackButton(d.order_id, siteUrl, BRAND, BRAND2);
   return emailShell(sn, "Order Confirmation", inner, logo, BRAND, BRAND2);
 }
 
