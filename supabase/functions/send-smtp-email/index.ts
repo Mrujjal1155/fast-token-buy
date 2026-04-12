@@ -64,15 +64,15 @@ function infoBox(msg: string, color: string): string {
 }
 
 function statusIcon(type: string): string {
-  const configs: Record<string, { bg: string; icon: string; color: string }> = {
-    order: { bg: `${BRAND}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${BRAND}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`, color: BRAND },
-    admin: { bg: `${BRAND}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${BRAND}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`, color: BRAND },
-    delivered: { bg: `${GREEN}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${GREEN}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`, color: GREEN },
-    timeout: { bg: `${RED}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${RED}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, color: RED },
-    failed: { bg: `${RED}15`, icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${RED}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`, color: RED },
+  const configs: Record<string, { emoji: string; bg: string; color: string }> = {
+    order: { emoji: "📦", bg: `${BRAND}22`, color: BRAND },
+    admin: { emoji: "🔔", bg: `${BRAND}22`, color: BRAND },
+    delivered: { emoji: "✅", bg: `${GREEN}22`, color: GREEN },
+    timeout: { emoji: "⏰", bg: `${RED}22`, color: RED },
+    failed: { emoji: "❌", bg: `${RED}22`, color: RED },
   };
   const c = configs[type] || configs.order;
-  return `<div style="text-align:center;margin-bottom:25px;"><div style="width:64px;height:64px;border-radius:50%;background:${c.bg};display:inline-flex;align-items:center;justify-content:center;">${c.icon}</div>`;
+  return `<div style="text-align:center;margin-bottom:25px;"><div style="width:72px;height:72px;border-radius:50%;background:${c.bg};display:inline-block;line-height:72px;font-size:32px;border:2px solid ${c.color}33;">${c.emoji}</div>`;
 }
 
 function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, string>): string {
