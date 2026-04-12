@@ -138,6 +138,7 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 ease: "easeInOut",
                 delay: floatDelay,
               }}
+              onClick={() => handleIconClick(icon.id)}
             >
               <div className="relative rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1.5 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(123,97,255,0.45)] group-hover:border-primary/50 group-hover:bg-card/95">
                 {/* Glow pulse ring */}
@@ -163,6 +164,32 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                     height: `clamp(${mobileSize}px, 5vw, ${icon.size}px)` 
                   }}
                 />
+                {/* Sparkle particles on click */}
+                <AnimatePresence>
+                  {sparkles[icon.id]?.map((sparkle) => (
+                    <motion.div
+                      key={sparkle.id}
+                      className="absolute z-20 rounded-full pointer-events-none"
+                      style={{
+                        width: sparkle.size,
+                        height: sparkle.size,
+                        backgroundColor: sparkle.color,
+                        top: '50%',
+                        left: '50%',
+                        boxShadow: `0 0 ${sparkle.size * 2}px ${sparkle.color}`,
+                      }}
+                      initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                      animate={{
+                        x: sparkle.x,
+                        y: sparkle.y,
+                        opacity: 0,
+                        scale: 0,
+                      }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.6 + Math.random() * 0.3, ease: "easeOut" }}
+                    />
+                  ))}
+                </AnimatePresence>
               </div>
             </motion.div>
           </motion.div>
