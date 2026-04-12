@@ -115,16 +115,16 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     const heading = replacePlaceholders(tpl.email_tpl_admin_heading || "নতুন অর্ডার এসেছে!", d);
     const headingEn = replacePlaceholders(tpl.email_tpl_admin_heading_en || "New Order Received", d);
     const inner = statusIcon("admin") +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
-      `<table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
+      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
+      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
       row("Customer", d.email) +
       row("Credits", `<span style="color:${BRAND};font-weight:700;">${d.credits}</span>`) +
       row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
       row("Payment", d.payment_method) +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Pending", BRAND)}</td></tr>` +
-      `</table>`;
-    return emailShell(sn, "Admin Notification", inner, logo);
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Pending", BRAND, BRAND2)}</td></tr>` +
+      `</table></div>`;
+    return emailShell(sn, "Admin Notification", inner, logo, BRAND, BRAND2);
   }
 
   if (type === "credit_delivered") {
@@ -132,15 +132,15 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     const headingEn = replacePlaceholders(tpl.email_tpl_delivered_heading_en || "Your credits have been delivered", d);
     const footer = replacePlaceholders(tpl.email_tpl_delivered_footer || "আপনার একাউন্টে ক্রেডিট যোগ করা হয়েছে। ধন্যবাদ!", d);
     const inner = statusIcon("delivered") +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
-      `<table style="width:100%;border-collapse:collapse;">` +
-      row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
+      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
+      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
+      row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
       row("Credits", `<span style="color:${GREEN};font-size:18px;font-weight:700;">${d.credits} Credits</span>`) +
       row("Amount Paid", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN)}</td></tr>` +
-      `</table>` +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN, GREEN2)}</td></tr>` +
+      `</table></div>` +
       infoBox(footer, GREEN);
-    return emailShell(sn, "Order Update", inner, logo);
+    return emailShell(sn, "Order Update", inner, logo, GREEN, GREEN2);
   }
 
   if (type === "order_timeout" || type === "order_failed") {
@@ -169,17 +169,17 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     }
 
     const statusLabel = isTimeout ? "Timed Out" : "Failed";
-    let rows = row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`);
+    let rows = row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`);
     if (isAdmin) rows += row("Customer", d.email);
     rows += row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`);
     rows += row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`);
 
     const inner = statusIcon(iconType) +
-      `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${sub}</p></div>` +
-      `<table style="width:100%;border-collapse:collapse;">${rows}` +
-      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED)}</td></tr></table>` +
+      `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${sub}</p></div>` +
+      `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">${rows}` +
+      `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED, RED2)}</td></tr></table></div>` +
       infoBox(foot, RED);
-    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo);
+    return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo, RED, RED2);
   }
 
   // customer_order (default)
@@ -187,16 +187,16 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
   const headingEn = replacePlaceholders(tpl.email_tpl_order_heading_en || "Your order has been placed successfully", d);
   const footer = replacePlaceholders(tpl.email_tpl_order_footer || "আপনার অর্ডারটি প্রক্রিয়াধীন আছে। শীঘ্রই ক্রেডিট ডেলিভারি করা হবে।", d);
   const inner = statusIcon("order") +
-    `<h2 style="color:${TEXT};font-size:20px;margin:15px 0 5px;font-weight:700;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 20px;">${headingEn}</p></div>` +
-    `<table style="width:100%;border-collapse:collapse;">` +
-    row("Order ID", `<span style="font-family:monospace;color:${BRAND};">${d.order_id}</span>`) +
+    `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${headingEn}</p></div>` +
+    `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">` +
+    row("Order ID", `<span style="font-family:monospace;color:${BRAND};font-weight:700;">${d.order_id}</span>`) +
     row("Credits", `<span style="color:${BRAND};font-size:16px;font-weight:700;">${d.credits}</span>`) +
     row("Amount", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
     row("Payment", d.payment_method) +
-    `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND)}</td></tr>` +
-    `</table>` +
+    `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND, BRAND2)}</td></tr>` +
+    `</table></div>` +
     infoBox(footer, BRAND);
-  return emailShell(sn, "Order Confirmation", inner, logo);
+  return emailShell(sn, "Order Confirmation", inner, logo, BRAND, BRAND2);
 }
 
 serve(async (req) => {
