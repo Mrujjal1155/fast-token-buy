@@ -15,15 +15,19 @@ serve(async (req) => {
 
   try {
     const NOWPAYBD_API_KEY = Deno.env.get("NOWPAYBD_API_KEY");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const NOWPAYBD_SECRET_KEY = Deno.env.get("NOWPAYBD_SECRET_KEY");
     const NOWPAYBD_BRAND_KEY = Deno.env.get("NOWPAYBD_BRAND_KEY");
 
-    if (!NOWPAYBD_API_KEY || !NOWPAYBD_SECRET_KEY || !NOWPAYBD_BRAND_KEY) {
+    if (!NOWPAYBD_API_KEY || !NOWPAYBD_SECRET_KEY || !NOWPAYBD_BRAND_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       return new Response(
-        JSON.stringify({ error: "NowPayBD API keys not configured" }),
+        JSON.stringify({ error: "NowPayBD or backend keys not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const { transaction_id, order_id } = await req.json();
 

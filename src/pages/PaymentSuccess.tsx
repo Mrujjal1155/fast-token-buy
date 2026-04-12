@@ -9,21 +9,32 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("order_id") || "";
-  const transactionId = searchParams.get("transactionId") || "";
+  const transactionId =
+    searchParams.get("transactionId") ||
+    searchParams.get("transaction_id") ||
+    searchParams.get("trx_id") ||
+    searchParams.get("invoice_id") ||
+    "";
   const [verifying, setVerifying] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
-    if (transactionId && orderId) {
-      const verify = async () => {
-        setVerifying(true);
-        await supabase.functions.invoke("verify-nowpaybd-payment", {
-          body: { transaction_id: transactionId, order_id: orderId },
-        });
-        setVerifying(false);
-      };
-      verify();
-    }
+    if (!orderId || !transactionId) return;
+
+    const verify = async () => {
+      setVerifying(true);
+      const { error } = await supabase.functions.invoke("verify-nowpaybd-payment", {
+        body: { transaction_id: transactionId, order_id: orderId },
+      });
+
+      if (error) {
+        toast({ title: error.message, variant: "destructive" });
+      }
+
+      setVerifying(false);
+    };
+
+    verify();
   }, [transactionId, orderId]);
 
   return (
