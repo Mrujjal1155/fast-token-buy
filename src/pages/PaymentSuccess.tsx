@@ -19,16 +19,22 @@ const PaymentSuccess = () => {
   const { t } = useLanguage();
 
   useEffect(() => {
-    if (transactionId && orderId) {
-      const verify = async () => {
-        setVerifying(true);
-        await supabase.functions.invoke("verify-nowpaybd-payment", {
-          body: { transaction_id: transactionId, order_id: orderId },
-        });
-        setVerifying(false);
-      };
-      verify();
-    }
+    if (!orderId || !transactionId) return;
+
+    const verify = async () => {
+      setVerifying(true);
+      const { error } = await supabase.functions.invoke("verify-nowpaybd-payment", {
+        body: { transaction_id: transactionId, order_id: orderId },
+      });
+
+      if (error) {
+        toast({ title: error.message, variant: "destructive" });
+      }
+
+      setVerifying(false);
+    };
+
+    verify();
   }, [transactionId, orderId]);
 
   return (
