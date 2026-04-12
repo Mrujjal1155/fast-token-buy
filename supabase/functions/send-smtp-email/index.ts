@@ -107,9 +107,19 @@ function statusIcon(type: string): string {
     </div>`;
 }
 
+function trackButton(orderId: string, siteUrl: string, color1: string, color2: string): string {
+  const url = `${siteUrl}/track-order?order_id=${encodeURIComponent(orderId)}`;
+  return `<div style="text-align:center;margin-top:28px;">
+    <a href="${url}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,${color1},${color2});color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.5px;box-shadow:0 6px 20px ${color1}40;">
+      📍 Track Your Order
+    </a>
+  </div>`;
+}
+
 function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, string>): string {
   const sn = d.site_name || "FastTokenBuy";
   const logo = d.logo_url || "";
+  const siteUrl = d.site_url || "https://fast-token-buy.lovable.app";
 
   if (type === "admin_order") {
     const heading = replacePlaceholders(tpl.email_tpl_admin_heading || "নতুন অর্ডার এসেছে!", d);
@@ -139,7 +149,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
       row("Amount Paid", `<span style="font-weight:700;">&#2547;${d.amount}</span>`) +
       `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Completed", GREEN, GREEN2)}</td></tr>` +
       `</table></div>` +
-      infoBox(footer, GREEN);
+      infoBox(footer, GREEN) +
+      trackButton(d.order_id, siteUrl, GREEN, GREEN2);
     return emailShell(sn, "Order Update", inner, logo, GREEN, GREEN2);
   }
 
@@ -178,7 +189,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
       `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${sub}</p></div>` +
       `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">${rows}` +
       `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED, RED2)}</td></tr></table></div>` +
-      infoBox(foot, RED);
+      infoBox(foot, RED) +
+      (isAdmin ? "" : trackButton(d.order_id, siteUrl, BRAND, BRAND2));
     return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo, RED, RED2);
   }
 
@@ -195,7 +207,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
     row("Payment", d.payment_method) +
     `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge("Processing", BRAND, BRAND2)}</td></tr>` +
     `</table></div>` +
-    infoBox(footer, BRAND);
+    infoBox(footer, BRAND) +
+    trackButton(d.order_id, siteUrl, BRAND, BRAND2);
   return emailShell(sn, "Order Confirmation", inner, logo, BRAND, BRAND2);
 }
 
@@ -215,7 +228,7 @@ serve(async (req) => {
     const { data: settings } = await supabase
       .from('site_settings')
       .select('key, value')
-      .or('key.like.smtp_%,key.eq.site_logo,key.like.email_tpl_%');
+      .or('key.like.smtp_%,key.eq.site_logo,key.like.email_tpl_%,key.eq.site_url');
 
     if (!settings || settings.length === 0) {
       return new Response(JSON.stringify({ error: 'SMTP not configured' }), {
@@ -260,12 +273,14 @@ serve(async (req) => {
 
     const customerEmail = typeof data?.email === 'string' ? data.email.trim() : '';
     const sn = fromName;
+    const siteUrl = sanitizeConfigValue(cfg['site_url']) || 'https://fast-token-buy.lovable.app';
     const emailData = {
       ...data,
       email: customerEmail,
       payment_method: typeof data?.payment_method === 'string' ? data.payment_method.trim() : data?.payment_method,
       site_name: sn,
       logo_url: logoUrl,
+      site_url: siteUrl,
     };
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
