@@ -52,10 +52,12 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         const floatDelay = i * 0.3;
         const isLeft = icon.position_x < 50;
 
+        const mobileSize = Math.max(24, Math.round(icon.size * 0.45));
+
         return (
           <motion.div
             key={icon.id}
-            className="absolute hidden md:block z-10 group cursor-pointer"
+            className="absolute z-10 group cursor-pointer"
             style={{
               left: `${icon.position_x}%`,
               top: `${icon.position_y}%`,
@@ -77,12 +79,12 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 delay: floatDelay,
               }}
             >
-              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
+              <div className="rounded-lg md:rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
                 <img
                   src={icon.image_url}
                   alt="icon"
                   className="object-contain transition-transform duration-300 group-hover:scale-110"
-                  style={{ width: icon.size, height: icon.size }}
+                  style={{ width: `clamp(${mobileSize}px, 5vw, ${icon.size}px)`, height: `clamp(${mobileSize}px, 5vw, ${icon.size}px)` }}
                 />
               </div>
             </motion.div>
