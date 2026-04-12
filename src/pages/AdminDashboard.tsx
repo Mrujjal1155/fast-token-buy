@@ -39,6 +39,7 @@ import AdminSmtpSettings from "@/components/AdminSmtpSettings";
 import AdminFooterPayments from "@/components/AdminFooterPayments";
 import AdminProofScreenshots from "@/components/AdminProofScreenshots";
 import AdminHeroIcons from "@/components/AdminHeroIcons";
+import AdminSalesAnalytics from "@/components/AdminSalesAnalytics";
 
 type Order = Tables<"orders">;
 
@@ -77,7 +78,7 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode; color
 
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<"orders" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email" | "footer-pay" | "proof" | "hero-icons">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "analytics" | "coupons" | "reserves" | "notifications" | "packages" | "payments" | "reviews" | "content" | "images" | "badges" | "email" | "footer-pay" | "proof" | "hero-icons">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
@@ -258,6 +259,7 @@ const AdminDashboard = () => {
         <div className="container flex gap-1 -mb-px overflow-x-auto">
           {[
             { id: "orders" as const, label: "Orders", icon: Package },
+            { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
             { id: "coupons" as const, label: "Coupons", icon: Tag },
             { id: "packages" as const, label: "Packages", icon: Package },
             { id: "reserves" as const, label: "Reserves", icon: BarChart3 },
@@ -289,7 +291,9 @@ const AdminDashboard = () => {
       </header>
 
       <div className="container py-8 space-y-8">
-        {activeTab === "orders" ? (
+        {activeTab === "analytics" ? (
+          <AdminSalesAnalytics orders={orders} />
+        ) : activeTab === "orders" ? (
           <>
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
