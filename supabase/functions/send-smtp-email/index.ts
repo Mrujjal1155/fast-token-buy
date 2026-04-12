@@ -189,7 +189,8 @@ function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, st
       `<h2 style="color:${TEXT};font-size:22px;margin:15px 0 5px;font-weight:800;">${heading}</h2><p style="color:${MUTED};font-size:14px;margin:0 0 25px;">${sub}</p></div>` +
       `<div style="background:${BG2};border-radius:12px;padding:5px 20px;margin-bottom:10px;"><table style="width:100%;border-collapse:collapse;">${rows}` +
       `<tr><td style="padding:14px 0;color:${MUTED};font-size:13px;">Status</td><td style="padding:14px 0;text-align:right;">${badge(statusLabel, RED, RED2)}</td></tr></table></div>` +
-      infoBox(foot, RED);
+      infoBox(foot, RED) +
+      (isAdmin ? "" : trackButton(d.order_id, siteUrl, BRAND, BRAND2));
     return emailShell(sn, isAdmin ? "Admin Alert" : "Order Update", inner, logo, RED, RED2);
   }
 
