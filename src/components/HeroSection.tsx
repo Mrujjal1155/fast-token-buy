@@ -81,9 +81,10 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 <img
                   src={icon.image_url}
                   alt="icon"
-                  className="object-contain transition-transform duration-300 group-hover:scale-110 w-[28px] h-[28px] md:w-auto md:h-auto"
-                  style={{ '--icon-size': `${icon.size}px` } as React.CSSProperties}
+                  className="object-contain transition-transform duration-300 group-hover:scale-110"
+                  style={{ width: Math.min(icon.size, 32), height: Math.min(icon.size, 32) }}
                 />
+                <style>{`@media(min-width:768px){[data-icon-id="${icon.id}"] img{width:${icon.size}px!important;height:${icon.size}px!important}}`}</style>
               </div>
             </motion.div>
           </motion.div>
