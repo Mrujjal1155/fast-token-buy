@@ -37,18 +37,26 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setMousePos({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-  }, []);
+  const [sparkles, setSparkles] = useState<Record<string, Sparkle[]>>({});
 
-  useEffect(() => {
-    const fetchIcons = async () => {
-      const { data } = await supabase
+  const handleIconClick = useCallback((iconId: string) => {
+    const newSparkles: Sparkle[] = Array.from({ length: 10 }, (_, j) => ({
+      id: Date.now() + j,
+      x: (Math.random() - 0.5) * 80,
+      y: (Math.random() - 0.5) * 80,
+      size: 4 + Math.random() * 8,
+      color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
+      angle: (360 / 10) * j + Math.random() * 30,
+    }));
+    setSparkles(prev => ({ ...prev, [iconId]: newSparkles }));
+    setTimeout(() => {
+      setSparkles(prev => {
+        const next = { ...prev };
+        delete next[iconId];
+        return next;
+      });
+    }, 800);
+  }, []);
         .from("hero_floating_icons")
         .select("id, image_url, label, position_x, position_y, rotation, size")
         .eq("is_visible", true)
