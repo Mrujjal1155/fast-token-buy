@@ -47,36 +47,48 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
       </div>
 
       {/* Floating Icons */}
-      {floatingIcons.map((icon, i) => (
-        <motion.div
-          key={icon.id}
-          className="absolute pointer-events-none hidden md:block"
-          style={{
-            left: `${icon.position_x}%`,
-            top: `${icon.position_y}%`,
-            rotate: `${icon.rotation}deg`,
-          }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 + i * 0.15, duration: 0.6, type: "spring" }}
-        >
+      {floatingIcons.map((icon, i) => {
+        const floatDuration = 3 + (i % 3) * 0.8;
+        const floatDelay = i * 0.3;
+        const isLeft = icon.position_x < 50;
+
+        return (
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+            key={icon.id}
+            className="absolute hidden md:block z-10 group cursor-pointer"
+            style={{
+              left: `${icon.position_x}%`,
+              top: `${icon.position_y}%`,
+            }}
+            initial={{ opacity: 0, scale: 0, rotate: icon.rotation - 20 }}
+            animate={{ opacity: 1, scale: 1, rotate: icon.rotation }}
+            transition={{ delay: 0.5 + i * 0.2, duration: 0.8, type: "spring", bounce: 0.4 }}
+            whileHover={{ scale: 1.25, rotate: 0, zIndex: 50, transition: { duration: 0.3 } }}
           >
-            <div
-              className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2"
+            <motion.div
+              animate={{
+                y: [0, -10, 0],
+                x: isLeft ? [0, 4, 0] : [0, -4, 0],
+              }}
+              transition={{
+                duration: floatDuration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: floatDelay,
+              }}
             >
-              <img
-                src={icon.image_url}
-                alt="icon"
-                className="object-contain"
-                style={{ width: icon.size, height: icon.size }}
-              />
-            </div>
+              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
+                <img
+                  src={icon.image_url}
+                  alt="icon"
+                  className="object-contain transition-transform duration-300 group-hover:scale-110"
+                  style={{ width: icon.size, height: icon.size }}
+                />
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      ))}
+        );
+      })}
 
       <div className="container relative z-10 text-center py-10 md:py-20 px-4">
         <motion.div
