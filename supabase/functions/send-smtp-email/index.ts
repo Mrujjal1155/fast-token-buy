@@ -107,9 +107,19 @@ function statusIcon(type: string): string {
     </div>`;
 }
 
+function trackButton(orderId: string, siteUrl: string, color1: string, color2: string): string {
+  const url = `${siteUrl}/track-order?order_id=${encodeURIComponent(orderId)}`;
+  return `<div style="text-align:center;margin-top:28px;">
+    <a href="${url}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,${color1},${color2});color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:0.5px;box-shadow:0 6px 20px ${color1}40;">
+      📍 Track Your Order
+    </a>
+  </div>`;
+}
+
 function buildEmail(type: string, d: Record<string, any>, tpl: Record<string, string>): string {
   const sn = d.site_name || "FastTokenBuy";
   const logo = d.logo_url || "";
+  const siteUrl = d.site_url || "https://fast-token-buy.lovable.app";
 
   if (type === "admin_order") {
     const heading = replacePlaceholders(tpl.email_tpl_admin_heading || "নতুন অর্ডার এসেছে!", d);
