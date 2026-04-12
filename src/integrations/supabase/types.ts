@@ -53,6 +53,48 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_floating_icons: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_visible: boolean
+          label: string
+          position_x: number
+          position_y: number
+          rotation: number
+          size: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_visible?: boolean
+          label?: string
+          position_x?: number
+          position_y?: number
+          rotation?: number
+          size?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_visible?: boolean
+          label?: string
+          position_x?: number
+          position_y?: number
+          rotation?: number
+          size?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string

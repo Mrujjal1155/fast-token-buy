@@ -2,6 +2,18 @@ import { motion } from "framer-motion";
 import { Zap, ArrowRight, Flame, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface FloatingIcon {
+  id: string;
+  image_url: string;
+  label: string;
+  position_x: number;
+  position_y: number;
+  rotation: number;
+  size: number;
+}
 
 interface HeroSectionProps {
   onBuyNow: () => void;
@@ -10,6 +22,19 @@ interface HeroSectionProps {
 const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   const { content } = useSiteContent();
   const c = content.hero;
+  const [floatingIcons, setFloatingIcons] = useState<FloatingIcon[]>([]);
+
+  useEffect(() => {
+    const fetchIcons = async () => {
+      const { data } = await supabase
+        .from("hero_floating_icons")
+        .select("id, image_url, label, position_x, position_y, rotation, size")
+        .eq("is_visible", true)
+        .order("sort_order");
+      if (data) setFloatingIcons(data as FloatingIcon[]);
+    };
+    fetchIcons();
+  }, []);
 
   return (
     <section className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20">
@@ -20,6 +45,42 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         <div className="absolute bottom-1/4 right-1/3 w-[200px] md:w-[350px] h-[200px] md:h-[350px] rounded-full bg-[#7B61FF]/10 blur-[80px] md:blur-[120px] animate-hero-blob-3" />
         <div className="absolute bottom-0 left-1/4 w-[180px] md:w-[300px] h-[180px] md:h-[300px] rounded-full bg-[#4D8DFF]/8 blur-[60px] md:blur-[100px] animate-hero-blob-4" />
       </div>
+
+      {/* Floating Icons */}
+      {floatingIcons.map((icon, i) => (
+        <motion.div
+          key={icon.id}
+          className="absolute pointer-events-none hidden md:block"
+          style={{
+            left: `${icon.position_x}%`,
+            top: `${icon.position_y}%`,
+            rotate: `${icon.rotation}deg`,
+          }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 + i * 0.15, duration: 0.6, type: "spring" }}
+        >
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <div
+              className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2 flex items-center gap-2"
+              style={{ width: icon.size + 20 }}
+            >
+              <img
+                src={icon.image_url}
+                alt={icon.label}
+                className="object-contain"
+                style={{ width: icon.size * 0.5, height: icon.size * 0.5 }}
+              />
+              {icon.label && (
+                <span className="text-[10px] font-medium text-foreground/70 truncate">{icon.label}</span>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      ))}
 
       <div className="container relative z-10 text-center py-10 md:py-20 px-4">
         <motion.div
