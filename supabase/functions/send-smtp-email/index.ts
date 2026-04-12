@@ -273,12 +273,14 @@ serve(async (req) => {
 
     const customerEmail = typeof data?.email === 'string' ? data.email.trim() : '';
     const sn = fromName;
+    const siteUrl = sanitizeConfigValue(cfg['site_url']) || 'https://fast-token-buy.lovable.app';
     const emailData = {
       ...data,
       email: customerEmail,
       payment_method: typeof data?.payment_method === 'string' ? data.payment_method.trim() : data?.payment_method,
       site_name: sn,
       logo_url: logoUrl,
+      site_url: siteUrl,
     };
     const emails: Array<{ to: string; subject: string; html: string }> = [];
 
