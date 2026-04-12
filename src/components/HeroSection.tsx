@@ -55,7 +55,7 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         return (
           <motion.div
             key={icon.id}
-            className="absolute hidden md:block z-10 group cursor-pointer"
+            className="absolute z-10 group cursor-pointer"
             style={{
               left: `${icon.position_x}%`,
               top: `${icon.position_y}%`,
