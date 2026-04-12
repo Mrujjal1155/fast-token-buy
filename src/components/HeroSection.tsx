@@ -52,10 +52,24 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         const floatDelay = i * 0.3;
         const isLeft = icon.position_x < 50;
 
+        // Mobile-safe positions to avoid overlapping with center content
+        const mobilePositions = [
+          { x: 3, y: 8 },
+          { x: 78, y: 6 },
+          { x: 2, y: 55 },
+          { x: 80, y: 52 },
+          { x: 5, y: 85 },
+          { x: 75, y: 82 },
+          { x: 1, y: 32 },
+          { x: 82, y: 30 },
+        ];
+        const mobilePos = mobilePositions[i % mobilePositions.length];
+        const mobileSize = Math.max(22, Math.round(icon.size * 0.4));
+
         return (
           <motion.div
             key={icon.id}
-            className="absolute hidden md:block z-10 group cursor-pointer"
+            className="absolute z-10 group cursor-pointer"
             style={{
               left: `${icon.position_x}%`,
               top: `${icon.position_y}%`,
@@ -67,8 +81,8 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
           >
             <motion.div
               animate={{
-                y: [0, -10, 0],
-                x: isLeft ? [0, 4, 0] : [0, -4, 0],
+                y: [0, -8, 0],
+                x: isLeft ? [0, 3, 0] : [0, -3, 0],
               }}
               transition={{
                 duration: floatDuration,
@@ -77,12 +91,15 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 delay: floatDelay,
               }}
             >
-              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
+              <div className="rounded-lg md:rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
                 <img
                   src={icon.image_url}
                   alt="icon"
                   className="object-contain transition-transform duration-300 group-hover:scale-110"
-                  style={{ width: icon.size, height: icon.size }}
+                  style={{ 
+                    width: `clamp(${mobileSize}px, 5vw, ${icon.size}px)`, 
+                    height: `clamp(${mobileSize}px, 5vw, ${icon.size}px)` 
+                  }}
                 />
               </div>
             </motion.div>
