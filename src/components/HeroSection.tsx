@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Zap, ArrowRight, Flame, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface FloatingIcon {
@@ -23,6 +23,17 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   const { content } = useSiteContent();
   const c = content.hero;
   const [floatingIcons, setFloatingIcons] = useState<FloatingIcon[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMousePos({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  }, []);
 
   useEffect(() => {
     const fetchIcons = async () => {
@@ -37,7 +48,7 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
   }, []);
 
   return (
-    <section className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20">
+    <section ref={sectionRef} onMouseMove={handleMouseMove} className="relative min-h-[75vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero pt-24 md:pt-20" style={{ perspective: '1200px' }}>
       {/* Animated gradient mesh */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-[#FF7A18]/10 blur-[100px] md:blur-[150px] animate-hero-blob-1" />
@@ -71,11 +82,18 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
+              transformStyle: 'preserve-3d',
+              rotateX: `${(mousePos.y - 0.5) * -20}deg`,
+              rotateY: `${(mousePos.x - 0.5) * 20}deg`,
             }}
             initial={{ opacity: 0, scale: 0, rotate: icon.rotation - 20 }}
-            animate={{ opacity: 1, scale: 1, rotate: icon.rotation }}
-            transition={{ delay: 0.5 + i * 0.15, duration: 0.8, type: "spring", bounce: 0.4 }}
-            whileHover={{ scale: 1.3, rotate: 0, zIndex: 50, transition: { duration: 0.3 } }}
+            animate={{
+              opacity: 1, scale: 1, rotate: icon.rotation,
+              rotateX: (mousePos.y - 0.5) * -15,
+              rotateY: (mousePos.x - 0.5) * 15,
+            }}
+            transition={{ delay: 0.5 + i * 0.15, duration: 0.8, type: "spring", bounce: 0.4, rotateX: { duration: 0.3, type: "tween" }, rotateY: { duration: 0.3, type: "tween" } }}
+            whileHover={{ scale: 1.3, rotate: 0, zIndex: 50, rotateX: 0, rotateY: 0, transition: { duration: 0.3 } }}
           >
             <motion.div
               animate={{
