@@ -1,6 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useEffect } from "react";
 
 export interface SiteContent {
   hero: {
@@ -225,60 +227,55 @@ const keyToSection: Record<string, keyof SiteContent> = {
   content_operator: "operator",
 };
 
-export const useSiteContent = () => {
-  const { lang } = useLanguage();
-  const defaults = lang === "bn" ? defaultContentBn : defaultContentEn;
-  const [content, setContent] = useState<SiteContent>(defaults);
-  const [loading, setLoading] = useState(true);
-  const [currentLang, setCurrentLang] = useState(lang);
+const fetchSiteContent = async (lang: string): Promise<SiteContent> => {
+  const currentDefaults = lang === "bn" ? defaultContentBn : defaultContentEn;
+  const langKeys = CONTENT_KEYS_BASE.map(k => `${k}_${lang}`);
 
-  // When language changes, immediately set loading and clear stale content
-  if (lang !== currentLang) {
-    setCurrentLang(lang);
-    setLoading(true);
+  const { data } = await supabase
+    .from("site_settings")
+    .select("key, value")
+    .in("key", langKeys);
+
+  const merged = { ...currentDefaults };
+
+  if (data && data.length > 0) {
+    data.forEach((row) => {
+      const baseKey = row.key.replace(`_${lang}`, "");
+      const section = keyToSection[baseKey];
+      if (!section) return;
+      try {
+        const parsed = JSON.parse(row.value);
+        (merged as any)[section] = { ...(currentDefaults as any)[section], ...parsed };
+      } catch {}
+    });
   }
 
-  const fetchContent = useCallback(async () => {
-    const currentDefaults = lang === "bn" ? defaultContentBn : defaultContentEn;
-    
-    const langKeys = CONTENT_KEYS_BASE.map(k => `${k}_${lang}`);
-    
-    const { data } = await supabase
-      .from("site_settings")
-      .select("key, value")
-      .in("key", langKeys);
+  return merged;
+};
 
-    const merged = { ...currentDefaults };
-    
-    if (data && data.length > 0) {
-      data.forEach((row) => {
-        const baseKey = row.key.replace(`_${lang}`, "");
-        const section = keyToSection[baseKey];
-        if (!section) return;
-        try {
-          const parsed = JSON.parse(row.value);
-          (merged as any)[section] = { ...(currentDefaults as any)[section], ...parsed };
-        } catch {}
-      });
-    }
-    
-    setContent(merged);
-    setLoading(false);
-  }, [lang]);
+export const useSiteContent = () => {
+  const { lang } = useLanguage();
+  const queryClient = useQueryClient();
+  const defaults = lang === "bn" ? defaultContentBn : defaultContentEn;
 
+  const { data: content = defaults, isLoading: loading } = useQuery({
+    queryKey: ["site-content", lang],
+    queryFn: () => fetchSiteContent(lang),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+  });
+
+  // Single realtime channel for invalidation
   useEffect(() => {
-    fetchContent();
-
-    const channelId = `site-content-${crypto.randomUUID()}`;
     const channel = supabase
-      .channel(channelId)
+      .channel("site-content-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => {
-        fetchContent();
+        queryClient.invalidateQueries({ queryKey: ["site-content"] });
       })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [fetchContent]);
+  }, [queryClient]);
 
   return { content, loading };
 };
