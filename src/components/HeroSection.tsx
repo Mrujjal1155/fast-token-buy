@@ -46,43 +46,41 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
         <div className="absolute bottom-0 left-1/4 w-[180px] md:w-[300px] h-[180px] md:h-[300px] rounded-full bg-[#4D8DFF]/8 blur-[60px] md:blur-[100px] animate-hero-blob-4" />
       </div>
 
-      {/* Floating Icons */}
-      {floatingIcons.map((icon, i) => {
+      {/* Floating Icons - 3 left, 3 right */}
+      {floatingIcons.slice(0, 6).map((icon, i) => {
         const floatDuration = 3 + (i % 3) * 0.8;
-        const floatDelay = i * 0.3;
-        const isLeft = icon.position_x < 50;
+        const floatDelay = i * 0.4;
 
-        // Mobile-safe positions to avoid overlapping with center content
-        const mobilePositions = [
-          { x: 3, y: 8 },
-          { x: 78, y: 6 },
-          { x: 2, y: 55 },
-          { x: 80, y: 52 },
-          { x: 5, y: 85 },
-          { x: 75, y: 82 },
-          { x: 1, y: 32 },
-          { x: 82, y: 30 },
+        // 3 on left side, 3 on right side — evenly spaced vertically
+        const positions = [
+          { x: 5, y: 12 },   // left top
+          { x: 4, y: 45 },   // left middle
+          { x: 7, y: 76 },   // left bottom
+          { x: 85, y: 10 },  // right top
+          { x: 87, y: 42 },  // right middle
+          { x: 83, y: 74 },  // right bottom
         ];
-        const mobilePos = mobilePositions[i % mobilePositions.length];
-        const mobileSize = Math.max(22, Math.round(icon.size * 0.4));
+        const pos = positions[i % 6];
+        const isLeft = pos.x < 50;
+        const mobileSize = Math.max(24, Math.round(icon.size * 0.45));
 
         return (
           <motion.div
             key={icon.id}
             className="absolute z-10 group cursor-pointer"
             style={{
-              left: `${icon.position_x}%`,
-              top: `${icon.position_y}%`,
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
             }}
             initial={{ opacity: 0, scale: 0, rotate: icon.rotation - 20 }}
             animate={{ opacity: 1, scale: 1, rotate: icon.rotation }}
-            transition={{ delay: 0.5 + i * 0.2, duration: 0.8, type: "spring", bounce: 0.4 }}
-            whileHover={{ scale: 1.25, rotate: 0, zIndex: 50, transition: { duration: 0.3 } }}
+            transition={{ delay: 0.5 + i * 0.15, duration: 0.8, type: "spring", bounce: 0.4 }}
+            whileHover={{ scale: 1.3, rotate: 0, zIndex: 50, transition: { duration: 0.3 } }}
           >
             <motion.div
               animate={{
-                y: [0, -8, 0],
-                x: isLeft ? [0, 3, 0] : [0, -3, 0],
+                y: [0, -12, 0],
+                x: isLeft ? [0, 5, 0] : [0, -5, 0],
               }}
               transition={{
                 duration: floatDuration,
@@ -91,7 +89,7 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 delay: floatDelay,
               }}
             >
-              <div className="rounded-lg md:rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,97,255,0.3)] group-hover:border-primary/40 group-hover:bg-card/95">
+              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1.5 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(123,97,255,0.35)] group-hover:border-primary/50 group-hover:bg-card/95">
                 <img
                   src={icon.image_url}
                   alt="icon"
