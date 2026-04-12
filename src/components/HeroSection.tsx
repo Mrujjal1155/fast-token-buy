@@ -89,11 +89,25 @@ const HeroSection = ({ onBuyNow }: HeroSectionProps) => {
                 delay: floatDelay,
               }}
             >
-              <div className="rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1.5 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(123,97,255,0.35)] group-hover:border-primary/50 group-hover:bg-card/95">
+              <div className="relative rounded-xl bg-card/80 backdrop-blur-sm border border-border/30 shadow-lg p-1.5 md:p-2.5 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(123,97,255,0.45)] group-hover:border-primary/50 group-hover:bg-card/95">
+                {/* Glow pulse ring */}
+                <motion.div
+                  className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: 'linear-gradient(135deg, rgba(255,122,24,0.25), rgba(123,97,255,0.25))' }}
+                  animate={{ opacity: [0.15, 0.35, 0.15], scale: [1, 1.08, 1] }}
+                  transition={{ duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
+                />
+                {/* Soft ambient glow */}
+                <motion.div
+                  className="absolute -inset-3 rounded-2xl blur-md -z-10"
+                  style={{ background: i % 2 === 0 ? 'rgba(255,122,24,0.12)' : 'rgba(123,97,255,0.12)' }}
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.95, 1.05, 0.95] }}
+                  transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                />
                 <img
                   src={icon.image_url}
                   alt="icon"
-                  className="object-contain transition-transform duration-300 group-hover:scale-110"
+                  className="relative z-10 object-contain transition-transform duration-300 group-hover:scale-110"
                   style={{ 
                     width: `clamp(${mobileSize}px, 5vw, ${icon.size}px)`, 
                     height: `clamp(${mobileSize}px, 5vw, ${icon.size}px)` 
