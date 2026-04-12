@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Camera, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface ProofScreenshot {
   id: string;
@@ -63,11 +64,10 @@ const ProofGallery = () => {
               className="group cursor-pointer rounded-2xl overflow-hidden border border-border/20 bg-card hover:border-primary/30 hover:shadow-[0_0_20px_-5px_rgba(255,122,24,0.15)] transition-all duration-300"
             >
               <div className="aspect-square overflow-hidden">
-                <img
+                <OptimizedImage
                   src={s.image_url}
                   alt={s.caption || "Delivery proof"}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
+                  className="w-full h-full"
                 />
               </div>
               {s.caption && (
